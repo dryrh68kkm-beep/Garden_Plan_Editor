@@ -1,7 +1,8 @@
 const STORAGE = {
   customers: "garden_customers_v1",
   projects: "garden_projects_v1",
-  boq: "garden_boq_v1"
+  boq: "garden_boq_v1",
+  plantOverrides: "garden_plant_overrides_v1"
 };
 
 const gardenStyles = [
@@ -1362,7 +1363,19 @@ let selectedPlantId = "";
 let customers = load(STORAGE.customers, []);
 let projects = load(STORAGE.projects, []);
 let boqItems = load(STORAGE.boq, []);
+let plantOverrides = load(STORAGE.plantOverrides, {});
 let selectedBoqProjectId = "";
+
+function savePlantOverrides(){
+  localStorage.setItem(STORAGE.plantOverrides, JSON.stringify(plantOverrides));
+}
+function getPlant(id){
+  const p=plants.find(x=>x.id===id);
+  return p ? {...p, ...plantOverrides[id]} : null;
+}
+function mergedPlants(){
+  return plants.map(p=>plantOverrides[p.id] ? {...p, ...plantOverrides[p.id]} : p);
+}
 
 function load(key, fallback){
   try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
@@ -1610,13 +1623,14 @@ function renderPlants(){
   const q=(document.getElementById("plantSearch")?.value||"").toLowerCase();
   const category=document.getElementById("plantCategoryFilter")?.value||"";
   const light=document.getElementById("plantLightFilter")?.value||"";
-  const rows=plants.filter(p=>{
+  const rows=mergedPlants().filter(p=>{
     const hay=[p.id,p.thaiName,p.englishName,p.scientificName,p.category,p.light].join(" ").toLowerCase();
     return hay.includes(q)&&(!category||p.category===category)&&(!light||p.light===light);
   });
   document.getElementById("plantCount").textContent=`แสดง ${rows.length} จาก ${plants.length} รายการ`;
   document.getElementById("plantList").innerHTML=rows.length?rows.map(p=>`
     <article class="plant-card">
+      <div class="plant-thumb"${p.image?` style="background-image:url('${esc(p.image)}')"`:""}>${p.image?"":"🌱"}</div>
       <div class="plant-code">${esc(p.id)} · ${esc(p.category)}</div>
       <h3>${esc(p.thaiName)}</h3>
       <div>${esc(p.englishName||"-")}</div>
@@ -1632,13 +1646,14 @@ function renderPlants(){
       </div>
       <div class="actions">
         <button class="btn btn-secondary" onclick="openPlantDetail('${p.id}')">ดูรายละเอียด</button>
+        <button class="small-btn" onclick="openPlantEdit('${p.id}')">แก้ไข</button>
         <button class="btn btn-primary" onclick="quickAddPlantToBoq('${p.id}')">เพิ่มเข้า BOQ</button>
       </div>
     </article>`).join(""):'<div class="empty">ไม่พบต้นไม้ที่ค้นหา</div>';
 }
 
 function openPlantDetail(id){
-  const p=plants.find(x=>x.id===id);
+  const p=getPlant(id);
   if(!p) return;
   selectedPlantId=id;
   document.getElementById("plantDetailCode").textContent=p.id+" · "+(p.englishName||"");
@@ -1653,11 +1668,14 @@ function openPlantDetail(id){
   document.getElementById("plantDetailCost").textContent=money(p.costPrice)+" / "+p.unit;
   document.getElementById("plantDetailPrice").textContent=money(p.salePrice)+" / "+p.unit;
   document.getElementById("plantDetailStyles").innerHTML=(p.styles||[]).map(id=>`<span class="chip">${esc(styleName(id))}</span>`).join("");
+  const icon=document.getElementById("plantDetailIcon");
+  if(p.image){ icon.style.backgroundImage=`url('${p.image}')`; icon.textContent=""; }
+  else{ icon.style.backgroundImage=""; icon.textContent="🌱"; }
   document.getElementById("plantDetailDialog").showModal();
 }
 
 function quickAddPlantToBoq(id){
-  const p=plants.find(x=>x.id===id);
+  const p=getPlant(id);
   if(!p) return;
   if(!selectedBoqProjectId){
     if(!projects.length){alert("กรุณาสร้างโครงการก่อนเพิ่มต้นไม้เข้า BOQ");return;}
@@ -1683,6 +1701,78 @@ document.getElementById("reloadPlantDbBtn").addEventListener("click",loadPlantDa
 document.getElementById("addPlantToBoqBtn").addEventListener("click",()=>{
   document.getElementById("plantDetailDialog").close();
   quickAddPlantToBoq(selectedPlantId);
+});
+
+let plantEditImageData;
+function resizeImageToDataURL(file,maxDim=600,quality=0.82){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onerror=()=>reject(reader.error);
+    reader.onload=()=>{
+      const img=new Image();
+      img.onerror=()=>reject(new Error("โหลดรูปภาพไม่สำเร็จ"));
+      img.onload=()=>{
+        const scale=Math.min(1,maxDim/Math.max(img.width,img.height));
+        const canvas=document.createElement("canvas");
+        canvas.width=Math.round(img.width*scale);
+        canvas.height=Math.round(img.height*scale);
+        canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);
+        resolve(canvas.toDataURL("image/jpeg",quality));
+      };
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function openPlantEdit(id){
+  const p=getPlant(id);
+  if(!p) return;
+  document.getElementById("plantEditId").value=id;
+  document.getElementById("plantEditTitle").textContent=`แก้ไข: ${p.thaiName}`;
+  document.getElementById("plantEditCost").value=p.costPrice||0;
+  document.getElementById("plantEditPrice").value=p.salePrice||0;
+  document.getElementById("plantEditImage").value="";
+  plantEditImageData=p.image||"";
+  const preview=document.getElementById("plantEditPreview");
+  const wrap=document.getElementById("plantEditPreviewWrap");
+  if(plantEditImageData){ preview.src=plantEditImageData; wrap.style.display="flex"; }
+  else{ preview.src=""; wrap.style.display="none"; }
+  document.getElementById("plantEditDialog").showModal();
+}
+document.getElementById("plantEditImage").addEventListener("change",async e=>{
+  const file=e.target.files[0];
+  if(!file) return;
+  try{
+    plantEditImageData=await resizeImageToDataURL(file);
+    const preview=document.getElementById("plantEditPreview");
+    preview.src=plantEditImageData;
+    document.getElementById("plantEditPreviewWrap").style.display="flex";
+  }catch{
+    alert("ไม่สามารถอ่านไฟล์รูปภาพนี้ได้");
+  }
+});
+document.getElementById("plantEditRemoveImageBtn").addEventListener("click",()=>{
+  plantEditImageData="";
+  document.getElementById("plantEditImage").value="";
+  document.getElementById("plantEditPreview").src="";
+  document.getElementById("plantEditPreviewWrap").style.display="none";
+});
+document.getElementById("plantEditForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const id=document.getElementById("plantEditId").value;
+  const override={
+    costPrice:Number(document.getElementById("plantEditCost").value)||0,
+    salePrice:Number(document.getElementById("plantEditPrice").value)||0
+  };
+  if(plantEditImageData) override.image=plantEditImageData;
+  plantOverrides[id]=override;
+  savePlantOverrides();
+  document.getElementById("plantEditDialog").close();
+  renderPlants();
+});
+document.getElementById("editPlantBtn").addEventListener("click",()=>{
+  document.getElementById("plantDetailDialog").close();
+  openPlantEdit(selectedPlantId);
 });
 
 function renderAll(){fillProjectOptions();renderDashboard();renderCustomers();renderProjects();renderStyles();renderBoqProjectSelect();renderBoq();}
