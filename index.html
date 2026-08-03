@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#163a2a" />
   <title>Garden Plan Editor</title>
-  <link rel="stylesheet" href="style.css?v=202608031520" />
+  <link rel="stylesheet" href="style.css?v=202608031542" />
 </head>
 <body>
   <header class="topbar">
@@ -181,6 +181,7 @@
         <button type="button" class="icon-btn close-dialog">×</button>
       </div>
       <div id="plantDetailIcon" class="plant-detail-icon">🌱</div>
+      <div id="plantDetailThumbs" class="style-detail-thumbs"></div>
       <p id="plantDetailScientific" class="style-detail-description"></p>
       <div class="detail-grid">
         <div class="detail-box"><span>ประเภท</span><strong id="plantDetailCategory"></strong></div>
@@ -210,11 +211,8 @@
         <label>ต้นทุน/หน่วย<input id="plantEditCost" class="input" type="number" min="0" step="0.01" /></label>
         <label>ราคาขาย/หน่วย<input id="plantEditPrice" class="input" type="number" min="0" step="0.01" /></label>
       </div>
-      <label>รูปภาพต้นไม้<input id="plantEditImage" class="input" type="file" accept="image/*" /></label>
-      <div id="plantEditPreviewWrap" class="plant-edit-preview-wrap">
-        <img id="plantEditPreview" class="plant-edit-preview" alt="" />
-        <button type="button" id="plantEditRemoveImageBtn" class="small-btn danger">ลบรูป</button>
-      </div>
+      <label>รูปภาพต้นไม้ (เพิ่มได้หลายรูป)<input id="plantEditImage" class="input" type="file" accept="image/*" multiple /></label>
+      <div id="plantEditGallery" class="style-edit-gallery"></div>
       <label class="checkbox-label"><input id="plantEditBestSeller" type="checkbox" /> 🔥 สินค้าขายดี</label>
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost close-dialog">ยกเลิก</button>
@@ -264,11 +262,8 @@
         <label>ต้นทุน/หน่วย<input id="plantAddCost" class="input" type="number" min="0" step="0.01" /></label>
         <label>ราคาขาย/หน่วย<input id="plantAddPrice" class="input" type="number" min="0" step="0.01" /></label>
       </div>
-      <label>รูปภาพต้นไม้<input id="plantAddImage" class="input" type="file" accept="image/*" /></label>
-      <div id="plantAddPreviewWrap" class="plant-edit-preview-wrap">
-        <img id="plantAddPreview" class="plant-edit-preview" alt="" />
-        <button type="button" id="plantAddRemoveImageBtn" class="small-btn danger">ลบรูป</button>
-      </div>
+      <label>รูปภาพต้นไม้ (เพิ่มได้หลายรูป)<input id="plantAddImage" class="input" type="file" accept="image/*" multiple /></label>
+      <div id="plantAddGallery" class="style-edit-gallery"></div>
       <label class="checkbox-label"><input id="plantAddBestSeller" type="checkbox" /> 🔥 สินค้าขายดี</label>
       <div class="modal-actions">
         <button type="button" id="plantAddDeleteBtn" class="small-btn danger" style="display:none;margin-right:auto">ลบต้นไม้นี้</button>
@@ -278,8 +273,8 @@
     </form>
   </dialog>
 
-  <script src="data/garden-styles-data.js?v=202608031520"></script>
-  <script src="firebase-client.js?v=202608031520"></script>
-  <script src="app.js?v=202608031520"></script>
+  <script src="data/garden-styles-data.js?v=202608031542"></script>
+  <script src="firebase-client.js?v=202608031542"></script>
+  <script src="app.js?v=202608031542"></script>
 </body>
 </html>

@@ -25,6 +25,9 @@
 .showcase-plant-caption{font-weight:800;font-size:1.05rem;color:var(--ink)}
 .showcase-plant-price-tag{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;border-radius:999px;font-weight:800;font-size:.85rem;padding:6px 12px;background:linear-gradient(135deg,var(--green-2),var(--green));color:#fff}
 .showcase-lightbox-img-wrap{position:relative}
+.showcase-lightbox-carousel{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.showcase-lightbox-carousel::-webkit-scrollbar{display:none}
+.showcase-lightbox-slide{flex:0 0 100%;scroll-snap-align:start;display:flex;justify-content:center}
 .showcase-plant-price-tag--lightbox{display:none;position:absolute;right:14px;bottom:14px;font-size:1rem;padding:9px 16px;box-shadow:0 10px 24px rgba(5,34,24,.28)}
 .best-seller-badge{position:absolute;top:12px;left:12px;background:linear-gradient(135deg,#e2572b,#f2994a);color:#fff;font-size:.78rem;font-weight:800;padding:6px 11px;border-radius:999px;box-shadow:0 6px 16px rgba(0,0,0,.22)}
 .best-seller-badge--lightbox{display:none;top:14px;left:14px;font-size:.9rem;padding:8px 14px}

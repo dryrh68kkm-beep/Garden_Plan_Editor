@@ -27,6 +27,12 @@ function styleImages(s){
   if(s.image) return [s.image];
   return [];
 }
+// Supports plants saved before multi-photo galleries existed (single p.image string).
+function plantImages(p){
+  if(p.images && p.images.length) return p.images;
+  if(p.image) return [p.image];
+  return [];
+}
 
 function showPage(name){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
@@ -117,9 +123,11 @@ function renderScStyles(){
 // Renders the hero as a horizontally scrollable, scroll-snapped track so
 // visitors can swipe between photos with a native touch gesture instead of
 // only tapping thumbnails.
-function renderScStyleGallery(images,icon){
-  const hero=document.getElementById("scStyleDetailHero");
-  const thumbs=document.getElementById("scStyleDetailThumbs");
+// Generic swipeable, scroll-snapped photo carousel shared by the garden
+// style detail view and the plant photo lightbox.
+function renderScGallery(images,icon,heroId,thumbsId){
+  const hero=document.getElementById(heroId);
+  const thumbs=document.getElementById(thumbsId);
   if(!images.length){
     hero.innerHTML=`<div class="style-detail-hero-slide style-detail-hero-empty">${icon}</div>`;
     thumbs.innerHTML="";
@@ -150,8 +158,9 @@ function scLinkedPlantsHtml(plantIds){
   return plantIds.map(id=>{
     const p=plantById.get(id);
     if(!p) return "";
+    const cover=plantImages(p)[0];
     return `<div class="linked-plant-tile" onclick="openScPlantLightbox('${p.id}')">
-      <div class="linked-plant-thumb">${p.image?`<img src="${esc(p.image)}" alt="${esc(p.thaiName)}" loading="lazy"/>`:"🌱"}</div>
+      <div class="linked-plant-thumb">${cover?`<img src="${esc(cover)}" alt="${esc(p.thaiName)}" loading="lazy"/>`:"🌱"}</div>
       <div class="linked-plant-name">${esc(p.thaiName)}</div>
     </div>`;
   }).join("");
@@ -161,7 +170,7 @@ function openScStyleDetail(id){
   if(!s) return;
   document.getElementById("scStyleDetailCategory").textContent=s.category;
   document.getElementById("scStyleDetailName").textContent=s.name;
-  renderScStyleGallery(styleImages(s),s.icon);
+  renderScGallery(styleImages(s),s.icon,"scStyleDetailHero","scStyleDetailThumbs");
   document.getElementById("scStyleDetailDescription").textContent=s.desc;
   document.getElementById("scStyleDetailBudget").textContent=s.budget;
   document.getElementById("scStyleDetailMaintenance").textContent=s.maintenance;
@@ -192,7 +201,7 @@ function renderScPlantGallery(){
   const q=(document.getElementById("scPlantSearch").value||"").toLowerCase();
   const category=document.getElementById("scPlantCategoryFilter").value||"";
   const bestSellerOnly=document.getElementById("scPlantBestSellerFilter").checked;
-  const rows=allPlants.filter(p=>!!p.image
+  const rows=allPlants.filter(p=>!!plantImages(p).length
     &&[p.thaiName,p.englishName,p.scientificName].join(" ").toLowerCase().includes(q)
     &&(!category||p.category===category)
     &&(!bestSellerOnly||p.bestSeller))
@@ -203,7 +212,7 @@ function renderScPlantGallery(){
     : "ยังไม่มีรูปต้นไม้ในผลงาน";
   document.getElementById("scPlantList").innerHTML=visibleRows.length?visibleRows.map(p=>`
     <article class="showcase-plant-tile" onclick="openScPlantLightbox('${p.id}')">
-      <div class="showcase-plant-photo"><img src="${esc(p.image)}" alt="${esc(p.thaiName)}" loading="lazy" />${p.bestSeller?'<span class="best-seller-badge">🔥 ขายดี</span>':""}</div>
+      <div class="showcase-plant-photo"><img src="${esc(plantImages(p)[0])}" alt="${esc(p.thaiName)}" loading="lazy" />${p.bestSeller?'<span class="best-seller-badge">🔥 ขายดี</span>':""}</div>
       <div class="showcase-plant-info">
         <div class="showcase-plant-caption">${esc(p.thaiName)}</div>
         ${p.salePrice?`<div class="showcase-plant-price-tag">🏷️ ${money(p.salePrice)}${p.unit?` / ${esc(p.unit)}`:""}</div>`:""}
@@ -218,11 +227,37 @@ function renderScPlantGallery(){
     loadMoreBtn.style.display="none";
   }
 }
+// Swipeable, scroll-snapped photo carousel for the plant lightbox — a
+// separate implementation from renderScGallery() since photos here show
+// full-frame (object-fit:contain) rather than cropped as a cover banner.
+function renderScPlantLightboxGallery(images){
+  const carousel=document.getElementById("scPlantLightboxCarousel");
+  const thumbs=document.getElementById("scPlantLightboxThumbs");
+  carousel.innerHTML=images.map(src=>`<div class="showcase-lightbox-slide"><img src="${esc(src)}" class="showcase-lightbox-img" alt="" loading="lazy" /></div>`).join("");
+  thumbs.innerHTML=images.length>1?images.map((src,i)=>`<img src="${esc(src)}" data-idx="${i}" alt="" class="${i===0?"active":""}" />`).join(""):"";
+  const slides=carousel.querySelectorAll(".showcase-lightbox-slide");
+  const thumbEls=thumbs.querySelectorAll("img");
+  thumbEls.forEach(el=>el.addEventListener("click",()=>{
+    slides[Number(el.dataset.idx)].scrollIntoView({behavior:"smooth",inline:"start",block:"nearest"});
+  }));
+  let ticking=false;
+  carousel.onscroll=()=>{
+    if(ticking) return;
+    ticking=true;
+    requestAnimationFrame(()=>{
+      const idx=Math.round(carousel.scrollLeft/carousel.clientWidth);
+      thumbEls.forEach((el,i)=>el.classList.toggle("active",i===idx));
+      ticking=false;
+    });
+  };
+  carousel.scrollLeft=0;
+}
 function openScPlantLightbox(id){
   const p=plantById.get(id);
-  if(!p||!p.image) return;
+  const images=p?plantImages(p):[];
+  if(!p||!images.length) return;
   document.getElementById("scPlantLightboxName").textContent=p.thaiName+(p.englishName?` · ${p.englishName}`:"");
-  document.getElementById("scPlantLightboxImage").src=p.image;
+  renderScPlantLightboxGallery(images);
   const priceTag=document.getElementById("scPlantLightboxPriceTag");
   if(p.salePrice){
     priceTag.textContent=`🏷️ ${money(p.salePrice)}${p.unit?` / ${p.unit}`:""}`;
@@ -232,6 +267,7 @@ function openScPlantLightbox(id){
   }
   document.getElementById("scPlantLightboxBestSeller").style.display=p.bestSeller?"inline-flex":"none";
   document.getElementById("scPlantLightbox").showModal();
+  requestAnimationFrame(()=>{ document.getElementById("scPlantLightboxCarousel").scrollLeft=0; });
 }
 document.getElementById("scPlantSearch").addEventListener("input",resetScPlantPaging);
 document.getElementById("scPlantCategoryFilter").addEventListener("change",resetScPlantPaging);
