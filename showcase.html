@@ -9,29 +9,63 @@
   <link rel="stylesheet" href="showcase.css" />
 </head>
 <body>
-  <header class="topbar">
+  <header class="topbar sc-header-hideable">
     <div>
       <p class="eyebrow">LANDSCAPE SHOWCASE</p>
       <h1>ผลงานและแบบสวนของเรา</h1>
     </div>
   </header>
 
-  <nav class="tabs" aria-label="เมนูหลัก">
+  <nav class="tabs sc-header-hideable" aria-label="เมนูหลัก">
     <button class="tab active" data-page="showcaseHome">หน้าแรก</button>
     <button class="tab" data-page="showcaseStyles">แบบสวน</button>
     <button class="tab" data-page="showcasePlants">ต้นไม้</button>
   </nav>
 
-  <section id="showcaseHomePage" class="page active sc-split">
-    <button type="button" class="sc-split-half sc-split-left" onclick="showPage('showcaseStyles')">
-      <span class="sc-home-icon">🏡</span>
-      <h3>ตัวเลือกจัดสวน</h3>
-    </button>
-    <button type="button" class="sc-split-half sc-split-right" onclick="showPage('showcasePlants')">
-      <span class="sc-home-icon">🌱</span>
-      <h3>แคตตาล็อกต้นไม้</h3>
-    </button>
-    <img class="sc-split-badge" src="assets/rinlada-logo.webp" alt="รินลดา พันธุ์ไม้" />
+  <section id="showcaseHomePage" class="page active sc-hero">
+    <div class="sc-hero-bg">
+      <div class="sc-hero-bg-left"></div>
+      <div class="sc-hero-bg-right"></div>
+    </div>
+
+    <div class="sc-hero-topbar">
+      <button type="button" class="sc-icon-btn" id="scMenuBtn" aria-label="เมนู">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 6h18M3 12h18M3 18h18" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <button type="button" class="sc-icon-btn" id="scBellBtn" aria-label="แจ้งเตือน">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 22a2.2 2.2 0 0 0 2.2-2.2H9.8A2.2 2.2 0 0 0 12 22Zm7-6.2V11a7 7 0 0 0-5.6-6.86V3a1.4 1.4 0 1 0-2.8 0v1.14A7 7 0 0 0 5 11v4.8L3 17.8V19h18v-1.2l-2-2Z" fill="#fff"/></svg>
+      </button>
+    </div>
+    <div id="scMenuDropdown" class="sc-menu-dropdown">
+      <button type="button" onclick="showPage('showcaseHome');closeScMenu()">หน้าแรก</button>
+      <button type="button" onclick="showPage('showcaseStyles');closeScMenu()">แบบสวน</button>
+      <button type="button" onclick="showPage('showcasePlants');closeScMenu()">ต้นไม้</button>
+    </div>
+
+    <div class="sc-hero-content">
+      <img class="sc-hero-logo" src="assets/rinlada-logo.webp" alt="รินลดา พันธุ์ไม้" />
+      <h1 class="sc-hero-title">รินลดา พันธุ์ไม้</h1>
+      <p class="sc-hero-sub">ยินดีต้อนรับสู่ สวนและต้นไม้ของคุณ</p>
+      <p class="sc-hero-divider"><span></span>🌿<span></span></p>
+      <p class="sc-hero-tagline">สวนสวย ต้นไม้หลากหลาย เติมเต็มทุกพื้นที่</p>
+
+      <div class="sc-hero-buttons">
+        <button type="button" class="sc-glass-btn" onclick="showPage('showcaseStyles')">
+          <span class="sc-glass-icon">🏡</span>
+          <span>สวนสวย</span>
+        </button>
+        <button type="button" class="sc-glass-btn" onclick="showPage('showcasePlants')">
+          <span class="sc-glass-icon">🌿</span>
+          <span>ต้นไม้หลากหลายชนิด</span>
+        </button>
+      </div>
+
+      <button type="button" class="sc-cta-btn" onclick="showPage('showcaseStyles')">
+        <span class="sc-cta-icon">🌱</span>
+        เริ่มออกแบบสวนของคุณ
+        <span class="sc-cta-arrow">›</span>
+      </button>
+    </div>
   </section>
 
   <main class="container">

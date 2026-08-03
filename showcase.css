@@ -1,20 +1,45 @@
-.page.sc-split{display:flex;min-height:75vh;position:relative}
-.sc-split-half{flex:1;width:100%;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;text-align:center;padding:24px}
-.sc-split-badge{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:150px;height:150px;border-radius:50%;object-fit:cover;background:#fbf7ec;border:5px solid #fbf7ec;box-shadow:0 10px 30px rgba(0,0,0,.35);z-index:2;pointer-events:none}
-.sc-split-left{background:linear-gradient(160deg,#1f6b46,#173d2b)}
-.sc-split-right{background:linear-gradient(160deg,#2f7a55,#10291d)}
-.sc-split-left,.sc-split-right{background-size:cover;background-position:center}
-.sc-split-half h3{margin:0;font-size:clamp(20px,3vw,28px);text-shadow:0 2px 10px rgba(0,0,0,.5)}
-.sc-home-icon{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:30px;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+/* Home hero: hide the shared header/tabs so the photo goes edge-to-edge */
+body.sc-home-active .sc-header-hideable{display:none}
+
+.page.sc-hero{display:flex}
+.sc-hero{position:relative;min-height:100vh;overflow:hidden;flex-direction:column;color:#fff}
+.sc-hero-bg{position:absolute;inset:0;z-index:0;background:linear-gradient(160deg,#173d2b,#0c2117)}
+.sc-hero-bg-left,.sc-hero-bg-right{position:absolute;inset:0;background-size:cover;background-position:center;background-color:transparent}
+.sc-hero-bg-left{background-image:linear-gradient(160deg,#1f6b46,#173d2b);-webkit-mask-image:linear-gradient(to right,#000 0%,#000 45%,transparent 78%);mask-image:linear-gradient(to right,#000 0%,#000 45%,transparent 78%)}
+.sc-hero-bg-right{background-image:linear-gradient(160deg,#2f7a55,#10291d);-webkit-mask-image:linear-gradient(to left,#000 0%,#000 45%,transparent 78%);mask-image:linear-gradient(to left,#000 0%,#000 45%,transparent 78%)}
+.sc-hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,20,13,.35) 0%,rgba(6,20,13,.35) 45%,rgba(6,20,13,.85) 100%)}
+
+.sc-hero-topbar{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:18px 18px 0}
+.sc-icon-btn{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.14);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.sc-menu-dropdown{position:absolute;top:66px;left:18px;z-index:4;background:rgba(15,35,24,.92);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:8px;display:none;flex-direction:column;min-width:160px;box-shadow:0 20px 40px rgba(0,0,0,.4)}
+.sc-menu-dropdown.open{display:flex}
+.sc-menu-dropdown button{border:0;background:transparent;color:#fff;text-align:left;padding:10px 12px;border-radius:10px;font-weight:700;cursor:pointer}
+.sc-menu-dropdown button:hover{background:rgba(255,255,255,.1)}
+
+.sc-hero-content{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 20px 40px;gap:6px}
+.sc-hero-logo{width:110px;height:110px;border-radius:50%;object-fit:cover;background:#fbf7ec;border:4px solid #fbf7ec;box-shadow:0 10px 30px rgba(0,0,0,.4);margin-bottom:14px}
+.sc-hero-title{margin:0;font-size:clamp(32px,8vw,46px);font-weight:900;text-shadow:0 3px 14px rgba(0,0,0,.5)}
+.sc-hero-sub{margin:2px 0 0;font-size:clamp(15px,3.4vw,19px);font-weight:600;text-shadow:0 2px 8px rgba(0,0,0,.45)}
+.sc-hero-divider{display:flex;align-items:center;gap:10px;color:#cfe6d8;margin:10px 0;font-size:14px}
+.sc-hero-divider span{width:36px;height:1px;background:rgba(255,255,255,.4)}
+.sc-hero-tagline{margin:0 0 26px;font-size:clamp(13px,3vw,15px);color:#e7f2ea;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+
+.sc-hero-buttons{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:22px}
+.sc-glass-btn{display:flex;flex-direction:column;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.3);background:rgba(20,55,38,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:20px;padding:18px 22px;color:#fff;font-weight:800;cursor:pointer;min-width:150px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.sc-glass-icon{font-size:26px}
+
+.sc-cta-btn{display:inline-flex;align-items:center;gap:10px;background:#fbf7ec;color:#173d2b;border:0;border-radius:999px;padding:16px 26px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 14px 30px rgba(0,0,0,.35)}
+.sc-cta-icon{font-size:18px}
+.sc-cta-arrow{font-size:20px;font-weight:900}
+
 .sc-back-link{border:0;background:transparent;color:var(--primary);font-weight:700;cursor:pointer;padding:0;margin-bottom:12px}
-@media(max-width:700px){
-  .sc-split-half{justify-content:flex-start;padding-top:22vh}
-  .sc-split-badge{width:100px;height:100px;border-width:4px}
-}
+
 @media(max-width:420px){
-  .sc-split-half{padding-top:18vh;padding-left:14px;padding-right:14px;padding-bottom:14px;gap:10px}
-  .sc-home-icon{width:48px;height:48px;font-size:22px}
+  .sc-hero-logo{width:88px;height:88px}
+  .sc-glass-btn{padding:14px 16px;min-width:130px;font-size:13px}
+  .sc-glass-icon{font-size:22px}
 }
+
 .showcase-plant-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
 .showcase-plant-tile{position:relative;aspect-ratio:1/1;border-radius:16px;overflow:hidden;cursor:pointer;background:linear-gradient(135deg,#e7f0e8,#afd0b6);box-shadow:var(--shadow)}
 .showcase-plant-tile img{width:100%;height:100%;object-fit:cover;display:block}

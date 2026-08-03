@@ -27,8 +27,21 @@ function showPage(name){
   document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.page===name));
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById(`${name}Page`).classList.add("active");
+  document.body.classList.toggle("sc-home-active",name==="showcaseHome");
+  window.scrollTo(0,0);
 }
 document.querySelectorAll(".close-dialog").forEach(b=>b.addEventListener("click",()=>b.closest("dialog").close()));
+document.body.classList.add("sc-home-active");
+
+function closeScMenu(){ document.getElementById("scMenuDropdown").classList.remove("open"); }
+document.getElementById("scMenuBtn").addEventListener("click",e=>{
+  e.stopPropagation();
+  document.getElementById("scMenuDropdown").classList.toggle("open");
+});
+document.addEventListener("click",e=>{
+  if(!e.target.closest("#scMenuDropdown")&&!e.target.closest("#scMenuBtn")) closeScMenu();
+});
+document.getElementById("scBellBtn").addEventListener("click",()=>alert("ยังไม่มีการแจ้งเตือนใหม่"));
 
 // ---- Plant data (all 300, merged with back-office overrides) ----
 // Loaded once up front so garden-style detail pages can show linked real
@@ -54,17 +67,18 @@ async function loadAllPlants(){
   }
 }
 
-// Home page split panels use a real photo from the catalog as backdrop when
-// the back office has uploaded one; otherwise the plain CSS gradient shows.
+// Home hero backdrop blends a real garden-style photo (left) into a real
+// plant photo (right) when the back office has uploaded them; each side
+// fades into the shared dark-green base so there's no hard seam. Falls
+// back to the plain gradient base when nothing has been photographed yet.
 function applySplitBackgrounds(){
   const styleWithPhoto=mergedStyles().find(s=>styleImages(s).length);
   const plantWithPhoto=allPlants.find(p=>p.image);
-  const overlay="linear-gradient(180deg, rgba(10,30,20,.25), rgba(8,20,14,.8))";
   if(styleWithPhoto){
-    document.querySelector(".sc-split-left").style.backgroundImage=`${overlay}, url('${styleImages(styleWithPhoto)[0]}')`;
+    document.querySelector(".sc-hero-bg-left").style.backgroundImage=`url('${styleImages(styleWithPhoto)[0]}')`;
   }
   if(plantWithPhoto){
-    document.querySelector(".sc-split-right").style.backgroundImage=`${overlay}, url('${plantWithPhoto.image}')`;
+    document.querySelector(".sc-hero-bg-right").style.backgroundImage=`url('${plantWithPhoto.image}')`;
   }
 }
 
