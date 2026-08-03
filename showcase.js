@@ -24,16 +24,12 @@ function styleImages(s){
   return [];
 }
 
-document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>showPage(btn.dataset.page)));
 function showPage(name){
-  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.page===name));
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById(`${name}Page`).classList.add("active");
-  document.body.classList.toggle("sc-home-active",name==="showcaseHome");
   window.scrollTo(0,0);
 }
 document.querySelectorAll(".close-dialog").forEach(b=>b.addEventListener("click",()=>b.closest("dialog").close()));
-document.body.classList.add("sc-home-active");
 
 function closeScMenu(){ document.getElementById("scMenuDropdown").classList.remove("open"); }
 document.getElementById("scMenuBtn").addEventListener("click",e=>{
