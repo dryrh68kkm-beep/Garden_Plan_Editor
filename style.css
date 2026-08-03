@@ -27,3 +27,19 @@ button,input,select,textarea{font:inherit}.topbar{background:#10291d;color:#fff;
 @media(max-width:800px){.stats,.boq-summary{grid-template-columns:repeat(2,1fr)}.card-grid,.style-grid{grid-template-columns:1fr 1fr}.hero{align-items:flex-start;flex-direction:column}.topbar{align-items:flex-start}.filters{align-items:stretch;flex-direction:column}.filters .input{max-width:none}}
 @media(max-width:560px){.stats,.card-grid,.style-grid,.boq-summary,.two-col{grid-template-columns:1fr}.topbar{padding:18px 16px}.topbar .btn{font-size:12px}.container{padding-top:16px}.page-head{align-items:flex-start}.page-head .btn{white-space:nowrap}.hero{padding:22px}.panel{padding:15px}}
 @media print{.topbar,.tabs,.page-head .btn,.boq-toolbar button,.actions,#addBoqBtn{display:none!important}.page{display:none!important}#boqPage{display:block!important}.container{max-width:none;padding:0}.panel{border:0;box-shadow:none}}
+
+.style-card .category-label{font-size:11px;font-weight:800;letter-spacing:.12em;color:#6b7e70;text-transform:uppercase}
+.style-card .style-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.style-card .style-actions .btn{flex:1}
+.style-detail-modal{width:min(780px,calc(100% - 24px))}
+.style-detail-wrap{padding:22px}
+.style-detail-hero{min-height:180px;border-radius:18px;margin:16px 0;background:linear-gradient(135deg,#dfe9dc,#9ab799);display:flex;align-items:center;justify-content:center;font-size:78px}
+.style-detail-description{font-size:17px;line-height:1.7;color:var(--muted)}
+.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:18px 0}
+.detail-box{background:#f3f7f4;padding:15px;border-radius:14px}
+.detail-box span{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}
+.detail-box strong{font-size:16px}
+.detail-section{margin-top:18px}
+.detail-section h4{margin:0 0 10px}
+.prompt-box{background:#10291d;color:#e6f2e9;border-radius:14px;padding:15px;line-height:1.65;white-space:pre-wrap;font-size:14px}
+@media(max-width:560px){.detail-grid{grid-template-columns:1fr}.style-detail-hero{min-height:130px;font-size:58px}}

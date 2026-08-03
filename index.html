@@ -86,8 +86,28 @@
 
     <section id="stylesPage" class="page">
       <div class="page-head">
-        <div><p class="eyebrow">GARDEN STYLES</p><h2>แบบสวนสำเร็จรูป</h2></div>
+        <div>
+          <p class="eyebrow">GARDEN STYLES</p>
+          <h2>แบบสวนสำเร็จรูป 50 แบบ</h2>
+        </div>
       </div>
+      <div class="filters">
+        <input id="styleSearch" class="input" type="search" placeholder="ค้นหาชื่อแบบสวน หมวด หรือคำอธิบาย" />
+        <select id="styleCategoryFilter" class="input">
+          <option value="">ทุกหมวด</option>
+          <option>Modern</option>
+          <option>Tropical</option>
+          <option>Japanese</option>
+          <option>English</option>
+          <option>Mediterranean</option>
+          <option>Desert</option>
+          <option>Natural</option>
+          <option>Water</option>
+          <option>Commercial</option>
+          <option>Small Space</option>
+        </select>
+      </div>
+      <div id="styleCount" class="meta"></div>
       <div id="styleList" class="style-grid"></div>
     </section>
 
@@ -179,6 +199,51 @@
       </div>
       <div class="modal-actions"><button type="button" class="btn btn-ghost close-dialog">ยกเลิก</button><button class="btn btn-primary" value="default">เพิ่มรายการ</button></div>
     </form>
+  </dialog>
+
+
+  <dialog id="styleDetailDialog" class="modal style-detail-modal">
+    <div class="style-detail-wrap">
+      <div class="modal-head">
+        <div>
+          <p id="styleDetailCategory" class="eyebrow"></p>
+          <h3 id="styleDetailName"></h3>
+        </div>
+        <button type="button" class="icon-btn close-dialog">×</button>
+      </div>
+
+      <div id="styleDetailHero" class="style-detail-hero"></div>
+      <p id="styleDetailDescription" class="style-detail-description"></p>
+
+      <div class="detail-grid">
+        <div class="detail-box"><span>งบประมาณโดยประมาณ</span><strong id="styleDetailBudget"></strong></div>
+        <div class="detail-box"><span>การดูแล</span><strong id="styleDetailMaintenance"></strong></div>
+        <div class="detail-box"><span>ระดับความยาก</span><strong id="styleDetailDifficulty"></strong></div>
+        <div class="detail-box"><span>เหมาะกับ</span><strong id="styleDetailSuitable"></strong></div>
+      </div>
+
+      <div class="detail-section">
+        <h4>พรรณไม้แนะนำ</h4>
+        <div id="styleDetailPlants" class="chips"></div>
+      </div>
+      <div class="detail-section">
+        <h4>วัสดุแนะนำ</h4>
+        <div id="styleDetailMaterials" class="chips"></div>
+      </div>
+      <div class="detail-section">
+        <h4>แนวทางสีและบรรยากาศ</h4>
+        <p id="styleDetailMood" class="meta"></p>
+      </div>
+      <div class="detail-section">
+        <h4>Prompt สำหรับสร้างภาพ AI</h4>
+        <div id="styleDetailPrompt" class="prompt-box"></div>
+      </div>
+
+      <div class="modal-actions">
+        <button id="copyStylePromptBtn" type="button" class="btn btn-secondary">คัดลอก Prompt</button>
+        <button id="useStyleBtn" type="button" class="btn btn-primary">ใช้แบบนี้สร้างโครงการ</button>
+      </div>
+    </div>
   </dialog>
 
   <script src="app.js"></script>
