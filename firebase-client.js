@@ -16,8 +16,27 @@ const FB_SHARED_PASSWORD = "sSZCkeNxcoGz4kIWzNHl";
 let fbIdToken = null;
 let fbTokenExpiry = 0;
 
+// Plain fetch() has no built-in timeout — on a slow/flaky connection (not
+// fully offline, just stalling) it can hang for a very long time before the
+// browser itself gives up, leaving a "saving..." button stuck far longer
+// than the UI implies. Force every request to fail fast instead so the
+// existing offline fallback actually kicks in promptly.
+const FB_TIMEOUT_MS = 8000;
+async function fbFetch(url, options={}){
+  const controller = new AbortController();
+  const timer = setTimeout(()=>controller.abort(), FB_TIMEOUT_MS);
+  try{
+    return await fetch(url, {...options, signal: controller.signal});
+  }catch(err){
+    if(err.name==="AbortError") throw new Error("หมดเวลาเชื่อมต่อ กรุณาลองใหม่หรือตรวจสอบสัญญาณอินเทอร์เน็ต");
+    throw err;
+  }finally{
+    clearTimeout(timer);
+  }
+}
+
 async function fbAutoLogin(){
-  const res = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FB_CONFIG.apiKey}`,{
+  const res = await fbFetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FB_CONFIG.apiKey}`,{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({email:FB_SHARED_EMAIL,password:FB_SHARED_PASSWORD,returnSecureToken:true})
@@ -79,7 +98,7 @@ async function fbList(col){
   let out=[], pageToken="";
   do{
     const url=`${FB_BASE}/${col}?pageSize=300`+(pageToken?`&pageToken=${pageToken}`:"");
-    const res=await fetch(url,{headers:await fbHeaders()});
+    const res=await fbFetch(url,{headers:await fbHeaders()});
     const data=await res.json();
     if(data.error) throw new Error(data.error.message);
     (data.documents||[]).forEach(doc=>out.push(fbDocToObj(doc)));
@@ -88,7 +107,7 @@ async function fbList(col){
   return out;
 }
 async function fbGet(col,id){
-  const res=await fetch(`${FB_BASE}/${col}/${encodeURIComponent(id)}`,{headers:await fbHeaders()});
+  const res=await fbFetch(`${FB_BASE}/${col}/${encodeURIComponent(id)}`,{headers:await fbHeaders()});
   if(res.status===404) return null;
   const data=await res.json();
   if(data.error) throw new Error(data.error.message);
@@ -100,7 +119,7 @@ async function fbGet(col,id){
 async function fbSet(col,id,obj){
   const fields={};
   for(const k in obj) fields[k]=fbToValue(obj[k]);
-  const res=await fetch(`${FB_BASE}/${col}/${encodeURIComponent(id)}`,{
+  const res=await fbFetch(`${FB_BASE}/${col}/${encodeURIComponent(id)}`,{
     method:"PATCH",headers:await fbHeaders(),body:JSON.stringify({fields})
   });
   const data=await res.json();
@@ -108,6 +127,6 @@ async function fbSet(col,id,obj){
   return data;
 }
 async function fbDelete(col,id){
-  const res=await fetch(`${FB_BASE}/${col}/${encodeURIComponent(id)}`,{method:"DELETE",headers:await fbHeaders()});
+  const res=await fbFetch(`${FB_BASE}/${col}/${encodeURIComponent(id)}`,{method:"DELETE",headers:await fbHeaders()});
   return res.ok;
 }
