@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#163a2a" />
   <title>Garden Plan Editor</title>
-  <link rel="stylesheet" href="style.css?v=202608031351" />
+  <link rel="stylesheet" href="style.css?v=202608031409" />
 </head>
 <body>
   <header class="topbar">
@@ -25,75 +25,12 @@
   </header>
 
   <nav class="tabs" aria-label="เมนูหลัก">
-    <button class="tab active" data-page="dashboard">หน้าหลัก</button>
-    <button class="tab" data-page="customers">ลูกค้า</button>
-    <button class="tab" data-page="projects">โครงการ</button>
-    <button class="tab" data-page="styles">แบบสวน</button>
+    <button class="tab active" data-page="styles">แบบสวน</button>
     <button class="tab" data-page="plants">ฐานข้อมูลต้นไม้</button>
-    <button class="tab" data-page="boq">BOQ</button>
   </nav>
 
   <main class="container">
-    <section id="dashboardPage" class="page active">
-      <div class="hero">
-        <div>
-          <span class="badge">เวอร์ชันเริ่มต้น</span>
-          <h2>จัดการงานสวนตั้งแต่ลูกค้าจนถึงใบเสนอราคา</h2>
-          <p>ข้อมูลทั้งหมดจะบันทึกไว้ในเครื่องด้วย Local Storage</p>
-        </div>
-        <button id="quickProjectBtn" class="btn btn-primary">+ สร้างโครงการใหม่</button>
-      </div>
-
-      <div class="stats">
-        <article class="stat-card"><span>ลูกค้าทั้งหมด</span><strong id="statCustomers">0</strong></article>
-        <article class="stat-card"><span>โครงการทั้งหมด</span><strong id="statProjects">0</strong></article>
-        <article class="stat-card"><span>งานกำลังดำเนินการ</span><strong id="statActive">0</strong></article>
-        <article class="stat-card"><span>มูลค่า BOQ</span><strong id="statBoq">฿0</strong></article>
-      </div>
-
-      <div class="panel">
-        <div class="panel-head">
-          <div>
-            <p class="eyebrow">ล่าสุด</p>
-            <h3>โครงการล่าสุด</h3>
-          </div>
-        </div>
-        <div id="recentProjects"></div>
-      </div>
-    </section>
-
-    <section id="customersPage" class="page">
-      <div class="page-head">
-        <div><p class="eyebrow">CUSTOMERS</p><h2>จัดการลูกค้า</h2></div>
-        <button id="addCustomerBtn" class="btn btn-primary">+ เพิ่มลูกค้า</button>
-      </div>
-      <div class="panel">
-        <input id="customerSearch" class="input" type="search" placeholder="ค้นหาชื่อ เบอร์โทร หรือ LINE" />
-        <div id="customerList" class="card-grid"></div>
-      </div>
-    </section>
-
-    <section id="projectsPage" class="page">
-      <div class="page-head">
-        <div><p class="eyebrow">PROJECTS</p><h2>โครงการจัดสวน</h2></div>
-        <button id="addProjectBtn" class="btn btn-primary">+ สร้างโครงการ</button>
-      </div>
-      <div class="filters">
-        <input id="projectSearch" class="input" type="search" placeholder="ค้นหาโครงการหรือลูกค้า" />
-        <select id="projectStatusFilter" class="input">
-          <option value="">ทุกสถานะ</option>
-          <option>รอประเมิน</option>
-          <option>กำลังออกแบบ</option>
-          <option>รอลูกค้าอนุมัติ</option>
-          <option>กำลังดำเนินงาน</option>
-          <option>เสร็จสิ้น</option>
-          <option>ยกเลิก</option>
-        </select>
-      </div>
-      <div id="projectList" class="card-grid"></div>
-    </section>
-
-    <section id="stylesPage" class="page">
+    <section id="stylesPage" class="page active">
       <div class="page-head">
         <div>
           <p class="eyebrow">GARDEN STYLES</p>
@@ -152,97 +89,7 @@
         <button id="loadMorePlantsBtn" class="btn btn-secondary" style="display:none">โหลดเพิ่ม</button>
       </div>
     </section>
-
-    <section id="boqPage" class="page">
-      <div class="page-head">
-        <div><p class="eyebrow">BOQ</p><h2>ประมาณราคาและใบเสนอราคา</h2></div>
-        <button id="addBoqBtn" class="btn btn-primary">+ เพิ่มรายการ</button>
-      </div>
-
-      <div class="panel">
-        <div class="boq-toolbar">
-          <select id="boqProjectSelect" class="input">
-            <option value="">เลือกโครงการ</option>
-          </select>
-          <button id="printBoqBtn" class="btn btn-secondary">พิมพ์ / บันทึก PDF</button>
-        </div>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>หมวด</th><th>รายการ</th><th>จำนวน</th><th>หน่วย</th>
-                <th>ต้นทุน/หน่วย</th><th>ราคาขาย/หน่วย</th><th>รวมขาย</th><th></th>
-              </tr>
-            </thead>
-            <tbody id="boqTableBody"></tbody>
-          </table>
-        </div>
-
-        <div class="boq-summary">
-          <div><span>ต้นทุนรวม</span><strong id="boqCostTotal">฿0</strong></div>
-          <div><span>ราคาขายรวม</span><strong id="boqSaleTotal">฿0</strong></div>
-          <div><span>กำไร</span><strong id="boqProfit">฿0</strong></div>
-          <div><span>กำไร (%)</span><strong id="boqMargin">0%</strong></div>
-        </div>
-      </div>
-    </section>
   </main>
-
-  <dialog id="customerDialog" class="modal">
-    <form id="customerForm" method="dialog">
-      <div class="modal-head"><h3 id="customerDialogTitle">เพิ่มลูกค้า</h3><button type="button" class="icon-btn close-dialog">×</button></div>
-      <input type="hidden" id="customerId" />
-      <label>ชื่อลูกค้า<input id="customerName" class="input" required /></label>
-      <label>เบอร์โทร<input id="customerPhone" class="input" type="tel" /></label>
-      <label>LINE / ช่องทางติดต่อ<input id="customerLine" class="input" /></label>
-      <label>ที่อยู่<textarea id="customerAddress" class="input" rows="3"></textarea></label>
-      <label>หมายเหตุ<textarea id="customerNote" class="input" rows="3"></textarea></label>
-      <div class="modal-actions"><button type="button" class="btn btn-ghost close-dialog">ยกเลิก</button><button class="btn btn-primary" value="default">บันทึก</button></div>
-    </form>
-  </dialog>
-
-  <dialog id="projectDialog" class="modal">
-    <form id="projectForm" method="dialog">
-      <div class="modal-head"><h3 id="projectDialogTitle">สร้างโครงการ</h3><button type="button" class="icon-btn close-dialog">×</button></div>
-      <input type="hidden" id="projectId" />
-      <label>ชื่อโครงการ<input id="projectName" class="input" required /></label>
-      <label>ลูกค้า<select id="projectCustomer" class="input"></select></label>
-      <label>สถานที่<input id="projectLocation" class="input" /></label>
-      <div class="two-col">
-        <label>ขนาดพื้นที่ (ตร.ม.)<input id="projectArea" class="input" type="number" min="0" /></label>
-        <label>งบประมาณ<input id="projectBudget" class="input" type="number" min="0" /></label>
-      </div>
-      <label>รูปแบบสวน<select id="projectStyle" class="input"></select></label>
-      <div class="two-col">
-        <label>สถานะ<select id="projectStatus" class="input">
-          <option>รอประเมิน</option><option>กำลังออกแบบ</option><option>รอลูกค้าอนุมัติ</option>
-          <option>กำลังดำเนินงาน</option><option>เสร็จสิ้น</option><option>ยกเลิก</option>
-        </select></label>
-        <label>วันที่เริ่มงาน<input id="projectStartDate" class="input" type="date" /></label>
-      </div>
-      <label>หมายเหตุ<textarea id="projectNote" class="input" rows="3"></textarea></label>
-      <div class="modal-actions"><button type="button" class="btn btn-ghost close-dialog">ยกเลิก</button><button class="btn btn-primary" value="default">บันทึก</button></div>
-    </form>
-  </dialog>
-
-  <dialog id="boqDialog" class="modal">
-    <form id="boqForm" method="dialog">
-      <div class="modal-head"><h3>เพิ่มรายการ BOQ</h3><button type="button" class="icon-btn close-dialog">×</button></div>
-      <label>หมวด<select id="boqCategory" class="input"><option>ต้นไม้</option><option>วัสดุ</option><option>ค่าแรง</option><option>ระบบน้ำ</option><option>ระบบไฟ</option><option>อื่นๆ</option></select></label>
-      <label>รายการ<input id="boqItem" class="input" required /></label>
-      <div class="two-col">
-        <label>จำนวน<input id="boqQty" class="input" type="number" min="0" step="0.01" value="1" required /></label>
-        <label>หน่วย<input id="boqUnit" class="input" value="รายการ" required /></label>
-      </div>
-      <div class="two-col">
-        <label>ต้นทุน/หน่วย<input id="boqCost" class="input" type="number" min="0" step="0.01" value="0" /></label>
-        <label>ราคาขาย/หน่วย<input id="boqPrice" class="input" type="number" min="0" step="0.01" value="0" /></label>
-      </div>
-      <div class="modal-actions"><button type="button" class="btn btn-ghost close-dialog">ยกเลิก</button><button class="btn btn-primary" value="default">เพิ่มรายการ</button></div>
-    </form>
-  </dialog>
-
 
   <dialog id="styleDetailDialog" class="modal style-detail-modal">
     <div class="style-detail-wrap">
@@ -288,8 +135,7 @@
 
       <div class="modal-actions">
         <button id="editStyleBtn" type="button" class="btn btn-secondary">แก้ไขรูป / ข้อมูล</button>
-        <button id="copyStylePromptBtn" type="button" class="btn btn-secondary">คัดลอก Prompt</button>
-        <button id="useStyleBtn" type="button" class="btn btn-primary">ใช้แบบนี้สร้างโครงการ</button>
+        <button id="copyStylePromptBtn" type="button" class="btn btn-primary">คัดลอก Prompt</button>
       </div>
     </div>
   </dialog>
@@ -351,8 +197,7 @@
         <div id="plantDetailStyles" class="chips"></div>
       </div>
       <div class="modal-actions">
-        <button id="editPlantBtn" type="button" class="btn btn-secondary">แก้ไขราคา / รูปภาพ</button>
-        <button id="addPlantToBoqBtn" type="button" class="btn btn-primary">เพิ่มเข้า BOQ</button>
+        <button id="editPlantBtn" type="button" class="btn btn-primary">แก้ไขราคา / รูปภาพ</button>
       </div>
     </div>
   </dialog>
@@ -433,8 +278,8 @@
     </form>
   </dialog>
 
-  <script src="data/garden-styles-data.js?v=202608031351"></script>
-  <script src="firebase-client.js?v=202608031351"></script>
-  <script src="app.js?v=202608031351"></script>
+  <script src="data/garden-styles-data.js?v=202608031409"></script>
+  <script src="firebase-client.js?v=202608031409"></script>
+  <script src="app.js?v=202608031409"></script>
 </body>
 </html>
