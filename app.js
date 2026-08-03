@@ -764,12 +764,24 @@ async function initFromFirestore(){
     renderAll();
     if(plants.length) renderPlants();
     setCloudStatus(true);
+    return true;
   }catch(error){
     console.error("Firestore initial sync failed, staying on local data:",error);
     setCloudStatus(false);
+    return false;
   }
 }
 initFromFirestore();
+
+document.getElementById("manualSyncBtn").addEventListener("click",async()=>{
+  const btn=document.getElementById("manualSyncBtn");
+  btn.disabled=true;
+  btn.textContent="🔄 กำลังซิงก์...";
+  const ok=await initFromFirestore();
+  btn.disabled=false;
+  btn.textContent="🔄 ซิงก์ข้อมูล";
+  if(!ok) alert("⚠️ ซิงก์ข้อมูลไม่สำเร็จ (เชื่อมต่อคลาวด์ไม่ได้)\n\nยังใช้ข้อมูลในเครื่องนี้อยู่ ลองใหม่อีกครั้งภายหลัง");
+});
 
 // REST-only Firestore has no realtime listener (that needs the SDK), so we
 // poll instead: refetch periodically and re-render if the page has been
