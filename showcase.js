@@ -1,6 +1,7 @@
 const STORAGE = {
   plantOverrides: "garden_plant_overrides_v1",
-  styleOverrides: "garden_style_overrides_v1"
+  styleOverrides: "garden_style_overrides_v1",
+  customPlants: "garden_custom_plants_v1"
 };
 
 function load(key, fallback){
@@ -15,6 +16,7 @@ function money(v){ return new Intl.NumberFormat("th-TH",{style:"currency",curren
 // arrives so the showcase reflects the back office from any device.
 let styleOverrides = load(STORAGE.styleOverrides, {});
 let plantOverrides = load(STORAGE.plantOverrides, {});
+let customPlants = load(STORAGE.customPlants, []);
 
 function mergedStyles(){
   return gardenStyles.map(s=>styleOverrides[s.id] ? {...s, ...styleOverrides[s.id]} : s);
@@ -50,7 +52,7 @@ let rawPlants=[];
 let allPlants=[];
 let plantById=new Map();
 function rebuildAllPlants(){
-  allPlants=rawPlants.map(p=>plantOverrides[p.id] ? {...p, ...plantOverrides[p.id]} : p);
+  allPlants=[...rawPlants, ...customPlants].map(p=>plantOverrides[p.id] ? {...p, ...plantOverrides[p.id]} : p);
   plantById=new Map(allPlants.map(p=>[p.id,p]));
 }
 function fillScPlantCategoryFilter(){
@@ -247,16 +249,19 @@ loadAllPlants();
 // unreachable — the showcase must still render either way.
 async function initFromFirestore(){
   try{
-    const [remoteStyleOverrides,remotePlantOverrides]=await Promise.all([
+    const [remoteStyleOverrides,remotePlantOverrides,remoteCustomPlants]=await Promise.all([
       fbList("styleOverrides"),
-      fbList("plantOverrides")
+      fbList("plantOverrides"),
+      fbList("customPlants")
     ]);
     styleOverrides={};
     remoteStyleOverrides.forEach(s=>{const {id,...rest}=s;styleOverrides[id]=rest;});
     plantOverrides={};
     remotePlantOverrides.forEach(p=>{const {id,...rest}=p;plantOverrides[id]=rest;});
+    customPlants=remoteCustomPlants;
     renderScStyles();
     rebuildAllPlants();
+    fillScPlantCategoryFilter();
     renderScPlantGallery();
   }catch(error){
     console.error("Showcase Firestore sync failed, staying on local data:",error);

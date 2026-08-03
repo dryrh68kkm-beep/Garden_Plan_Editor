@@ -3,7 +3,8 @@ const STORAGE = {
   projects: "garden_projects_v1",
   boq: "garden_boq_v1",
   plantOverrides: "garden_plant_overrides_v1",
-  styleOverrides: "garden_style_overrides_v1"
+  styleOverrides: "garden_style_overrides_v1",
+  customPlants: "garden_custom_plants_v1"
 };
 
 // gardenStyles is defined in data/garden-styles-data.js, loaded via a <script> tag before this file.
@@ -18,9 +19,32 @@ let plantOverrides = load(STORAGE.plantOverrides, {});
 let styleOverrides = load(STORAGE.styleOverrides, {});
 let selectedBoqProjectId = "";
 
+// The 300-item catalog from data/plants.json (read-only) plus plants the
+// admin adds themselves, stored fully in Firestore ("customPlants") since
+// there's no server to write back into the static JSON file.
+let basePlants = [];
+let customPlants = load(STORAGE.customPlants, []);
+function rebuildPlantsList(){
+  plants = [...basePlants, ...customPlants];
+  fillPlantFilters();
+}
+
 async function savePlantOverrides(id){
   localStorage.setItem(STORAGE.plantOverrides, JSON.stringify(plantOverrides));
   if(id) await cloudSave(()=>fbSet("plantOverrides",id,plantOverrides[id]),"ข้อมูลต้นไม้");
+}
+async function saveCustomPlant(plant){
+  localStorage.setItem(STORAGE.customPlants, JSON.stringify(customPlants));
+  await cloudSave(()=>fbSet("customPlants",plant.id,plant),"ต้นไม้ที่เพิ่มเอง");
+}
+async function deleteCustomPlant(id){
+  if(!confirm("ลบต้นไม้ที่เพิ่มเองรายการนี้หรือไม่?")) return;
+  customPlants=customPlants.filter(p=>p.id!==id);
+  rebuildPlantsList();
+  resetPlantPaging();
+  localStorage.setItem(STORAGE.customPlants, JSON.stringify(customPlants));
+  document.getElementById("plantAddDialog").close();
+  await cloudSave(()=>fbDelete("customPlants",id),"การลบต้นไม้ที่เพิ่มเอง");
 }
 function getPlant(id){
   const p=plants.find(x=>x.id===id);
@@ -92,8 +116,10 @@ document.getElementById("boqProjectSelect").onchange=e=>{selectedBoqProjectId=e.
 document.getElementById("resetAllBtn").onclick=()=>{
   if(confirm("ต้องการล้างข้อมูลลูกค้า โครงการ BOQ และรูปภาพที่แนบทั้งหมดหรือไม่?")){
     customers=[];projects=[];boqItems=[];selectedBoqProjectId="";
-    plantOverrides={};styleOverrides={};
+    plantOverrides={};styleOverrides={};customPlants=[];
     Object.values(STORAGE).forEach(k=>localStorage.removeItem(k));
+    rebuildPlantsList();
+    resetPlantPaging();
     renderAll();
   }
 };
@@ -432,12 +458,13 @@ async function loadPlantDatabase(){
     if(!response.ok) throw new Error(`HTTP ${response.status}`);
     const data=await response.json();
     if(!Array.isArray(data)) throw new Error("รูปแบบฐานข้อมูลไม่ถูกต้อง");
-    plants=data;
-    fillPlantFilters();
+    basePlants=data;
+    rebuildPlantsList();
     resetPlantPaging();
   }catch(error){
     console.error("Plant database error:",error);
-    plants=[];
+    basePlants=[];
+    rebuildPlantsList();
     if(counter) counter.textContent="โหลดฐานข้อมูลไม่สำเร็จ กรุณาตรวจสอบไฟล์ data/plants.json";
     document.getElementById("plantList").innerHTML='<div class="empty">ไม่สามารถโหลดฐานข้อมูลต้นไม้ได้</div>';
   }
@@ -470,7 +497,7 @@ function renderPlants(){
   document.getElementById("plantList").innerHTML=visibleRows.length?visibleRows.map(p=>`
     <article class="plant-card">
       <div class="plant-thumb">${p.image?`<img src="${esc(p.image)}" alt="${esc(p.thaiName)}" loading="lazy" />`:"🌱"}${p.bestSeller?'<span class="best-seller-badge">🔥 ขายดี</span>':""}</div>
-      <div class="plant-code">${esc(p.id)} · ${esc(p.category)}</div>
+      <div class="plant-code">${esc(p.id)} · ${esc(p.category)}${p.custom?' · <span class="chip">เพิ่มเอง</span>':""}</div>
       <h3>${esc(p.thaiName)}</h3>
       <div>${esc(p.englishName||"-")}</div>
       <div class="plant-scientific">${esc(p.scientificName||"")}</div>
@@ -600,6 +627,7 @@ function resizeImageToDataURL(file,targetDim=800,maxBytes=250*1024){
 function openPlantEdit(id){
   const p=getPlant(id);
   if(!p) return;
+  if(p.custom){ openCustomPlantEdit(id); return; }
   document.getElementById("plantEditId").value=id;
   document.getElementById("plantEditTitle").textContent=`แก้ไข: ${p.thaiName}`;
   document.getElementById("plantEditCost").value=p.costPrice||0;
@@ -654,6 +682,116 @@ document.getElementById("editPlantBtn").addEventListener("click",()=>{
   openPlantEdit(selectedPlantId);
 });
 
+// ---- Custom plants (added by the admin, not part of the 300-item catalog) ----
+let plantAddImageData="";
+function fillPlantAddCategoryOptions(){
+  const categories=[...new Set(plants.map(p=>p.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"th"));
+  document.getElementById("plantAddCategoryOptions").innerHTML=categories.map(x=>`<option value="${esc(x)}"></option>`).join("");
+}
+function openCustomPlantAdd(){
+  fillPlantAddCategoryOptions();
+  document.getElementById("plantAddId").value="";
+  document.getElementById("plantAddTitle").textContent="เพิ่มต้นไม้ใหม่";
+  document.getElementById("plantAddThaiName").value="";
+  document.getElementById("plantAddEnglishName").value="";
+  document.getElementById("plantAddScientificName").value="";
+  document.getElementById("plantAddCategory").value="";
+  document.getElementById("plantAddLight").value="";
+  document.getElementById("plantAddWater").value="";
+  document.getElementById("plantAddMaintenance").value="";
+  document.getElementById("plantAddUnit").value="ต้น";
+  document.getElementById("plantAddCost").value=0;
+  document.getElementById("plantAddPrice").value=0;
+  document.getElementById("plantAddBestSeller").checked=false;
+  document.getElementById("plantAddImage").value="";
+  plantAddImageData="";
+  document.getElementById("plantAddPreview").src="";
+  document.getElementById("plantAddPreviewWrap").style.display="none";
+  document.getElementById("plantAddDeleteBtn").style.display="none";
+  document.getElementById("plantAddDialog").showModal();
+}
+function openCustomPlantEdit(id){
+  const p=customPlants.find(x=>x.id===id);
+  if(!p) return;
+  fillPlantAddCategoryOptions();
+  document.getElementById("plantAddId").value=p.id;
+  document.getElementById("plantAddTitle").textContent=`แก้ไข: ${p.thaiName}`;
+  document.getElementById("plantAddThaiName").value=p.thaiName||"";
+  document.getElementById("plantAddEnglishName").value=p.englishName||"";
+  document.getElementById("plantAddScientificName").value=p.scientificName||"";
+  document.getElementById("plantAddCategory").value=p.category||"";
+  document.getElementById("plantAddLight").value=p.light||"";
+  document.getElementById("plantAddWater").value=p.water||"";
+  document.getElementById("plantAddMaintenance").value=p.maintenance||"";
+  document.getElementById("plantAddUnit").value=p.unit||"ต้น";
+  document.getElementById("plantAddCost").value=p.costPrice||0;
+  document.getElementById("plantAddPrice").value=p.salePrice||0;
+  document.getElementById("plantAddBestSeller").checked=!!p.bestSeller;
+  document.getElementById("plantAddImage").value="";
+  plantAddImageData=p.image||"";
+  const preview=document.getElementById("plantAddPreview");
+  const wrap=document.getElementById("plantAddPreviewWrap");
+  if(plantAddImageData){ preview.src=plantAddImageData; wrap.style.display="flex"; }
+  else{ preview.src=""; wrap.style.display="none"; }
+  document.getElementById("plantAddDeleteBtn").style.display="inline-flex";
+  document.getElementById("plantAddDialog").showModal();
+}
+document.getElementById("addCustomPlantBtn").addEventListener("click",openCustomPlantAdd);
+document.getElementById("plantAddImage").addEventListener("change",async e=>{
+  const file=e.target.files[0];
+  if(!file) return;
+  try{
+    plantAddImageData=await resizeImageToDataURL(file);
+    document.getElementById("plantAddPreview").src=plantAddImageData;
+    document.getElementById("plantAddPreviewWrap").style.display="flex";
+  }catch{
+    alert("ไม่สามารถอ่านไฟล์รูปภาพนี้ได้");
+  }
+});
+document.getElementById("plantAddRemoveImageBtn").addEventListener("click",()=>{
+  plantAddImageData="";
+  document.getElementById("plantAddImage").value="";
+  document.getElementById("plantAddPreview").src="";
+  document.getElementById("plantAddPreviewWrap").style.display="none";
+});
+document.getElementById("plantAddDeleteBtn").addEventListener("click",()=>{
+  const id=document.getElementById("plantAddId").value;
+  if(id) deleteCustomPlant(id);
+});
+document.getElementById("plantAddForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const thaiName=document.getElementById("plantAddThaiName").value.trim();
+  if(!thaiName){ alert("กรุณาระบุชื่อไทยของต้นไม้"); return; }
+  const existingId=document.getElementById("plantAddId").value;
+  const id=existingId||uid("plant");
+  const plant={
+    id, custom:true,
+    thaiName,
+    englishName:document.getElementById("plantAddEnglishName").value.trim(),
+    scientificName:document.getElementById("plantAddScientificName").value.trim(),
+    category:document.getElementById("plantAddCategory").value.trim(),
+    light:document.getElementById("plantAddLight").value,
+    water:document.getElementById("plantAddWater").value,
+    maintenance:document.getElementById("plantAddMaintenance").value,
+    unit:document.getElementById("plantAddUnit").value.trim()||"ต้น",
+    costPrice:Number(document.getElementById("plantAddCost").value)||0,
+    salePrice:Number(document.getElementById("plantAddPrice").value)||0,
+    bestSeller:document.getElementById("plantAddBestSeller").checked,
+    image:plantAddImageData||""
+  };
+  customPlants=existingId
+    ? customPlants.map(p=>p.id===id?plant:p)
+    : [...customPlants, plant];
+  rebuildPlantsList();
+  resetPlantPaging();
+  const btn=e.target.querySelector("button.btn-primary");
+  const originalLabel=btn.textContent;
+  btn.disabled=true; btn.textContent="กำลังบันทึกขึ้นคลาวด์...";
+  await saveCustomPlant(plant);
+  btn.disabled=false; btn.textContent=originalLabel;
+  document.getElementById("plantAddDialog").close();
+});
+
 function renderAll(){fillProjectOptions();renderDashboard();renderCustomers();renderProjects();renderStyles();renderBoqProjectSelect();renderBoq();}
 renderAll();
 loadPlantDatabase();
@@ -696,12 +834,13 @@ async function cloudSave(fn,label){
 // the app must keep working offline.
 async function initFromFirestore(){
   try{
-    const [remoteCustomers,remoteProjects,remoteBoq,remotePlantOverrides,remoteStyleOverrides]=await Promise.all([
+    const [remoteCustomers,remoteProjects,remoteBoq,remotePlantOverrides,remoteStyleOverrides,remoteCustomPlants]=await Promise.all([
       fbList("customers"),
       fbList("projects"),
       fbList("boq"),
       fbList("plantOverrides"),
-      fbList("styleOverrides")
+      fbList("styleOverrides"),
+      fbList("customPlants")
     ]);
     customers=remoteCustomers;
     projects=remoteProjects;
@@ -710,12 +849,15 @@ async function initFromFirestore(){
     remotePlantOverrides.forEach(p=>{const {id,...rest}=p;plantOverrides[id]=rest;});
     styleOverrides={};
     remoteStyleOverrides.forEach(s=>{const {id,...rest}=s;styleOverrides[id]=rest;});
+    customPlants=remoteCustomPlants;
     localStorage.setItem(STORAGE.customers,JSON.stringify(customers));
     localStorage.setItem(STORAGE.projects,JSON.stringify(projects));
     localStorage.setItem(STORAGE.boq,JSON.stringify(boqItems));
     localStorage.setItem(STORAGE.plantOverrides,JSON.stringify(plantOverrides));
     localStorage.setItem(STORAGE.styleOverrides,JSON.stringify(styleOverrides));
+    localStorage.setItem(STORAGE.customPlants,JSON.stringify(customPlants));
     renderAll();
+    rebuildPlantsList();
     if(plants.length) renderPlants();
     setCloudStatus(true);
     return true;
