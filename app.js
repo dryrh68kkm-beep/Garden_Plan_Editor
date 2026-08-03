@@ -35,6 +35,12 @@ function getStyle(id){
 function mergedStyles(){
   return gardenStyles.map(s=>styleOverrides[s.id] ? {...s, ...styleOverrides[s.id]} : s);
 }
+// Supports styles saved before multi-photo galleries existed (single s.image string).
+function styleImages(s){
+  if(s.images && s.images.length) return s.images;
+  if(s.image) return [s.image];
+  return [];
+}
 function mergedPlants(){
   return plants.map(p=>plantOverrides[p.id] ? {...p, ...plantOverrides[p.id]} : p);
 }
@@ -173,9 +179,11 @@ function renderStyles(){
     return (!category||s.category===category)&&hay.includes(q);
   });
   document.getElementById("styleCount").textContent=`แสดง ${rows.length} จาก ${gardenStyles.length} แบบ`;
-  document.getElementById("styleList").innerHTML=rows.length?rows.map(s=>`
+  document.getElementById("styleList").innerHTML=rows.length?rows.map(s=>{
+    const cover=styleImages(s)[0];
+    return `
     <article class="style-card">
-      <div class="style-cover"${s.image?` style="background-image:url('${esc(s.image)}')"`:""}>${s.image?"":s.icon}</div>
+      <div class="style-cover"${cover?` style="background-image:url('${esc(cover)}')"`:""}>${cover?"":s.icon}</div>
       <div class="style-body">
         <div class="category-label">${esc(s.category)}</div>
         <h3>${esc(s.name)}</h3>
@@ -190,7 +198,8 @@ function renderStyles(){
           <button class="btn btn-primary" onclick="createFromStyle('${s.id}')">ใช้แบบนี้</button>
         </div>
       </div>
-    </article>`).join(""):'<div class="empty">ไม่พบแบบสวนที่ค้นหา</div>';
+    </article>`;
+  }).join(""):'<div class="empty">ไม่พบแบบสวนที่ค้นหา</div>';
 }
 function renderBoqProjectSelect(){
   const sel=document.getElementById("boqProjectSelect");
@@ -221,20 +230,42 @@ let selectedStyleId="";
 document.getElementById("styleSearch").addEventListener("input",renderStyles);
 document.getElementById("styleCategoryFilter").addEventListener("change",renderStyles);
 
+function renderStyleDetailGallery(images,icon,heroId,thumbsId){
+  const hero=document.getElementById(heroId);
+  const thumbs=document.getElementById(thumbsId);
+  const setActive=idx=>{
+    if(images.length){ hero.style.backgroundImage=`url('${images[idx]}')`; hero.textContent=""; }
+    else{ hero.style.backgroundImage=""; hero.textContent=icon; }
+    thumbs.querySelectorAll("img").forEach((el,i)=>el.classList.toggle("active",i===idx));
+  };
+  thumbs.innerHTML=images.length>1?images.map((src,i)=>`<img src="${esc(src)}" data-idx="${i}" alt="" />`).join(""):"";
+  thumbs.querySelectorAll("img").forEach(el=>el.addEventListener("click",()=>setActive(Number(el.dataset.idx))));
+  setActive(0);
+}
+function linkedPlantsHtml(plantIds,onClickFn){
+  if(!plantIds||!plantIds.length) return '<div class="meta">ยังไม่ได้เลือกต้นไม้สำหรับสวนนี้</div>';
+  return plantIds.map(id=>{
+    const p=getPlant(id);
+    if(!p) return "";
+    return `<div class="linked-plant-tile" onclick="${onClickFn}('${p.id}')">
+      <div class="linked-plant-thumb">${p.image?`<img src="${esc(p.image)}" alt="${esc(p.thaiName)}" loading="lazy"/>`:"🌱"}</div>
+      <div class="linked-plant-name">${esc(p.thaiName)}</div>
+    </div>`;
+  }).join("");
+}
 function openStyleDetail(id){
   const s=getStyle(id);
   if(!s) return;
   selectedStyleId=id;
   document.getElementById("styleDetailCategory").textContent=s.category;
   document.getElementById("styleDetailName").textContent=s.name;
-  const hero=document.getElementById("styleDetailHero");
-  if(s.image){ hero.style.backgroundImage=`url('${s.image}')`; hero.textContent=""; }
-  else{ hero.style.backgroundImage=""; hero.textContent=s.icon; }
+  renderStyleDetailGallery(styleImages(s),s.icon,"styleDetailHero","styleDetailThumbs");
   document.getElementById("styleDetailDescription").textContent=s.desc;
   document.getElementById("styleDetailBudget").textContent=s.budget;
   document.getElementById("styleDetailMaintenance").textContent=s.maintenance;
   document.getElementById("styleDetailDifficulty").textContent=s.difficulty;
   document.getElementById("styleDetailSuitable").textContent=s.suitableFor.join(", ");
+  document.getElementById("styleDetailLinkedPlants").innerHTML=linkedPlantsHtml(s.plantIds,"openPlantDetail");
   document.getElementById("styleDetailPlants").innerHTML=s.plants.map(x=>`<span class="chip">${esc(x)}</span>`).join("");
   document.getElementById("styleDetailMaterials").innerHTML=s.materials.map(x=>`<span class="chip">${esc(x)}</span>`).join("");
   document.getElementById("styleDetailMood").textContent=s.mood;
@@ -256,7 +287,36 @@ document.getElementById("copyStylePromptBtn").addEventListener("click",async()=>
   }
 });
 
-let styleEditImageData;
+let styleEditImages=[];
+let styleEditPlantIds=[];
+function renderStyleEditGallery(){
+  document.getElementById("styleEditGallery").innerHTML=styleEditImages.map((src,i)=>`
+    <div class="style-edit-gallery-item">
+      <img src="${esc(src)}" alt="" />
+      <button type="button" class="style-edit-gallery-remove" onclick="removeStyleEditImage(${i})">×</button>
+    </div>`).join("");
+}
+function removeStyleEditImage(idx){
+  styleEditImages.splice(idx,1);
+  renderStyleEditGallery();
+}
+function renderStyleEditPlantChips(){
+  const wrap=document.getElementById("styleEditPlantSelected");
+  wrap.innerHTML=styleEditPlantIds.length?styleEditPlantIds.map(id=>{
+    const p=getPlant(id);
+    return `<span class="chip removable">${esc(p?p.thaiName:id)}<button type="button" onclick="removeStyleEditPlant('${id}')">×</button></span>`;
+  }).join(""):'<span class="meta">ยังไม่ได้เลือกต้นไม้</span>';
+}
+function removeStyleEditPlant(id){
+  styleEditPlantIds=styleEditPlantIds.filter(x=>x!==id);
+  renderStyleEditPlantChips();
+}
+function addStyleEditPlant(id){
+  if(!styleEditPlantIds.includes(id)) styleEditPlantIds.push(id);
+  document.getElementById("styleEditPlantSearch").value="";
+  document.getElementById("styleEditPlantResults").innerHTML="";
+  renderStyleEditPlantChips();
+}
 function openStyleEdit(id){
   const s=getStyle(id);
   if(!s) return;
@@ -271,29 +331,33 @@ function openStyleEdit(id){
   document.getElementById("styleEditMaterials").value=(s.materials||[]).join(", ");
   document.getElementById("styleEditMood").value=s.mood||"";
   document.getElementById("styleEditImage").value="";
-  styleEditImageData=s.image||"";
-  const preview=document.getElementById("styleEditPreview");
-  const wrap=document.getElementById("styleEditPreviewWrap");
-  if(styleEditImageData){ preview.src=styleEditImageData; wrap.style.display="flex"; }
-  else{ preview.src=""; wrap.style.display="none"; }
+  styleEditImages=styleImages(s).slice();
+  renderStyleEditGallery();
+  styleEditPlantIds=(s.plantIds||[]).slice();
+  document.getElementById("styleEditPlantSearch").value="";
+  document.getElementById("styleEditPlantResults").innerHTML="";
+  renderStyleEditPlantChips();
   document.getElementById("styleEditDialog").showModal();
 }
 document.getElementById("styleEditImage").addEventListener("change",async e=>{
-  const file=e.target.files[0];
-  if(!file) return;
+  const files=Array.from(e.target.files||[]);
+  if(!files.length) return;
   try{
-    styleEditImageData=await resizeImageToDataURL(file);
-    document.getElementById("styleEditPreview").src=styleEditImageData;
-    document.getElementById("styleEditPreviewWrap").style.display="flex";
+    for(const file of files){
+      styleEditImages.push(await resizeImageToDataURL(file));
+    }
+    renderStyleEditGallery();
   }catch{
     alert("ไม่สามารถอ่านไฟล์รูปภาพนี้ได้");
   }
+  e.target.value="";
 });
-document.getElementById("styleEditRemoveImageBtn").addEventListener("click",()=>{
-  styleEditImageData="";
-  document.getElementById("styleEditImage").value="";
-  document.getElementById("styleEditPreview").src="";
-  document.getElementById("styleEditPreviewWrap").style.display="none";
+document.getElementById("styleEditPlantSearch").addEventListener("input",e=>{
+  const q=e.target.value.trim().toLowerCase();
+  const results=document.getElementById("styleEditPlantResults");
+  if(!q){ results.innerHTML=""; return; }
+  const matches=plants.filter(p=>!styleEditPlantIds.includes(p.id)&&[p.thaiName,p.englishName,p.scientificName].join(" ").toLowerCase().includes(q)).slice(0,8);
+  results.innerHTML=matches.length?matches.map(p=>`<button type="button" class="style-edit-plant-result" onclick="addStyleEditPlant('${p.id}')">${esc(p.thaiName)} <span class="meta">${esc(p.englishName||"")}</span></button>`).join(""):'<div class="meta">ไม่พบต้นไม้ที่ค้นหา</div>';
 });
 const splitTags=v=>v.split(",").map(x=>x.trim()).filter(Boolean);
 document.getElementById("styleEditForm").addEventListener("submit",e=>{
@@ -307,9 +371,10 @@ document.getElementById("styleEditForm").addEventListener("submit",e=>{
     suitableFor:splitTags(document.getElementById("styleEditSuitable").value),
     plants:splitTags(document.getElementById("styleEditPlants").value),
     materials:splitTags(document.getElementById("styleEditMaterials").value),
-    mood:document.getElementById("styleEditMood").value.trim()
+    mood:document.getElementById("styleEditMood").value.trim(),
+    images:styleEditImages.slice(),
+    plantIds:styleEditPlantIds.slice()
   };
-  if(styleEditImageData) override.image=styleEditImageData;
   styleOverrides[id]=override;
   saveStyleOverrides();
   document.getElementById("styleEditDialog").close();
@@ -537,3 +602,4 @@ document.getElementById("editPlantBtn").addEventListener("click",()=>{
 
 function renderAll(){fillProjectOptions();renderDashboard();renderCustomers();renderProjects();renderStyles();renderBoqProjectSelect();renderBoq();}
 renderAll();
+loadPlantDatabase();

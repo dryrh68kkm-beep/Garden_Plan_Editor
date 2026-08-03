@@ -17,12 +17,36 @@
   </header>
 
   <nav class="tabs" aria-label="เมนูหลัก">
-    <button class="tab active" data-page="showcaseStyles">แบบสวน</button>
+    <button class="tab active" data-page="showcaseHome">หน้าแรก</button>
+    <button class="tab" data-page="showcaseStyles">แบบสวน</button>
     <button class="tab" data-page="showcasePlants">ต้นไม้</button>
   </nav>
 
   <main class="container">
-    <section id="showcaseStylesPage" class="page active">
+    <section id="showcaseHomePage" class="page active">
+      <div class="sc-hero">
+        <div class="sc-hero-badge">🌳</div>
+        <h2>ผลงานและแบบสวนของเรา</h2>
+        <p>แรงบันดาลใจสวนในฝันของคุณ</p>
+      </div>
+      <div class="sc-home-cards">
+        <button type="button" class="sc-home-card" onclick="showPage('showcaseStyles')">
+          <span class="sc-home-icon">🏡</span>
+          <h3>ตัวเลือกจัดสวน</h3>
+          <p>ไอเดียจัดสวนหลากสไตล์ พร้อมรูปภาพหลายมุมและงบประมาณเบื้องต้น</p>
+          <span class="sc-home-link">ดูไอเดียสวน →</span>
+        </button>
+        <button type="button" class="sc-home-card" onclick="showPage('showcasePlants')">
+          <span class="sc-home-icon">🌱</span>
+          <h3>แคตตาล็อกต้นไม้</h3>
+          <p>รวมพรรณไม้ที่ใช้ในผลงานจริงของเรา พร้อมรูปภาพ</p>
+          <span class="sc-home-link">ดูแคตตาล็อก →</span>
+        </button>
+      </div>
+    </section>
+
+    <section id="showcaseStylesPage" class="page">
+      <button type="button" class="sc-back-link" onclick="showPage('showcaseHome')">← กลับหน้าแรก</button>
       <div class="page-head">
         <div>
           <p class="eyebrow">GARDEN STYLES</p>
@@ -50,6 +74,7 @@
     </section>
 
     <section id="showcasePlantsPage" class="page">
+      <button type="button" class="sc-back-link" onclick="showPage('showcaseHome')">← กลับหน้าแรก</button>
       <div class="page-head">
         <div>
           <p class="eyebrow">PLANT GALLERY</p>
@@ -78,6 +103,7 @@
       </div>
 
       <div id="scStyleDetailHero" class="style-detail-hero"></div>
+      <div id="scStyleDetailThumbs" class="style-detail-thumbs"></div>
       <p id="scStyleDetailDescription" class="style-detail-description"></p>
 
       <div class="detail-grid">
@@ -87,6 +113,10 @@
         <div class="detail-box"><span>เหมาะกับ</span><strong id="scStyleDetailSuitable"></strong></div>
       </div>
 
+      <div class="detail-section">
+        <h4>ต้นไม้ที่ใช้ในสวนนี้</h4>
+        <div id="scStyleDetailLinkedPlants" class="style-linked-plants"></div>
+      </div>
       <div class="detail-section">
         <h4>พรรณไม้แนะนำ</h4>
         <div id="scStyleDetailPlants" class="chips"></div>

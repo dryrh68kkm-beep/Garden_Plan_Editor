@@ -1,3 +1,15 @@
+.sc-hero{text-align:center;padding:48px 16px 12px}
+.sc-hero-badge{width:88px;height:88px;margin:0 auto 18px;border-radius:50%;background:linear-gradient(135deg,#dfe9dc,#9ab799);display:flex;align-items:center;justify-content:center;font-size:44px;box-shadow:var(--shadow)}
+.sc-hero h2{margin:0 0 8px;font-size:clamp(24px,4vw,34px)}
+.sc-hero p{color:var(--muted);font-size:16px;margin:0}
+.sc-home-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:760px;margin:32px auto 0;padding:0 16px}
+.sc-home-card{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;cursor:pointer;display:flex;flex-direction:column;gap:10px}
+.sc-home-icon{width:52px;height:52px;border-radius:14px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px}
+.sc-home-card h3{margin:4px 0 0}
+.sc-home-card p{color:var(--muted);margin:0;font-size:14px;line-height:1.6}
+.sc-home-link{color:var(--primary);font-weight:800}
+.sc-back-link{border:0;background:transparent;color:var(--primary);font-weight:700;cursor:pointer;padding:0;margin-bottom:12px}
+@media(max-width:600px){.sc-home-cards{grid-template-columns:1fr}}
 .showcase-plant-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
 .showcase-plant-tile{position:relative;aspect-ratio:1/1;border-radius:16px;overflow:hidden;cursor:pointer;background:linear-gradient(135deg,#e7f0e8,#afd0b6);box-shadow:var(--shadow)}
 .showcase-plant-tile img{width:100%;height:100%;object-fit:cover;display:block}
