@@ -104,17 +104,36 @@ function renderScStyles(){
     </article>`;
   }).join(""):'<div class="empty">ไม่พบแบบสวนที่ค้นหา</div>';
 }
+// Renders the hero as a horizontally scrollable, scroll-snapped track so
+// visitors can swipe between photos with a native touch gesture instead of
+// only tapping thumbnails.
 function renderScStyleGallery(images,icon){
   const hero=document.getElementById("scStyleDetailHero");
   const thumbs=document.getElementById("scStyleDetailThumbs");
-  const setActive=idx=>{
-    if(images.length){ hero.style.backgroundImage=`url('${images[idx]}')`; hero.textContent=""; }
-    else{ hero.style.backgroundImage=""; hero.textContent=icon; }
-    thumbs.querySelectorAll("img").forEach((el,i)=>el.classList.toggle("active",i===idx));
+  if(!images.length){
+    hero.innerHTML=`<div class="style-detail-hero-slide style-detail-hero-empty">${icon}</div>`;
+    thumbs.innerHTML="";
+    hero.onscroll=null;
+    return;
+  }
+  hero.innerHTML=images.map(src=>`<div class="style-detail-hero-slide" style="background-image:url('${esc(src)}')"></div>`).join("");
+  thumbs.innerHTML=images.length>1?images.map((src,i)=>`<img src="${esc(src)}" data-idx="${i}" alt="" class="${i===0?"active":""}" />`).join(""):"";
+  const slides=hero.querySelectorAll(".style-detail-hero-slide");
+  const thumbEls=thumbs.querySelectorAll("img");
+  thumbEls.forEach(el=>el.addEventListener("click",()=>{
+    slides[Number(el.dataset.idx)].scrollIntoView({behavior:"smooth",inline:"start",block:"nearest"});
+  }));
+  let ticking=false;
+  hero.onscroll=()=>{
+    if(ticking) return;
+    ticking=true;
+    requestAnimationFrame(()=>{
+      const idx=Math.round(hero.scrollLeft/hero.clientWidth);
+      thumbEls.forEach((el,i)=>el.classList.toggle("active",i===idx));
+      ticking=false;
+    });
   };
-  thumbs.innerHTML=images.length>1?images.map((src,i)=>`<img src="${esc(src)}" data-idx="${i}" alt="" />`).join(""):"";
-  thumbs.querySelectorAll("img").forEach(el=>el.addEventListener("click",()=>setActive(Number(el.dataset.idx))));
-  setActive(0);
+  hero.scrollLeft=0;
 }
 function scLinkedPlantsHtml(plantIds){
   if(!plantIds||!plantIds.length) return '<div class="meta">ยังไม่ได้ระบุต้นไม้สำหรับสวนนี้</div>';
@@ -143,6 +162,10 @@ function openScStyleDetail(id){
   document.getElementById("scStyleDetailMaterials").innerHTML=(s.materials||[]).map(x=>`<span class="chip">${esc(x)}</span>`).join("");
   document.getElementById("scStyleDetailMood").textContent=s.mood;
   document.getElementById("scStyleDetailDialog").showModal();
+  // Reset the hero scroll position after the dialog is actually visible —
+  // setting it while the <dialog> is still closed/hidden gets discarded by
+  // the browser's scroll-snap layout once it opens.
+  requestAnimationFrame(()=>{ document.getElementById("scStyleDetailHero").scrollLeft=0; });
 }
 document.getElementById("scStyleSearch").addEventListener("input",renderScStyles);
 document.getElementById("scStyleCategoryFilter").addEventListener("change",renderScStyles);
