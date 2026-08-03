@@ -26,7 +26,14 @@ button,input,select,textarea{font:inherit}.topbar{background:#10291d;color:#fff;
 .modal-head,.modal-actions{display:flex;align-items:center;justify-content:space-between;gap:12px}.modal-actions{justify-content:flex-end;margin-top:18px}.icon-btn{border:0;background:#eef3ef;border-radius:50%;width:38px;height:38px;font-size:24px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:800px){.stats,.boq-summary{grid-template-columns:repeat(2,1fr)}.card-grid,.style-grid{grid-template-columns:1fr 1fr}.hero{align-items:flex-start;flex-direction:column}.topbar{align-items:flex-start}.filters{align-items:stretch;flex-direction:column}.filters .input{max-width:none}}
 @media(max-width:560px){.stats,.card-grid,.style-grid,.boq-summary,.two-col{grid-template-columns:1fr}.topbar{padding:18px 16px}.topbar .btn{font-size:12px}.container{padding-top:16px}.page-head{align-items:flex-start}.page-head .btn{white-space:nowrap}.hero{padding:22px}.panel{padding:15px}}
-@media print{.topbar,.tabs,.page-head .btn,.boq-toolbar button,.actions,#addBoqBtn{display:none!important}.page{display:none!important}#boqPage{display:block!important}.container{max-width:none;padding:0}.panel{border:0;box-shadow:none}}
+@media print{.topbar,.tabs,.page-head .btn,.boq-toolbar button,.actions,.topbar-actions,#addBoqBtn{display:none!important}.page{display:none!important}#boqPage{display:block!important}.container{max-width:none;padding:0}.panel{border:0;box-shadow:none}}
+
+.topbar-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:0}
+.sync-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.admin-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-left:16px;border-left:1px solid rgba(255,255,255,.22)}
+.btn-danger-ghost{border-color:#ff9d8a;color:#ffb3a3}
+@media(max-width:800px){.admin-actions{padding-left:0;border-left:0;border-top:1px solid rgba(255,255,255,.22);padding-top:10px;width:100%}}
+@media(max-width:560px){.topbar-actions{width:100%}.sync-group{justify-content:space-between;width:100%}.admin-actions{flex-direction:column;align-items:stretch}.admin-actions .btn{width:100%}}
 
 .style-card .category-label{font-size:11px;font-weight:800;letter-spacing:.12em;color:#6b7e70;text-transform:uppercase}
 .style-card .style-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}

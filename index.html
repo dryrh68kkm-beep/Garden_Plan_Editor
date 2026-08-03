@@ -13,11 +13,15 @@
       <p class="eyebrow">LANDSCAPE MANAGEMENT</p>
       <h1>Garden Plan Editor</h1>
     </div>
-    <div class="actions" style="margin-top:0;align-items:center">
-      <span id="cloudStatus" class="badge">กำลังเชื่อมต่อ...</span>
-      <button id="manualSyncBtn" class="btn btn-ghost" title="ดึงข้อมูลล่าสุดจากคลาวด์ทันที">🔄 ซิงก์ข้อมูล</button>
-      <button id="heroSettingsBtn" class="btn btn-ghost">ตั้งค่ารูปหน้าแรกโชว์เคส</button>
-      <button id="resetAllBtn" class="btn btn-ghost">ล้างข้อมูลทั้งหมด</button>
+    <div class="topbar-actions">
+      <div class="sync-group">
+        <span id="cloudStatus" class="badge">กำลังเชื่อมต่อ...</span>
+        <button id="manualSyncBtn" class="btn btn-ghost" title="ดึงข้อมูลล่าสุดจากคลาวด์ทันที">🔄 ซิงก์ข้อมูล</button>
+      </div>
+      <div class="admin-actions">
+        <button id="heroSettingsBtn" class="btn btn-ghost">ตั้งค่ารูปหน้าแรกโชว์เคส</button>
+        <button id="resetAllBtn" class="btn btn-ghost btn-danger-ghost">ล้างข้อมูลทั้งหมด</button>
+      </div>
     </div>
   </header>
 
