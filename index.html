@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#163a2a" />
   <title>Garden Plan Editor</title>
-  <link rel="stylesheet" href="style.css?v=202608031542" />
+  <link rel="stylesheet" href="style.css?v=202608031558" />
 </head>
 <body>
   <header class="topbar">
@@ -250,11 +250,11 @@
         </select></label>
       </div>
       <div class="two-col">
-        <label>การดูแล<select id="plantAddMaintenance" class="input">
+        <label>ระดับการดูแล<select id="plantAddMaintenance" class="input">
           <option value="">ไม่ระบุ</option>
-          <option>ต่ำ</option>
-          <option>กลาง</option>
-          <option>สูง</option>
+          <option value="ง่าย">🟢 ง่าย</option>
+          <option value="ปานกลาง">🟡 ปานกลาง</option>
+          <option value="ยาก">🔴 ยาก</option>
         </select></label>
         <label>หน่วย<input id="plantAddUnit" class="input" placeholder="ต้น" /></label>
       </div>
@@ -273,8 +273,8 @@
     </form>
   </dialog>
 
-  <script src="data/garden-styles-data.js?v=202608031542"></script>
-  <script src="firebase-client.js?v=202608031542"></script>
-  <script src="app.js?v=202608031542"></script>
+  <script src="data/garden-styles-data.js?v=202608031558"></script>
+  <script src="firebase-client.js?v=202608031558"></script>
+  <script src="app.js?v=202608031558"></script>
 </body>
 </html>

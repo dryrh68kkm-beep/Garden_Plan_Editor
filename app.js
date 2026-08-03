@@ -77,6 +77,11 @@ function load(key, fallback){
 function uid(prefix){ return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,7)}`; }
 function money(v){ return new Intl.NumberFormat("th-TH",{style:"currency",currency:"THB",maximumFractionDigits:0}).format(Number(v)||0); }
 function esc(s=""){ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m])); }
+// Maps both the new ง่าย/ปานกลาง/ยาก scale and the older ต่ำ/กลาง/สูง values
+// (still used by the static 300-item catalog and any not-yet-resaved custom
+// plants) to the same colored-dot label for consistent display everywhere.
+const MAINTENANCE_LABELS={"ต่ำ":"🟢 ง่าย","กลาง":"🟡 ปานกลาง","สูง":"🔴 ยาก","ง่าย":"🟢 ง่าย","ปานกลาง":"🟡 ปานกลาง","ยาก":"🔴 ยาก"};
+function maintenanceLabel(m){ return MAINTENANCE_LABELS[m]||m||"-"; }
 function styleName(id){ return gardenStyles.find(s=>s.id===id)?.name || "-"; }
 
 document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>showPage(btn.dataset.page)));
@@ -342,7 +347,7 @@ function renderPlants(){
       <div class="chips">
         <span class="chip">${esc(p.light)}</span>
         <span class="chip">น้ำ ${esc(p.water)}</span>
-        <span class="chip">ดูแล ${esc(p.maintenance)}</span>
+        <span class="chip">ดูแล ${esc(maintenanceLabel(p.maintenance))}</span>
       </div>
       <div class="plant-price-row">
         <div><span>ต้นทุน</span><strong>${money(p.costPrice)}</strong></div>
@@ -374,7 +379,7 @@ function openPlantDetail(id){
   document.getElementById("plantDetailCategory").textContent=p.category||"-";
   document.getElementById("plantDetailLight").textContent=p.light||"-";
   document.getElementById("plantDetailWater").textContent=p.water||"-";
-  document.getElementById("plantDetailMaintenance").textContent=p.maintenance||"-";
+  document.getElementById("plantDetailMaintenance").textContent=maintenanceLabel(p.maintenance);
   document.getElementById("plantDetailHeight").textContent=(p.heightCm||0)+" ซม.";
   document.getElementById("plantDetailSpacing").textContent=(p.spacingCm||0)+" ซม.";
   document.getElementById("plantDetailCost").textContent=money(p.costPrice)+" / "+p.unit;
