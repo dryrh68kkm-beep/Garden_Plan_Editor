@@ -53,6 +53,13 @@ function rebuildAllPlants(){
   allPlants=rawPlants.map(p=>plantOverrides[p.id] ? {...p, ...plantOverrides[p.id]} : p);
   plantById=new Map(allPlants.map(p=>[p.id,p]));
 }
+function fillScPlantCategoryFilter(){
+  const select=document.getElementById("scPlantCategoryFilter");
+  const current=select.value;
+  const categories=[...new Set(allPlants.map(p=>p.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"th"));
+  select.innerHTML='<option value="">ทุกประเภท</option>'+categories.map(x=>`<option>${esc(x)}</option>`).join("");
+  select.value=current;
+}
 async function loadAllPlants(){
   try{
     const response=await fetch("./data/plants.json",{cache:"no-store"});
@@ -61,6 +68,7 @@ async function loadAllPlants(){
     if(!Array.isArray(data)) throw new Error("รูปแบบฐานข้อมูลไม่ถูกต้อง");
     rawPlants=data;
     rebuildAllPlants();
+    fillScPlantCategoryFilter();
     renderScPlantGallery();
   }catch(error){
     console.error("Showcase plant data error:",error);
@@ -180,14 +188,19 @@ function resetScPlantPaging(){
 }
 function renderScPlantGallery(){
   const q=(document.getElementById("scPlantSearch").value||"").toLowerCase();
-  const rows=allPlants.filter(p=>!!p.image&&[p.thaiName,p.englishName,p.scientificName].join(" ").toLowerCase().includes(q));
+  const category=document.getElementById("scPlantCategoryFilter").value||"";
+  const bestSellerOnly=document.getElementById("scPlantBestSellerFilter").checked;
+  const rows=allPlants.filter(p=>!!p.image
+    &&[p.thaiName,p.englishName,p.scientificName].join(" ").toLowerCase().includes(q)
+    &&(!category||p.category===category)
+    &&(!bestSellerOnly||p.bestSeller));
   const visibleRows=rows.slice(0,scPlantVisibleCount);
   document.getElementById("scPlantCount").textContent=rows.length
     ? `แสดง ${visibleRows.length} จาก ${rows.length} รายการ`
     : "ยังไม่มีรูปต้นไม้ในผลงาน";
   document.getElementById("scPlantList").innerHTML=visibleRows.length?visibleRows.map(p=>`
     <article class="showcase-plant-tile" onclick="openScPlantLightbox('${p.id}')">
-      <div class="showcase-plant-photo"><img src="${esc(p.image)}" alt="${esc(p.thaiName)}" loading="lazy" /></div>
+      <div class="showcase-plant-photo"><img src="${esc(p.image)}" alt="${esc(p.thaiName)}" loading="lazy" />${p.bestSeller?'<span class="best-seller-badge">🔥 ขายดี</span>':""}</div>
       <div class="showcase-plant-info">
         <div class="showcase-plant-caption">${esc(p.thaiName)}</div>
         ${p.salePrice?`<div class="showcase-plant-price-tag">🏷️ ${money(p.salePrice)}${p.unit?` / ${esc(p.unit)}`:""}</div>`:""}
@@ -214,9 +227,12 @@ function openScPlantLightbox(id){
   } else {
     priceTag.style.display="none";
   }
+  document.getElementById("scPlantLightboxBestSeller").style.display=p.bestSeller?"inline-flex":"none";
   document.getElementById("scPlantLightbox").showModal();
 }
 document.getElementById("scPlantSearch").addEventListener("input",resetScPlantPaging);
+document.getElementById("scPlantCategoryFilter").addEventListener("change",resetScPlantPaging);
+document.getElementById("scPlantBestSellerFilter").addEventListener("change",resetScPlantPaging);
 document.getElementById("scLoadMorePlantsBtn").addEventListener("click",()=>{
   scPlantVisibleCount+=PLANT_PAGE_SIZE;
   renderScPlantGallery();

@@ -469,7 +469,7 @@ function renderPlants(){
   document.getElementById("plantCount").textContent=`แสดง ${visibleRows.length} จาก ${rows.length} รายการ (ทั้งหมด ${plants.length})`;
   document.getElementById("plantList").innerHTML=visibleRows.length?visibleRows.map(p=>`
     <article class="plant-card">
-      <div class="plant-thumb">${p.image?`<img src="${esc(p.image)}" alt="${esc(p.thaiName)}" loading="lazy" />`:"🌱"}</div>
+      <div class="plant-thumb">${p.image?`<img src="${esc(p.image)}" alt="${esc(p.thaiName)}" loading="lazy" />`:"🌱"}${p.bestSeller?'<span class="best-seller-badge">🔥 ขายดี</span>':""}</div>
       <div class="plant-code">${esc(p.id)} · ${esc(p.category)}</div>
       <h3>${esc(p.thaiName)}</h3>
       <div>${esc(p.englishName||"-")}</div>
@@ -604,6 +604,7 @@ function openPlantEdit(id){
   document.getElementById("plantEditTitle").textContent=`แก้ไข: ${p.thaiName}`;
   document.getElementById("plantEditCost").value=p.costPrice||0;
   document.getElementById("plantEditPrice").value=p.salePrice||0;
+  document.getElementById("plantEditBestSeller").checked=!!p.bestSeller;
   document.getElementById("plantEditImage").value="";
   plantEditImageData=p.image||"";
   const preview=document.getElementById("plantEditPreview");
@@ -635,7 +636,8 @@ document.getElementById("plantEditForm").addEventListener("submit",async e=>{
   const id=document.getElementById("plantEditId").value;
   const override={
     costPrice:Number(document.getElementById("plantEditCost").value)||0,
-    salePrice:Number(document.getElementById("plantEditPrice").value)||0
+    salePrice:Number(document.getElementById("plantEditPrice").value)||0,
+    bestSeller:document.getElementById("plantEditBestSeller").checked
   };
   if(plantEditImageData) override.image=plantEditImageData;
   plantOverrides[id]=override;
