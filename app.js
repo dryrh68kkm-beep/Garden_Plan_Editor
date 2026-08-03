@@ -750,3 +750,14 @@ async function initFromFirestore(){
   }
 }
 initFromFirestore();
+
+// REST-only Firestore has no realtime listener (that needs the SDK), so we
+// poll instead: refetch periodically and re-render if the page has been
+// open a while, so a change made on another device shows up here without
+// needing a manual reload. Skipped while any dialog is open so a background
+// refresh can't blow away a form the user is actively filling in.
+const FIRESTORE_POLL_MS=20000;
+setInterval(()=>{
+  if(document.querySelector("dialog[open]")) return;
+  initFromFirestore();
+},FIRESTORE_POLL_MS);
