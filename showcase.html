@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#163a2a" />
+  <title>ผลงานจัดสวน — โชว์เคส</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="showcase.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">LANDSCAPE SHOWCASE</p>
+      <h1>ผลงานและแบบสวนของเรา</h1>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="เมนูหลัก">
+    <button class="tab active" data-page="showcaseStyles">แบบสวน</button>
+    <button class="tab" data-page="showcasePlants">ต้นไม้</button>
+  </nav>
+
+  <main class="container">
+    <section id="showcaseStylesPage" class="page active">
+      <div class="page-head">
+        <div>
+          <p class="eyebrow">GARDEN STYLES</p>
+          <h2>แบบสวนของเรา</h2>
+        </div>
+      </div>
+      <div class="filters">
+        <input id="scStyleSearch" class="input" type="search" placeholder="ค้นหาชื่อแบบสวน หมวด หรือคำอธิบาย" />
+        <select id="scStyleCategoryFilter" class="input">
+          <option value="">ทุกหมวด</option>
+          <option>Modern</option>
+          <option>Tropical</option>
+          <option>Japanese</option>
+          <option>English</option>
+          <option>Mediterranean</option>
+          <option>Desert</option>
+          <option>Natural</option>
+          <option>Water</option>
+          <option>Commercial</option>
+          <option>Small Space</option>
+        </select>
+      </div>
+      <div id="scStyleCount" class="meta"></div>
+      <div id="scStyleList" class="style-grid"></div>
+    </section>
+
+    <section id="showcasePlantsPage" class="page">
+      <div class="page-head">
+        <div>
+          <p class="eyebrow">PLANT GALLERY</p>
+          <h2>ต้นไม้ในผลงานของเรา</h2>
+        </div>
+      </div>
+      <div class="filters">
+        <input id="scPlantSearch" class="input" type="search" placeholder="ค้นหาชื่อต้นไม้" />
+      </div>
+      <div id="scPlantCount" class="meta"></div>
+      <div id="scPlantList" class="showcase-plant-grid"></div>
+      <div class="plant-load-more">
+        <button id="scLoadMorePlantsBtn" class="btn btn-secondary" style="display:none">โหลดเพิ่ม</button>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="scStyleDetailDialog" class="modal style-detail-modal">
+    <div class="style-detail-wrap">
+      <div class="modal-head">
+        <div>
+          <p id="scStyleDetailCategory" class="eyebrow"></p>
+          <h3 id="scStyleDetailName"></h3>
+        </div>
+        <button type="button" class="icon-btn close-dialog">×</button>
+      </div>
+
+      <div id="scStyleDetailHero" class="style-detail-hero"></div>
+      <p id="scStyleDetailDescription" class="style-detail-description"></p>
+
+      <div class="detail-grid">
+        <div class="detail-box"><span>งบประมาณโดยประมาณ</span><strong id="scStyleDetailBudget"></strong></div>
+        <div class="detail-box"><span>การดูแล</span><strong id="scStyleDetailMaintenance"></strong></div>
+        <div class="detail-box"><span>ระดับความยาก</span><strong id="scStyleDetailDifficulty"></strong></div>
+        <div class="detail-box"><span>เหมาะกับ</span><strong id="scStyleDetailSuitable"></strong></div>
+      </div>
+
+      <div class="detail-section">
+        <h4>พรรณไม้แนะนำ</h4>
+        <div id="scStyleDetailPlants" class="chips"></div>
+      </div>
+      <div class="detail-section">
+        <h4>วัสดุแนะนำ</h4>
+        <div id="scStyleDetailMaterials" class="chips"></div>
+      </div>
+      <div class="detail-section">
+        <h4>แนวทางสีและบรรยากาศ</h4>
+        <p id="scStyleDetailMood" class="meta"></p>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="scPlantLightbox" class="modal showcase-lightbox">
+    <div class="style-detail-wrap">
+      <div class="modal-head">
+        <h3 id="scPlantLightboxName"></h3>
+        <button type="button" class="icon-btn close-dialog">×</button>
+      </div>
+      <img id="scPlantLightboxImage" class="showcase-lightbox-img" alt="" />
+    </div>
+  </dialog>
+
+  <script src="data/garden-styles-data.js"></script>
+  <script src="showcase.js"></script>
+</body>
+</html>
