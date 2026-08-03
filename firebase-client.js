@@ -20,9 +20,10 @@ let fbTokenExpiry = 0;
 // fully offline, just stalling) it can hang for a very long time before the
 // browser itself gives up, leaving a "saving..." button stuck far longer
 // than the UI implies. Force every request to fail fast instead so the
-// existing offline fallback actually kicks in promptly.
-const FB_TIMEOUT_MS = 8000;
-async function fbFetch(url, options={}){
+// existing offline fallback actually kicks in promptly. 15s (not 8s) gives
+// a genuinely slow mobile connection a fair chance before giving up.
+const FB_TIMEOUT_MS = 15000;
+async function fbFetchOnce(url, options={}){
   const controller = new AbortController();
   const timer = setTimeout(()=>controller.abort(), FB_TIMEOUT_MS);
   try{
@@ -32,6 +33,17 @@ async function fbFetch(url, options={}){
     throw err;
   }finally{
     clearTimeout(timer);
+  }
+}
+// One automatic retry after a short pause — a single dropped packet or brief
+// WiFi/mobile-data hiccup shouldn't force the user to notice a failure and
+// manually redo the save; only a second consecutive failure counts as real.
+async function fbFetch(url, options={}){
+  try{
+    return await fbFetchOnce(url, options);
+  }catch(err){
+    await new Promise(r=>setTimeout(r,600));
+    return await fbFetchOnce(url, options);
   }
 }
 

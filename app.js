@@ -715,7 +715,7 @@ async function cloudSave(fn,label){
     // saved on this device, not the cloud, or they'll assume it's safe and
     // the next background sync will silently overwrite it with the old
     // (unsaved) cloud state — exactly what happened with a lost plant photo.
-    alert(`⚠️ บันทึก${label||"ข้อมูล"}ขึ้นคลาวด์ไม่สำเร็จ (เชื่อมต่อไม่ได้)\n\nข้อมูลบันทึกไว้ในเครื่องนี้ชั่วคราวเท่านั้น กรุณาตรวจสอบสัญญาณอินเทอร์เน็ต แล้วกดบันทึกซ้ำอีกครั้ง ไม่เช่นนั้นข้อมูลอาจหายไปเมื่อซิงก์ครั้งถัดไป`);
+    alert(`⚠️ บันทึก${label||"ข้อมูล"}ขึ้นคลาวด์ไม่สำเร็จ (เชื่อมต่อไม่ได้)\n\nข้อมูลบันทึกไว้ในเครื่องนี้ชั่วคราวเท่านั้น ลองสลับ WiFi ↔ เน็ตมือถือ แล้วกดบันทึกซ้ำอีกครั้ง ไม่เช่นนั้นข้อมูลอาจหายไปเมื่อซิงก์ครั้งถัดไป`);
     return false;
   }
 }
