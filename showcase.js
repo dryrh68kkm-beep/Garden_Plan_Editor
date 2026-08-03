@@ -44,12 +44,27 @@ async function loadAllPlants(){
     allPlants=data.map(p=>plantOverrides[p.id] ? {...p, ...plantOverrides[p.id]} : p);
     plantById=new Map(allPlants.map(p=>[p.id,p]));
     renderScPlantGallery();
+    applySplitBackgrounds();
   }catch(error){
     console.error("Showcase plant data error:",error);
     allPlants=[];
     plantById=new Map();
     document.getElementById("scPlantCount").textContent="โหลดข้อมูลไม่สำเร็จ";
     document.getElementById("scPlantList").innerHTML='<div class="empty">ไม่สามารถโหลดข้อมูลต้นไม้ได้</div>';
+  }
+}
+
+// Home page split panels use a real photo from the catalog as backdrop when
+// the back office has uploaded one; otherwise the plain CSS gradient shows.
+function applySplitBackgrounds(){
+  const styleWithPhoto=mergedStyles().find(s=>styleImages(s).length);
+  const plantWithPhoto=allPlants.find(p=>p.image);
+  const overlay="linear-gradient(180deg, rgba(10,30,20,.25), rgba(8,20,14,.8))";
+  if(styleWithPhoto){
+    document.querySelector(".sc-split-left").style.backgroundImage=`${overlay}, url('${styleImages(styleWithPhoto)[0]}')`;
+  }
+  if(plantWithPhoto){
+    document.querySelector(".sc-split-right").style.backgroundImage=`${overlay}, url('${plantWithPhoto.image}')`;
   }
 }
 
