@@ -1680,7 +1680,7 @@ async function loadPlantDatabase(){
     if(!Array.isArray(data)) throw new Error("รูปแบบฐานข้อมูลไม่ถูกต้อง");
     plants=data;
     fillPlantFilters();
-    renderPlants();
+    resetPlantPaging();
   }catch(error){
     console.error("Plant database error:",error);
     plants=[];
@@ -1697,6 +1697,12 @@ function fillPlantFilters(){
   select.value=current;
 }
 
+const PLANT_PAGE_SIZE=24;
+let plantVisibleCount=PLANT_PAGE_SIZE;
+function resetPlantPaging(){
+  plantVisibleCount=PLANT_PAGE_SIZE;
+  renderPlants();
+}
 function renderPlants(){
   const q=(document.getElementById("plantSearch")?.value||"").toLowerCase();
   const category=document.getElementById("plantCategoryFilter")?.value||"";
@@ -1705,10 +1711,11 @@ function renderPlants(){
     const hay=[p.id,p.thaiName,p.englishName,p.scientificName,p.category,p.light].join(" ").toLowerCase();
     return hay.includes(q)&&(!category||p.category===category)&&(!light||p.light===light);
   });
-  document.getElementById("plantCount").textContent=`แสดง ${rows.length} จาก ${plants.length} รายการ`;
-  document.getElementById("plantList").innerHTML=rows.length?rows.map(p=>`
+  const visibleRows=rows.slice(0,plantVisibleCount);
+  document.getElementById("plantCount").textContent=`แสดง ${visibleRows.length} จาก ${rows.length} รายการ (ทั้งหมด ${plants.length})`;
+  document.getElementById("plantList").innerHTML=visibleRows.length?visibleRows.map(p=>`
     <article class="plant-card">
-      <div class="plant-thumb"${p.image?` style="background-image:url('${esc(p.image)}')"`:""}>${p.image?"":"🌱"}</div>
+      <div class="plant-thumb">${p.image?`<img src="${esc(p.image)}" alt="${esc(p.thaiName)}" loading="lazy" />`:"🌱"}</div>
       <div class="plant-code">${esc(p.id)} · ${esc(p.category)}</div>
       <h3>${esc(p.thaiName)}</h3>
       <div>${esc(p.englishName||"-")}</div>
@@ -1728,6 +1735,14 @@ function renderPlants(){
         <button class="btn btn-primary" onclick="quickAddPlantToBoq('${p.id}')">เพิ่มเข้า BOQ</button>
       </div>
     </article>`).join(""):'<div class="empty">ไม่พบต้นไม้ที่ค้นหา</div>';
+  const loadMoreBtn=document.getElementById("loadMorePlantsBtn");
+  const remaining=rows.length-visibleRows.length;
+  if(remaining>0){
+    loadMoreBtn.textContent=`โหลดเพิ่ม (เหลืออีก ${remaining} รายการ)`;
+    loadMoreBtn.style.display="inline-flex";
+  } else {
+    loadMoreBtn.style.display="none";
+  }
 }
 
 function openPlantDetail(id){
@@ -1772,17 +1787,21 @@ function quickAddPlantToBoq(id){
   alert(`เพิ่ม ${p.thaiName} เข้า BOQ แล้ว`);
 }
 
-document.getElementById("plantSearch").addEventListener("input",renderPlants);
-document.getElementById("plantCategoryFilter").addEventListener("change",renderPlants);
-document.getElementById("plantLightFilter").addEventListener("change",renderPlants);
+document.getElementById("plantSearch").addEventListener("input",resetPlantPaging);
+document.getElementById("plantCategoryFilter").addEventListener("change",resetPlantPaging);
+document.getElementById("plantLightFilter").addEventListener("change",resetPlantPaging);
 document.getElementById("reloadPlantDbBtn").addEventListener("click",loadPlantDatabase);
+document.getElementById("loadMorePlantsBtn").addEventListener("click",()=>{
+  plantVisibleCount+=PLANT_PAGE_SIZE;
+  renderPlants();
+});
 document.getElementById("addPlantToBoqBtn").addEventListener("click",()=>{
   document.getElementById("plantDetailDialog").close();
   quickAddPlantToBoq(selectedPlantId);
 });
 
 let plantEditImageData;
-function resizeImageToDataURL(file,maxDim=600,quality=0.82){
+function resizeImageToDataURL(file,targetDim=800,maxBytes=250*1024){
   return new Promise((resolve,reject)=>{
     const reader=new FileReader();
     reader.onerror=()=>reject(reader.error);
@@ -1790,12 +1809,21 @@ function resizeImageToDataURL(file,maxDim=600,quality=0.82){
       const img=new Image();
       img.onerror=()=>reject(new Error("โหลดรูปภาพไม่สำเร็จ"));
       img.onload=()=>{
-        const scale=Math.min(1,maxDim/Math.max(img.width,img.height));
+        // Crop to a centered square, then scale to the target cover size.
+        const side=Math.min(img.width,img.height);
+        const sx=(img.width-side)/2, sy=(img.height-side)/2;
         const canvas=document.createElement("canvas");
-        canvas.width=Math.round(img.width*scale);
-        canvas.height=Math.round(img.height*scale);
-        canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);
-        resolve(canvas.toDataURL("image/jpeg",quality));
+        canvas.width=targetDim;
+        canvas.height=targetDim;
+        canvas.getContext("2d").drawImage(img,sx,sy,side,side,0,0,targetDim,targetDim);
+        let quality=0.85;
+        let dataUrl=canvas.toDataURL("image/webp",quality);
+        // Back off quality until the encoded size fits the budget (base64 ~= 4/3 of raw bytes).
+        while(dataUrl.length*0.75>maxBytes && quality>0.35){
+          quality-=0.1;
+          dataUrl=canvas.toDataURL("image/webp",quality);
+        }
+        resolve(dataUrl);
       };
       img.src=reader.result;
     };
