@@ -1,7 +1,6 @@
 const STORAGE = {
   plantOverrides: "garden_plant_overrides_v1",
-  styleOverrides: "garden_style_overrides_v1",
-  siteSettings: "garden_site_settings_v1"
+  styleOverrides: "garden_style_overrides_v1"
 };
 
 function load(key, fallback){
@@ -15,7 +14,6 @@ function esc(s=""){ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&l
 // arrives so the showcase reflects the back office from any device.
 let styleOverrides = load(STORAGE.styleOverrides, {});
 let plantOverrides = load(STORAGE.plantOverrides, {});
-let siteSettings = load(STORAGE.siteSettings, {});
 
 function mergedStyles(){
   return gardenStyles.map(s=>styleOverrides[s.id] ? {...s, ...styleOverrides[s.id]} : s);
@@ -70,16 +68,6 @@ async function loadAllPlants(){
     plantById=new Map();
     document.getElementById("scPlantCount").textContent="โหลดข้อมูลไม่สำเร็จ";
     document.getElementById("scPlantList").innerHTML='<div class="empty">ไม่สามารถโหลดข้อมูลต้นไม้ได้</div>';
-  }
-}
-
-// Home hero uses a single photo set by the back office (Garden_Plan_Editor
-// > "ตั้งค่ารูปหน้าแรกโชว์เคส") as one seamless full-bleed backdrop — no
-// splitting or blending of separate photos. Falls back to a warm gradient
-// (not flat green) until an admin uploads one.
-function applyHeroBackground(){
-  if(siteSettings.heroImage){
-    document.getElementById("scHeroBg").style.backgroundImage=`url('${siteSettings.heroImage}')`;
   }
 }
 
@@ -199,28 +187,24 @@ document.getElementById("scLoadMorePlantsBtn").addEventListener("click",()=>{
 
 renderScStyles();
 loadAllPlants();
-applyHeroBackground();
 
-// Pull the latest overrides/hero photo from Firestore so this page reflects
-// the back office from any device, not just the browser that saved them.
-// Falls back to whatever localStorage already had (or nothing) if the
-// cloud is unreachable — the showcase must still render either way.
+// Pull the latest overrides from Firestore so this page reflects the back
+// office from any device, not just the browser that saved them. Falls back
+// to whatever localStorage already had (or nothing) if the cloud is
+// unreachable — the showcase must still render either way.
 async function initFromFirestore(){
   try{
-    const [remoteStyleOverrides,remotePlantOverrides,remoteHero]=await Promise.all([
+    const [remoteStyleOverrides,remotePlantOverrides]=await Promise.all([
       fbList("styleOverrides"),
-      fbList("plantOverrides"),
-      fbGet("siteSettings","hero")
+      fbList("plantOverrides")
     ]);
     styleOverrides={};
     remoteStyleOverrides.forEach(s=>{const {id,...rest}=s;styleOverrides[id]=rest;});
     plantOverrides={};
     remotePlantOverrides.forEach(p=>{const {id,...rest}=p;plantOverrides[id]=rest;});
-    if(remoteHero){const {id,...rest}=remoteHero;siteSettings=rest;}
     renderScStyles();
     rebuildAllPlants();
     renderScPlantGallery();
-    applyHeroBackground();
   }catch(error){
     console.error("Showcase Firestore sync failed, staying on local data:",error);
   }

@@ -3,8 +3,7 @@ const STORAGE = {
   projects: "garden_projects_v1",
   boq: "garden_boq_v1",
   plantOverrides: "garden_plant_overrides_v1",
-  styleOverrides: "garden_style_overrides_v1",
-  siteSettings: "garden_site_settings_v1"
+  styleOverrides: "garden_style_overrides_v1"
 };
 
 // gardenStyles is defined in data/garden-styles-data.js, loaded via a <script> tag before this file.
@@ -17,13 +16,7 @@ let projects = load(STORAGE.projects, []);
 let boqItems = load(STORAGE.boq, []);
 let plantOverrides = load(STORAGE.plantOverrides, {});
 let styleOverrides = load(STORAGE.styleOverrides, {});
-let siteSettings = load(STORAGE.siteSettings, {});
 let selectedBoqProjectId = "";
-
-async function saveSiteSettings(){
-  localStorage.setItem(STORAGE.siteSettings, JSON.stringify(siteSettings));
-  await cloudSave(()=>fbSet("siteSettings","hero",siteSettings),"รูปหน้าแรกโชว์เคส");
-}
 
 async function savePlantOverrides(id){
   localStorage.setItem(STORAGE.plantOverrides, JSON.stringify(plantOverrides));
@@ -97,51 +90,13 @@ document.getElementById("projectSearch").oninput=renderProjects;
 document.getElementById("projectStatusFilter").onchange=renderProjects;
 document.getElementById("boqProjectSelect").onchange=e=>{selectedBoqProjectId=e.target.value;renderBoq();};
 document.getElementById("resetAllBtn").onclick=()=>{
-  if(confirm("ต้องการล้างข้อมูลลูกค้า โครงการ BOQ รูปภาพที่แนบ และการตั้งค่าทั้งหมดหรือไม่?")){
+  if(confirm("ต้องการล้างข้อมูลลูกค้า โครงการ BOQ และรูปภาพที่แนบทั้งหมดหรือไม่?")){
     customers=[];projects=[];boqItems=[];selectedBoqProjectId="";
-    plantOverrides={};styleOverrides={};siteSettings={};
+    plantOverrides={};styleOverrides={};
     Object.values(STORAGE).forEach(k=>localStorage.removeItem(k));
     renderAll();
   }
 };
-
-let heroSettingsImageData;
-document.getElementById("heroSettingsBtn").onclick=()=>{
-  heroSettingsImageData=siteSettings.heroImage||"";
-  const preview=document.getElementById("heroSettingsPreview");
-  const wrap=document.getElementById("heroSettingsPreviewWrap");
-  document.getElementById("heroSettingsImage").value="";
-  if(heroSettingsImageData){ preview.src=heroSettingsImageData; wrap.style.display="flex"; }
-  else{ preview.src=""; wrap.style.display="none"; }
-  document.getElementById("heroSettingsDialog").showModal();
-};
-document.getElementById("heroSettingsImage").addEventListener("change",async e=>{
-  const file=e.target.files[0];
-  if(!file) return;
-  try{
-    heroSettingsImageData=await resizeImageToDataURL(file,1200,300*1024);
-    document.getElementById("heroSettingsPreview").src=heroSettingsImageData;
-    document.getElementById("heroSettingsPreviewWrap").style.display="flex";
-  }catch{
-    alert("ไม่สามารถอ่านไฟล์รูปภาพนี้ได้");
-  }
-});
-document.getElementById("heroSettingsRemoveBtn").addEventListener("click",()=>{
-  heroSettingsImageData="";
-  document.getElementById("heroSettingsImage").value="";
-  document.getElementById("heroSettingsPreview").src="";
-  document.getElementById("heroSettingsPreviewWrap").style.display="none";
-});
-document.getElementById("heroSettingsForm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  siteSettings.heroImage=heroSettingsImageData||"";
-  const btn=e.target.querySelector("button.btn-primary");
-  const originalLabel=btn.textContent;
-  btn.disabled=true; btn.textContent="กำลังบันทึกขึ้นคลาวด์...";
-  await saveSiteSettings();
-  btn.disabled=false; btn.textContent=originalLabel;
-  document.getElementById("heroSettingsDialog").close();
-});
 
 function openCustomer(id=""){
   const c=customers.find(x=>x.id===id);
@@ -739,13 +694,12 @@ async function cloudSave(fn,label){
 // the app must keep working offline.
 async function initFromFirestore(){
   try{
-    const [remoteCustomers,remoteProjects,remoteBoq,remotePlantOverrides,remoteStyleOverrides,remoteHero]=await Promise.all([
+    const [remoteCustomers,remoteProjects,remoteBoq,remotePlantOverrides,remoteStyleOverrides]=await Promise.all([
       fbList("customers"),
       fbList("projects"),
       fbList("boq"),
       fbList("plantOverrides"),
-      fbList("styleOverrides"),
-      fbGet("siteSettings","hero")
+      fbList("styleOverrides")
     ]);
     customers=remoteCustomers;
     projects=remoteProjects;
@@ -754,13 +708,11 @@ async function initFromFirestore(){
     remotePlantOverrides.forEach(p=>{const {id,...rest}=p;plantOverrides[id]=rest;});
     styleOverrides={};
     remoteStyleOverrides.forEach(s=>{const {id,...rest}=s;styleOverrides[id]=rest;});
-    if(remoteHero){const {id,...rest}=remoteHero;siteSettings=rest;}
     localStorage.setItem(STORAGE.customers,JSON.stringify(customers));
     localStorage.setItem(STORAGE.projects,JSON.stringify(projects));
     localStorage.setItem(STORAGE.boq,JSON.stringify(boqItems));
     localStorage.setItem(STORAGE.plantOverrides,JSON.stringify(plantOverrides));
     localStorage.setItem(STORAGE.styleOverrides,JSON.stringify(styleOverrides));
-    localStorage.setItem(STORAGE.siteSettings,JSON.stringify(siteSettings));
     renderAll();
     if(plants.length) renderPlants();
     setCloudStatus(true);
