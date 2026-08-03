@@ -8,6 +8,7 @@ function load(key, fallback){
   catch { return fallback; }
 }
 function esc(s=""){ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m])); }
+function money(v){ return new Intl.NumberFormat("th-TH",{style:"currency",currency:"THB",maximumFractionDigits:0}).format(Number(v)||0); }
 
 // Seeded from localStorage first (instant, works offline / same-browser as
 // admin), then overwritten by initFromFirestore() once the cloud data
@@ -160,8 +161,11 @@ function renderScPlantGallery(){
     : "ยังไม่มีรูปต้นไม้ในผลงาน";
   document.getElementById("scPlantList").innerHTML=visibleRows.length?visibleRows.map(p=>`
     <article class="showcase-plant-tile" onclick="openScPlantLightbox('${p.id}')">
-      <img src="${esc(p.image)}" alt="${esc(p.thaiName)}" loading="lazy" />
-      <div class="showcase-plant-caption">${esc(p.thaiName)}</div>
+      <div class="showcase-plant-photo"><img src="${esc(p.image)}" alt="${esc(p.thaiName)}" loading="lazy" /></div>
+      <div class="showcase-plant-info">
+        <div class="showcase-plant-caption">${esc(p.thaiName)}</div>
+        ${p.salePrice?`<div class="showcase-plant-price-tag">🏷️ ${money(p.salePrice)}${p.unit?` / ${esc(p.unit)}`:""}</div>`:""}
+      </div>
     </article>`).join(""):'<div class="empty">ยังไม่มีรูปต้นไม้ในผลงาน</div>';
   const loadMoreBtn=document.getElementById("scLoadMorePlantsBtn");
   const remaining=rows.length-visibleRows.length;
@@ -177,6 +181,13 @@ function openScPlantLightbox(id){
   if(!p||!p.image) return;
   document.getElementById("scPlantLightboxName").textContent=p.thaiName+(p.englishName?` · ${p.englishName}`:"");
   document.getElementById("scPlantLightboxImage").src=p.image;
+  const priceTag=document.getElementById("scPlantLightboxPriceTag");
+  if(p.salePrice){
+    priceTag.textContent=`🏷️ ${money(p.salePrice)}${p.unit?` / ${p.unit}`:""}`;
+    priceTag.style.display="inline-flex";
+  } else {
+    priceTag.style.display="none";
+  }
   document.getElementById("scPlantLightbox").showModal();
 }
 document.getElementById("scPlantSearch").addEventListener("input",resetScPlantPaging);
