@@ -1,7 +1,7 @@
 /* Home hero: hide the shared header/tabs so the photo goes edge-to-edge */
 body.sc-home-active .sc-header-hideable{display:none}
 
-.page.sc-hero{display:flex}
+.page.active.sc-hero{display:flex}
 .sc-hero{position:relative;min-height:100vh;overflow:hidden;flex-direction:column;color:#fff}
 /* Single seamless backdrop. When the back office hasn't uploaded a hero
    photo yet, this warm golden-hour-tinted gradient shows instead of a
