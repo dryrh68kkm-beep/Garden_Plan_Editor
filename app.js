@@ -1815,12 +1815,16 @@ function resizeImageToDataURL(file,targetDim=800,maxBytes=250*1024){
         const canvas=document.createElement("canvas");
         canvas.width=targetDim;
         canvas.height=targetDim;
-        canvas.getContext("2d").drawImage(img,sx,sy,side,side,0,0,targetDim,targetDim);
-        let quality=0.85;
+        const ctx=canvas.getContext("2d");
+        ctx.imageSmoothingEnabled=true;
+        ctx.imageSmoothingQuality="high";
+        ctx.drawImage(img,sx,sy,side,side,0,0,targetDim,targetDim);
+        let quality=0.92;
         let dataUrl=canvas.toDataURL("image/webp",quality);
-        // Back off quality until the encoded size fits the budget (base64 ~= 4/3 of raw bytes).
-        while(dataUrl.length*0.75>maxBytes && quality>0.35){
-          quality-=0.1;
+        // Back off quality in small steps until the encoded size fits the budget
+        // (base64 ~= 4/3 of raw bytes), but don't go below a floor that turns visibly soft.
+        while(dataUrl.length*0.75>maxBytes && quality>0.55){
+          quality-=0.05;
           dataUrl=canvas.toDataURL("image/webp",quality);
         }
         resolve(dataUrl);
