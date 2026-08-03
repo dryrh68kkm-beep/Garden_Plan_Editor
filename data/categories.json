@@ -1,0 +1,77 @@
+[
+  {
+    "id": "CAT001",
+    "name": "ไม้ยืนต้น",
+    "description": "ไม้ยืนต้นสำหรับจัดสวน"
+  },
+  {
+    "id": "CAT002",
+    "name": "ไม้พุ่ม",
+    "description": "ไม้พุ่มตกแต่ง"
+  },
+  {
+    "id": "CAT003",
+    "name": "ปาล์ม",
+    "description": "ปาล์มทุกชนิด"
+  },
+  {
+    "id": "CAT004",
+    "name": "สน",
+    "description": "สนประดับ"
+  },
+  {
+    "id": "CAT005",
+    "name": "ไม้ใบ",
+    "description": "ไม้ใบประดับ"
+  },
+  {
+    "id": "CAT006",
+    "name": "ไม้ดอก",
+    "description": "ไม้ดอก"
+  },
+  {
+    "id": "CAT007",
+    "name": "ไม้คลุมดิน",
+    "description": "ไม้คลุมดิน"
+  },
+  {
+    "id": "CAT008",
+    "name": "เฟิร์น",
+    "description": "เฟิร์น"
+  },
+  {
+    "id": "CAT009",
+    "name": "ไผ่",
+    "description": "ไผ่ประดับ"
+  },
+  {
+    "id": "CAT010",
+    "name": "ไม้น้ำ",
+    "description": "พืชน้ำ"
+  },
+  {
+    "id": "CAT011",
+    "name": "แคคตัส",
+    "description": "กระบองเพชร"
+  },
+  {
+    "id": "CAT012",
+    "name": "ไม้อวบน้ำ",
+    "description": "Succulent"
+  },
+  {
+    "id": "CAT013",
+    "name": "ไม้เลื้อย",
+    "description": "ไม้เลื้อย"
+  },
+  {
+    "id": "CAT014",
+    "name": "สมุนไพร",
+    "description": "สมุนไพร"
+  },
+  {
+    "id": "CAT015",
+    "name": "ไม้ผล",
+    "description": "ไม้ผล"
+  }
+]
