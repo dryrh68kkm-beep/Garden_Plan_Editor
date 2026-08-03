@@ -22,12 +22,12 @@ let selectedBoqProjectId = "";
 
 async function saveSiteSettings(){
   localStorage.setItem(STORAGE.siteSettings, JSON.stringify(siteSettings));
-  await cloudSave(()=>fbSet("siteSettings","hero",siteSettings));
+  await cloudSave(()=>fbSet("siteSettings","hero",siteSettings),"รูปหน้าแรกโชว์เคส");
 }
 
 async function savePlantOverrides(id){
   localStorage.setItem(STORAGE.plantOverrides, JSON.stringify(plantOverrides));
-  if(id) await cloudSave(()=>fbSet("plantOverrides",id,plantOverrides[id]));
+  if(id) await cloudSave(()=>fbSet("plantOverrides",id,plantOverrides[id]),"ข้อมูลต้นไม้");
 }
 function getPlant(id){
   const p=plants.find(x=>x.id===id);
@@ -35,7 +35,7 @@ function getPlant(id){
 }
 async function saveStyleOverrides(id){
   localStorage.setItem(STORAGE.styleOverrides, JSON.stringify(styleOverrides));
-  if(id) await cloudSave(()=>fbSet("styleOverrides",id,styleOverrides[id]));
+  if(id) await cloudSave(()=>fbSet("styleOverrides",id,styleOverrides[id]),"ข้อมูลแบบสวน");
 }
 function getStyle(id){
   const s=gardenStyles.find(x=>x.id===id);
@@ -160,7 +160,7 @@ document.getElementById("customerForm").addEventListener("submit",async e=>{
   const data={id:id||uid("cus"),name:document.getElementById("customerName").value.trim(),phone:document.getElementById("customerPhone").value.trim(),line:document.getElementById("customerLine").value.trim(),address:document.getElementById("customerAddress").value.trim(),note:document.getElementById("customerNote").value.trim()};
   if(id) customers=customers.map(c=>c.id===id?data:c); else customers.unshift(data);
   save();
-  await cloudSave(()=>fbSet("customers",data.id,data));
+  await cloudSave(()=>fbSet("customers",data.id,data),"ข้อมูลลูกค้า");
   document.getElementById("customerDialog").close();
 });
 
@@ -187,7 +187,7 @@ document.getElementById("projectForm").addEventListener("submit",async e=>{
   const data={id:id||uid("pro"),name:document.getElementById("projectName").value.trim(),customerId:document.getElementById("projectCustomer").value,location:document.getElementById("projectLocation").value.trim(),area:Number(document.getElementById("projectArea").value)||0,budget:Number(document.getElementById("projectBudget").value)||0,styleId:document.getElementById("projectStyle").value,status:document.getElementById("projectStatus").value,startDate:document.getElementById("projectStartDate").value,note:document.getElementById("projectNote").value.trim(),createdAt:existing?.createdAt||new Date().toISOString()};
   if(id) projects=projects.map(p=>p.id===id?data:p); else projects.unshift(data);
   save();
-  await cloudSave(()=>fbSet("projects",data.id,data));
+  await cloudSave(()=>fbSet("projects",data.id,data),"ข้อมูลโครงการ");
   document.getElementById("projectDialog").close();
 });
 
@@ -196,7 +196,7 @@ document.getElementById("boqForm").addEventListener("submit",async e=>{
   const boqData={id:uid("boq"),projectId:selectedBoqProjectId,category:document.getElementById("boqCategory").value,item:document.getElementById("boqItem").value.trim(),qty:Number(document.getElementById("boqQty").value)||0,unit:document.getElementById("boqUnit").value.trim(),cost:Number(document.getElementById("boqCost").value)||0,price:Number(document.getElementById("boqPrice").value)||0};
   boqItems.unshift(boqData);
   save();
-  await cloudSave(()=>fbSet("boq",boqData.id,boqData));
+  await cloudSave(()=>fbSet("boq",boqData.id,boqData),"รายการ BOQ");
   document.getElementById("boqDialog").close();
 });
 
@@ -280,7 +280,7 @@ async function deleteCustomer(id){
     await cloudSave(async()=>{
       await fbDelete("customers",id);
       await Promise.all(affectedProjects.map(p=>fbSet("projects",p.id,{...p,customerId:""})));
-    });
+    },"การลบลูกค้า");
   }
 }
 async function deleteProject(id){
@@ -293,14 +293,14 @@ async function deleteProject(id){
     await cloudSave(async()=>{
       await fbDelete("projects",id);
       await Promise.all(removedBoqIds.map(boqId=>fbDelete("boq",boqId)));
-    });
+    },"การลบโครงการ");
   }
 }
 async function deleteBoq(id){
   if(confirm("ลบรายการนี้หรือไม่?")){
     boqItems=boqItems.filter(i=>i.id!==id);
     save();
-    await cloudSave(()=>fbDelete("boq",id));
+    await cloudSave(()=>fbDelete("boq",id),"การลบรายการ BOQ");
   }
 }
 function openProjectBoq(id){selectedBoqProjectId=id;showPage("boq");renderBoqProjectSelect();renderBoq();}
@@ -702,13 +702,21 @@ function setCloudStatus(ok){
 // away (e.g. close a dialog) — otherwise a quick tab switch or page nav can
 // cancel the in-flight fetch and the write never reaches Firestore, even
 // though localStorage already looks saved.
-async function cloudSave(fn){
+async function cloudSave(fn,label){
   try{
     await fn();
     setCloudStatus(true);
+    return true;
   }catch(err){
     console.error("Firestore save failed, staying on local data:",err);
     setCloudStatus(false);
+    // A quiet status badge is easy to miss — for saves that matter (a photo,
+    // a customer record) the user needs an unmissable signal that it only
+    // saved on this device, not the cloud, or they'll assume it's safe and
+    // the next background sync will silently overwrite it with the old
+    // (unsaved) cloud state — exactly what happened with a lost plant photo.
+    alert(`⚠️ บันทึก${label||"ข้อมูล"}ขึ้นคลาวด์ไม่สำเร็จ (เชื่อมต่อไม่ได้)\n\nข้อมูลบันทึกไว้ในเครื่องนี้ชั่วคราวเท่านั้น กรุณาตรวจสอบสัญญาณอินเทอร์เน็ต แล้วกดบันทึกซ้ำอีกครั้ง ไม่เช่นนั้นข้อมูลอาจหายไปเมื่อซิงก์ครั้งถัดไป`);
+    return false;
   }
 }
 
