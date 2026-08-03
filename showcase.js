@@ -195,7 +195,8 @@ function renderScPlantGallery(){
   const rows=allPlants.filter(p=>!!p.image
     &&[p.thaiName,p.englishName,p.scientificName].join(" ").toLowerCase().includes(q)
     &&(!category||p.category===category)
-    &&(!bestSellerOnly||p.bestSeller));
+    &&(!bestSellerOnly||p.bestSeller))
+    .sort((a,b)=>(b.bestSeller?1:0)-(a.bestSeller?1:0));
   const visibleRows=rows.slice(0,scPlantVisibleCount);
   document.getElementById("scPlantCount").textContent=rows.length
     ? `แสดง ${visibleRows.length} จาก ${rows.length} รายการ`

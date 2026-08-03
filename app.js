@@ -320,7 +320,7 @@ function renderPlants(){
   const rows=mergedPlants().filter(p=>{
     const hay=[p.id,p.thaiName,p.englishName,p.scientificName,p.category,p.light].join(" ").toLowerCase();
     return hay.includes(q)&&(!category||p.category===category)&&(!light||p.light===light);
-  });
+  }).sort((a,b)=>(b.bestSeller?1:0)-(a.bestSeller?1:0));
   const visibleRows=rows.slice(0,plantVisibleCount);
   document.getElementById("plantCount").textContent=`แสดง ${visibleRows.length} จาก ${rows.length} รายการ (ทั้งหมด ${plants.length})`;
   document.getElementById("plantList").innerHTML=visibleRows.length?visibleRows.map(p=>`
