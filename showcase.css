@@ -1,5 +1,11 @@
-.page.sc-split{display:flex;min-height:75vh}
+.page.sc-split{display:flex;min-height:75vh;position:relative}
 .sc-split-half{flex:1;width:100%;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;text-align:center;padding:24px}
+.sc-split-badge{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:150px;height:150px;border-radius:50%;object-fit:cover;background:#fbf7ec;border:5px solid #fbf7ec;box-shadow:0 10px 30px rgba(0,0,0,.35);z-index:2;pointer-events:none}
+@media(max-width:700px){
+  .sc-split-half{justify-content:flex-start;padding-top:22vh}
+  .sc-split-badge{width:100px;height:100px;border-width:4px}
+}
+@media(max-width:420px){.sc-split-half{padding-top:18vh}}
 .sc-split-left{background:linear-gradient(160deg,#1f6b46,#173d2b)}
 .sc-split-right{background:linear-gradient(160deg,#2f7a55,#10291d)}
 .sc-split-half h3{margin:0;font-size:clamp(20px,3vw,28px)}
