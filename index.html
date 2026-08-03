@@ -13,11 +13,14 @@
       <p class="eyebrow">LANDSCAPE MANAGEMENT</p>
       <h1>Garden Plan Editor</h1>
     </div>
-    <div class="actions" style="margin-top:0;align-items:center">
-      <span id="cloudStatus" class="badge">กำลังเชื่อมต่อ...</span>
-      <button id="manualSyncBtn" class="btn btn-ghost" title="ดึงข้อมูลล่าสุดจากคลาวด์ทันที">🔄 ซิงก์ข้อมูล</button>
-      <button id="heroSettingsBtn" class="btn btn-ghost">ตั้งค่ารูปหน้าแรกโชว์เคส</button>
-      <button id="resetAllBtn" class="btn btn-ghost">ล้างข้อมูลทั้งหมด</button>
+    <div class="topbar-actions">
+      <div class="sync-group">
+        <span id="cloudStatus" class="badge">กำลังเชื่อมต่อ...</span>
+        <button id="manualSyncBtn" class="btn btn-ghost" title="ดึงข้อมูลล่าสุดจากคลาวด์ทันที">🔄 ซิงก์ข้อมูล</button>
+      </div>
+      <div class="admin-actions">
+        <button id="resetAllBtn" class="btn btn-ghost btn-danger-ghost">ล้างข้อมูลทั้งหมด</button>
+      </div>
     </div>
   </header>
 
@@ -365,22 +368,6 @@
       <div id="plantEditPreviewWrap" class="plant-edit-preview-wrap">
         <img id="plantEditPreview" class="plant-edit-preview" alt="" />
         <button type="button" id="plantEditRemoveImageBtn" class="small-btn danger">ลบรูป</button>
-      </div>
-      <div class="modal-actions">
-        <button type="button" class="btn btn-ghost close-dialog">ยกเลิก</button>
-        <button class="btn btn-primary" value="default">บันทึก</button>
-      </div>
-    </form>
-  </dialog>
-
-  <dialog id="heroSettingsDialog" class="modal">
-    <form id="heroSettingsForm" method="dialog">
-      <div class="modal-head"><h3>รูปพื้นหลังหน้าแรกโชว์เคส</h3><button type="button" class="icon-btn close-dialog">×</button></div>
-      <p class="meta">อัปโหลดภาพสวน/ต้นไม้แบบภาพเดียว ไม่ตัดแบ่งซ้ายขวา ใช้เป็นพื้นหลังเต็มจอของหน้าแรกในเว็บโชว์เคส แนะนำภาพแนวตั้งความละเอียดสูง</p>
-      <label>เลือกรูปภาพ<input id="heroSettingsImage" class="input" type="file" accept="image/*" /></label>
-      <div id="heroSettingsPreviewWrap" class="plant-edit-preview-wrap">
-        <img id="heroSettingsPreview" class="plant-edit-preview" alt="" style="width:140px;height:180px" />
-        <button type="button" id="heroSettingsRemoveBtn" class="small-btn danger">ลบรูป</button>
       </div>
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost close-dialog">ยกเลิก</button>
