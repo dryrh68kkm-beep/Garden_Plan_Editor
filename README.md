@@ -1,38 +1,22 @@
-# Landscape Management Pro — Mobile Upload Edition
+# Garden Plan Editor V1
 
-เวอร์ชันนี้ทำขึ้นเพื่อให้อัปโหลดผ่าน iPhone ไปยัง GitHub ได้ง่าย
+เว็บแอปเริ่มต้นสำหรับจัดการงานจัดสวน ใช้งานได้ทันทีบน GitHub Pages
 
-## มีเพียง 4 ไฟล์
+## ฟังก์ชัน
+- Dashboard
+- เพิ่ม แก้ไข ลบ และค้นหาลูกค้า
+- เพิ่ม แก้ไข ลบ และค้นหาโครงการ
+- แบบสวนสำเร็จรูป 12 แบบ
+- BOQ คำนวณต้นทุน ราคาขาย กำไร และกำไร %
+- พิมพ์หรือบันทึก BOQ เป็น PDF
+- บันทึกข้อมูลด้วย Local Storage
+- รองรับมือถือ
 
+## วิธีอัปโหลดขึ้น GitHub
+อัปโหลดไฟล์ทั้งหมด 4 ไฟล์ไว้ในหน้าแรกของ Repository:
 - index.html
 - style.css
 - app.js
 - README.md
 
-ไม่มีโฟลเดอร์ src, public หรือ assets และภาพ AI ถูกฝังอยู่ภายใน app.js แล้ว
-
-## วิธีอัปโหลด
-
-1. เปิด Repository ใน GitHub
-2. กด Add file → Upload files
-3. เลือกไฟล์ทั้ง 4 ไฟล์
-4. Commit changes
-5. ไปที่ Settings → Pages
-6. Source เลือก Deploy from a branch
-7. Branch เลือก main และ /(root)
-8. Save
-
-จากนั้นรอ 1–3 นาที GitHub จะแสดงลิงก์เว็บไซต์
-
-## ฟังก์ชัน
-
-- Dashboard
-- ลูกค้า CRM
-- หลายโครงการ
-- AI Gallery พร้อมรูปในไฟล์
-- ฐานข้อมูลต้นไม้
-- แบบสวน
-- BOQ
-- ตั้งค่า
-- รองรับมือถือ
-- บันทึกข้อมูลด้วย LocalStorage
+จากนั้นเปิด Settings > Pages > Deploy from a branch > main > /(root) > Save
