@@ -1356,6 +1356,9 @@ const gardenStyles = [
   }
 ];
 
+let plants = [];
+let selectedPlantId = "";
+
 let customers = load(STORAGE.customers, []);
 let projects = load(STORAGE.projects, []);
 let boqItems = load(STORAGE.boq, []);
@@ -1370,6 +1373,7 @@ function save(){
   localStorage.setItem(STORAGE.projects, JSON.stringify(projects));
   localStorage.setItem(STORAGE.boq, JSON.stringify(boqItems));
   renderAll();
+loadPlantDatabase();
 }
 function uid(prefix){ return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,7)}`; }
 function money(v){ return new Intl.NumberFormat("th-TH",{style:"currency",currency:"THB",maximumFractionDigits:0}).format(Number(v)||0); }
@@ -1572,6 +1576,113 @@ document.getElementById("copyStylePromptBtn").addEventListener("click",async()=>
   }catch{
     prompt("คัดลอกข้อความนี้",s.aiPrompt);
   }
+});
+
+
+async function loadPlantDatabase(){
+  const counter=document.getElementById("plantCount");
+  if(counter) counter.textContent="กำลังโหลดฐานข้อมูล...";
+  try{
+    const response=await fetch("./data/plants.json",{cache:"no-store"});
+    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data=await response.json();
+    if(!Array.isArray(data)) throw new Error("รูปแบบฐานข้อมูลไม่ถูกต้อง");
+    plants=data;
+    fillPlantFilters();
+    renderPlants();
+  }catch(error){
+    console.error("Plant database error:",error);
+    plants=[];
+    if(counter) counter.textContent="โหลดฐานข้อมูลไม่สำเร็จ กรุณาตรวจสอบไฟล์ data/plants.json";
+    document.getElementById("plantList").innerHTML='<div class="empty">ไม่สามารถโหลดฐานข้อมูลต้นไม้ได้</div>';
+  }
+}
+
+function fillPlantFilters(){
+  const select=document.getElementById("plantCategoryFilter");
+  const current=select.value;
+  const categories=[...new Set(plants.map(p=>p.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"th"));
+  select.innerHTML='<option value="">ทุกประเภท</option>'+categories.map(x=>`<option>${esc(x)}</option>`).join("");
+  select.value=current;
+}
+
+function renderPlants(){
+  const q=(document.getElementById("plantSearch")?.value||"").toLowerCase();
+  const category=document.getElementById("plantCategoryFilter")?.value||"";
+  const light=document.getElementById("plantLightFilter")?.value||"";
+  const rows=plants.filter(p=>{
+    const hay=[p.id,p.thaiName,p.englishName,p.scientificName,p.category,p.light].join(" ").toLowerCase();
+    return hay.includes(q)&&(!category||p.category===category)&&(!light||p.light===light);
+  });
+  document.getElementById("plantCount").textContent=`แสดง ${rows.length} จาก ${plants.length} รายการ`;
+  document.getElementById("plantList").innerHTML=rows.length?rows.map(p=>`
+    <article class="plant-card">
+      <div class="plant-code">${esc(p.id)} · ${esc(p.category)}</div>
+      <h3>${esc(p.thaiName)}</h3>
+      <div>${esc(p.englishName||"-")}</div>
+      <div class="plant-scientific">${esc(p.scientificName||"")}</div>
+      <div class="chips">
+        <span class="chip">${esc(p.light)}</span>
+        <span class="chip">น้ำ ${esc(p.water)}</span>
+        <span class="chip">ดูแล ${esc(p.maintenance)}</span>
+      </div>
+      <div class="plant-price-row">
+        <div><span>ต้นทุน</span><strong>${money(p.costPrice)}</strong></div>
+        <div><span>ราคาขาย</span><strong>${money(p.salePrice)}</strong></div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-secondary" onclick="openPlantDetail('${p.id}')">ดูรายละเอียด</button>
+        <button class="btn btn-primary" onclick="quickAddPlantToBoq('${p.id}')">เพิ่มเข้า BOQ</button>
+      </div>
+    </article>`).join(""):'<div class="empty">ไม่พบต้นไม้ที่ค้นหา</div>';
+}
+
+function openPlantDetail(id){
+  const p=plants.find(x=>x.id===id);
+  if(!p) return;
+  selectedPlantId=id;
+  document.getElementById("plantDetailCode").textContent=p.id+" · "+(p.englishName||"");
+  document.getElementById("plantDetailName").textContent=p.thaiName;
+  document.getElementById("plantDetailScientific").textContent=p.scientificName||"-";
+  document.getElementById("plantDetailCategory").textContent=p.category||"-";
+  document.getElementById("plantDetailLight").textContent=p.light||"-";
+  document.getElementById("plantDetailWater").textContent=p.water||"-";
+  document.getElementById("plantDetailMaintenance").textContent=p.maintenance||"-";
+  document.getElementById("plantDetailHeight").textContent=(p.heightCm||0)+" ซม.";
+  document.getElementById("plantDetailSpacing").textContent=(p.spacingCm||0)+" ซม.";
+  document.getElementById("plantDetailCost").textContent=money(p.costPrice)+" / "+p.unit;
+  document.getElementById("plantDetailPrice").textContent=money(p.salePrice)+" / "+p.unit;
+  document.getElementById("plantDetailStyles").innerHTML=(p.styles||[]).map(id=>`<span class="chip">${esc(styleName(id))}</span>`).join("");
+  document.getElementById("plantDetailDialog").showModal();
+}
+
+function quickAddPlantToBoq(id){
+  const p=plants.find(x=>x.id===id);
+  if(!p) return;
+  if(!selectedBoqProjectId){
+    if(!projects.length){alert("กรุณาสร้างโครงการก่อนเพิ่มต้นไม้เข้า BOQ");return;}
+    selectedBoqProjectId=projects[0].id;
+  }
+  const qtyText=prompt(`จำนวน ${p.thaiName} (${p.unit})`,"1");
+  if(qtyText===null) return;
+  const qty=Number(qtyText);
+  if(!Number.isFinite(qty)||qty<=0){alert("กรุณาระบุจำนวนที่ถูกต้อง");return;}
+  boqItems.unshift({
+    id:uid("boq"),projectId:selectedBoqProjectId,category:"ต้นไม้",
+    item:`${p.thaiName} (${p.id})`,qty,unit:p.unit||"ต้น",
+    cost:Number(p.costPrice)||0,price:Number(p.salePrice)||0,plantId:p.id
+  });
+  save();
+  alert(`เพิ่ม ${p.thaiName} เข้า BOQ แล้ว`);
+}
+
+document.getElementById("plantSearch").addEventListener("input",renderPlants);
+document.getElementById("plantCategoryFilter").addEventListener("change",renderPlants);
+document.getElementById("plantLightFilter").addEventListener("change",renderPlants);
+document.getElementById("reloadPlantDbBtn").addEventListener("click",loadPlantDatabase);
+document.getElementById("addPlantToBoqBtn").addEventListener("click",()=>{
+  document.getElementById("plantDetailDialog").close();
+  quickAddPlantToBoq(selectedPlantId);
 });
 
 function renderAll(){fillProjectOptions();renderDashboard();renderCustomers();renderProjects();renderStyles();renderBoqProjectSelect();renderBoq();}
