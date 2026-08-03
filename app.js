@@ -119,7 +119,7 @@ document.getElementById("heroSettingsImage").addEventListener("change",async e=>
   const file=e.target.files[0];
   if(!file) return;
   try{
-    heroSettingsImageData=await resizeImageToDataURL(file,1600,400*1024);
+    heroSettingsImageData=await resizeImageToDataURL(file,1200,300*1024);
     document.getElementById("heroSettingsPreview").src=heroSettingsImageData;
     document.getElementById("heroSettingsPreviewWrap").style.display="flex";
   }catch{

@@ -20,12 +20,23 @@ let fbTokenExpiry = 0;
 // fully offline, just stalling) it can hang for a very long time before the
 // browser itself gives up, leaving a "saving..." button stuck far longer
 // than the UI implies. Force every request to fail fast instead so the
-// existing offline fallback actually kicks in promptly. 15s (not 8s) gives
-// a genuinely slow mobile connection a fair chance before giving up.
-const FB_TIMEOUT_MS = 15000;
+// existing offline fallback actually kicks in promptly.
+//
+// The timeout scales with request size: a plant/style/hero photo save can
+// be several hundred KB, and mobile *upload* speed is often much slower
+// than download (a weak signal can be under 50KB/s) — a flat short timeout
+// would keep cutting those off mid-upload while small text-only saves
+// (customers, BOQ) stay fast. Base 12s covers normal round-trips; add ~40ms
+// per KB of body (≈25KB/s assumed floor) up to a 45s ceiling.
+const FB_BASE_TIMEOUT_MS = 12000;
+const FB_MAX_TIMEOUT_MS = 45000;
+function fbTimeoutFor(options){
+  const bodyLen = typeof options.body === "string" ? options.body.length : 0;
+  return Math.min(FB_MAX_TIMEOUT_MS, FB_BASE_TIMEOUT_MS + Math.round(bodyLen/1024*40));
+}
 async function fbFetchOnce(url, options={}){
   const controller = new AbortController();
-  const timer = setTimeout(()=>controller.abort(), FB_TIMEOUT_MS);
+  const timer = setTimeout(()=>controller.abort(), fbTimeoutFor(options));
   try{
     return await fetch(url, {...options, signal: controller.signal});
   }catch(err){
