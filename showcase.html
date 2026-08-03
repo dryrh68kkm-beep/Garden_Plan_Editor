@@ -22,29 +22,18 @@
     <button class="tab" data-page="showcasePlants">ต้นไม้</button>
   </nav>
 
-  <main class="container">
-    <section id="showcaseHomePage" class="page active">
-      <div class="sc-hero">
-        <div class="sc-hero-badge">🌳</div>
-        <h2>ผลงานและแบบสวนของเรา</h2>
-        <p>แรงบันดาลใจสวนในฝันของคุณ</p>
-      </div>
-      <div class="sc-home-cards">
-        <button type="button" class="sc-home-card" onclick="showPage('showcaseStyles')">
-          <span class="sc-home-icon">🏡</span>
-          <h3>ตัวเลือกจัดสวน</h3>
-          <p>ไอเดียจัดสวนหลากสไตล์ พร้อมรูปภาพหลายมุมและงบประมาณเบื้องต้น</p>
-          <span class="sc-home-link">ดูไอเดียสวน →</span>
-        </button>
-        <button type="button" class="sc-home-card" onclick="showPage('showcasePlants')">
-          <span class="sc-home-icon">🌱</span>
-          <h3>แคตตาล็อกต้นไม้</h3>
-          <p>รวมพรรณไม้ที่ใช้ในผลงานจริงของเรา พร้อมรูปภาพ</p>
-          <span class="sc-home-link">ดูแคตตาล็อก →</span>
-        </button>
-      </div>
-    </section>
+  <section id="showcaseHomePage" class="page active sc-split">
+    <button type="button" class="sc-split-half sc-split-left" onclick="showPage('showcaseStyles')">
+      <span class="sc-home-icon">🏡</span>
+      <h3>ตัวเลือกจัดสวน</h3>
+    </button>
+    <button type="button" class="sc-split-half sc-split-right" onclick="showPage('showcasePlants')">
+      <span class="sc-home-icon">🌱</span>
+      <h3>แคตตาล็อกต้นไม้</h3>
+    </button>
+  </section>
 
+  <main class="container">
     <section id="showcaseStylesPage" class="page">
       <button type="button" class="sc-back-link" onclick="showPage('showcaseHome')">← กลับหน้าแรก</button>
       <div class="page-head">
