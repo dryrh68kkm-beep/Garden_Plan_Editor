@@ -82,10 +82,13 @@ function renderScStyles(){
   });
   document.getElementById("scStyleCount").textContent=`แสดง ${rows.length} จาก ${gardenStyles.length} แบบ`;
   document.getElementById("scStyleList").innerHTML=rows.length?rows.map(s=>{
-    const cover=styleImages(s)[0];
+    const images=styleImages(s);
+    const cover=images[0];
+    const extraThumbs=images.slice(1,4);
     return `
-    <article class="style-card">
+    <article class="style-card" onclick="openScStyleDetail('${s.id}')">
       <div class="style-cover"${cover?` style="background-image:url('${esc(cover)}')"`:""}>${cover?"":s.icon}</div>
+      ${extraThumbs.length?`<div class="style-cover-thumbs">${extraThumbs.map(src=>`<div class="style-cover-thumb" style="background-image:url('${esc(src)}')"></div>`).join("")}</div>`:""}
       <div class="style-body">
         <div class="category-label">${esc(s.category)}</div>
         <h3>${esc(s.name)}</h3>
@@ -95,7 +98,7 @@ function renderScStyles(){
           <span class="chip">${esc(s.budget)}</span>
         </div>
         <div class="style-actions">
-          <button class="btn btn-primary" onclick="openScStyleDetail('${s.id}')">ดูรายละเอียด</button>
+          <button class="btn btn-primary" onclick="event.stopPropagation();openScStyleDetail('${s.id}')">ดูรายละเอียด</button>
         </div>
       </div>
     </article>`;
