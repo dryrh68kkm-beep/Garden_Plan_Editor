@@ -1,6 +1,7 @@
 const STORAGE = {
   plantOverrides: "garden_plant_overrides_v1",
-  styleOverrides: "garden_style_overrides_v1"
+  styleOverrides: "garden_style_overrides_v1",
+  siteSettings: "garden_site_settings_v1"
 };
 
 function load(key, fallback){
@@ -11,6 +12,7 @@ function esc(s=""){ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&l
 
 const styleOverrides = load(STORAGE.styleOverrides, {});
 const plantOverrides = load(STORAGE.plantOverrides, {});
+const siteSettings = load(STORAGE.siteSettings, {});
 
 function mergedStyles(){
   return gardenStyles.map(s=>styleOverrides[s.id] ? {...s, ...styleOverrides[s.id]} : s);
@@ -57,7 +59,6 @@ async function loadAllPlants(){
     allPlants=data.map(p=>plantOverrides[p.id] ? {...p, ...plantOverrides[p.id]} : p);
     plantById=new Map(allPlants.map(p=>[p.id,p]));
     renderScPlantGallery();
-    applySplitBackgrounds();
   }catch(error){
     console.error("Showcase plant data error:",error);
     allPlants=[];
@@ -67,18 +68,13 @@ async function loadAllPlants(){
   }
 }
 
-// Home hero backdrop blends a real garden-style photo (left) into a real
-// plant photo (right) when the back office has uploaded them; each side
-// fades into the shared dark-green base so there's no hard seam. Falls
-// back to the plain gradient base when nothing has been photographed yet.
-function applySplitBackgrounds(){
-  const styleWithPhoto=mergedStyles().find(s=>styleImages(s).length);
-  const plantWithPhoto=allPlants.find(p=>p.image);
-  if(styleWithPhoto){
-    document.querySelector(".sc-hero-bg-left").style.backgroundImage=`url('${styleImages(styleWithPhoto)[0]}')`;
-  }
-  if(plantWithPhoto){
-    document.querySelector(".sc-hero-bg-right").style.backgroundImage=`url('${plantWithPhoto.image}')`;
+// Home hero uses a single photo set by the back office (Garden_Plan_Editor
+// > "ตั้งค่ารูปหน้าแรกโชว์เคส") as one seamless full-bleed backdrop — no
+// splitting or blending of separate photos. Falls back to a warm gradient
+// (not flat green) until an admin uploads one.
+function applyHeroBackground(){
+  if(siteSettings.heroImage){
+    document.getElementById("scHeroBg").style.backgroundImage=`url('${siteSettings.heroImage}')`;
   }
 }
 
@@ -198,3 +194,4 @@ document.getElementById("scLoadMorePlantsBtn").addEventListener("click",()=>{
 
 renderScStyles();
 loadAllPlants();
+applyHeroBackground();

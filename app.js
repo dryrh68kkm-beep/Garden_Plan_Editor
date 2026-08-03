@@ -3,7 +3,8 @@ const STORAGE = {
   projects: "garden_projects_v1",
   boq: "garden_boq_v1",
   plantOverrides: "garden_plant_overrides_v1",
-  styleOverrides: "garden_style_overrides_v1"
+  styleOverrides: "garden_style_overrides_v1",
+  siteSettings: "garden_site_settings_v1"
 };
 
 // gardenStyles is defined in data/garden-styles-data.js, loaded via a <script> tag before this file.
@@ -16,7 +17,12 @@ let projects = load(STORAGE.projects, []);
 let boqItems = load(STORAGE.boq, []);
 let plantOverrides = load(STORAGE.plantOverrides, {});
 let styleOverrides = load(STORAGE.styleOverrides, {});
+let siteSettings = load(STORAGE.siteSettings, {});
 let selectedBoqProjectId = "";
+
+function saveSiteSettings(){
+  localStorage.setItem(STORAGE.siteSettings, JSON.stringify(siteSettings));
+}
 
 function savePlantOverrides(){
   localStorage.setItem(STORAGE.plantOverrides, JSON.stringify(plantOverrides));
@@ -88,12 +94,47 @@ document.getElementById("projectSearch").oninput=renderProjects;
 document.getElementById("projectStatusFilter").onchange=renderProjects;
 document.getElementById("boqProjectSelect").onchange=e=>{selectedBoqProjectId=e.target.value;renderBoq();};
 document.getElementById("resetAllBtn").onclick=()=>{
-  if(confirm("ต้องการล้างข้อมูลลูกค้า โครงการ และ BOQ ทั้งหมดหรือไม่?")){
+  if(confirm("ต้องการล้างข้อมูลลูกค้า โครงการ BOQ รูปภาพที่แนบ และการตั้งค่าทั้งหมดหรือไม่?")){
     customers=[];projects=[];boqItems=[];selectedBoqProjectId="";
+    plantOverrides={};styleOverrides={};siteSettings={};
     Object.values(STORAGE).forEach(k=>localStorage.removeItem(k));
     renderAll();
   }
 };
+
+let heroSettingsImageData;
+document.getElementById("heroSettingsBtn").onclick=()=>{
+  heroSettingsImageData=siteSettings.heroImage||"";
+  const preview=document.getElementById("heroSettingsPreview");
+  const wrap=document.getElementById("heroSettingsPreviewWrap");
+  document.getElementById("heroSettingsImage").value="";
+  if(heroSettingsImageData){ preview.src=heroSettingsImageData; wrap.style.display="flex"; }
+  else{ preview.src=""; wrap.style.display="none"; }
+  document.getElementById("heroSettingsDialog").showModal();
+};
+document.getElementById("heroSettingsImage").addEventListener("change",async e=>{
+  const file=e.target.files[0];
+  if(!file) return;
+  try{
+    heroSettingsImageData=await resizeImageToDataURL(file,1600,400*1024);
+    document.getElementById("heroSettingsPreview").src=heroSettingsImageData;
+    document.getElementById("heroSettingsPreviewWrap").style.display="flex";
+  }catch{
+    alert("ไม่สามารถอ่านไฟล์รูปภาพนี้ได้");
+  }
+});
+document.getElementById("heroSettingsRemoveBtn").addEventListener("click",()=>{
+  heroSettingsImageData="";
+  document.getElementById("heroSettingsImage").value="";
+  document.getElementById("heroSettingsPreview").src="";
+  document.getElementById("heroSettingsPreviewWrap").style.display="none";
+});
+document.getElementById("heroSettingsForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  siteSettings.heroImage=heroSettingsImageData||"";
+  saveSiteSettings();
+  document.getElementById("heroSettingsDialog").close();
+});
 
 function openCustomer(id=""){
   const c=customers.find(x=>x.id===id);

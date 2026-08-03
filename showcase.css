@@ -3,11 +3,20 @@ body.sc-home-active .sc-header-hideable{display:none}
 
 .page.sc-hero{display:flex}
 .sc-hero{position:relative;min-height:100vh;overflow:hidden;flex-direction:column;color:#fff}
-.sc-hero-bg{position:absolute;inset:0;z-index:0;background:linear-gradient(160deg,#173d2b,#0c2117)}
-.sc-hero-bg-left,.sc-hero-bg-right{position:absolute;inset:0;background-size:cover;background-position:center;background-color:transparent}
-.sc-hero-bg-left{background-image:linear-gradient(160deg,#1f6b46,#173d2b);-webkit-mask-image:linear-gradient(to right,#000 0%,#000 45%,transparent 78%);mask-image:linear-gradient(to right,#000 0%,#000 45%,transparent 78%)}
-.sc-hero-bg-right{background-image:linear-gradient(160deg,#2f7a55,#10291d);-webkit-mask-image:linear-gradient(to left,#000 0%,#000 45%,transparent 78%);mask-image:linear-gradient(to left,#000 0%,#000 45%,transparent 78%)}
-.sc-hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,20,13,.35) 0%,rgba(6,20,13,.35) 45%,rgba(6,20,13,.85) 100%)}
+/* Single seamless backdrop. When the back office hasn't uploaded a hero
+   photo yet, this warm golden-hour-tinted gradient shows instead of a
+   flat green fill; once a photo is set, JS swaps just background-image
+   and this size/position still applies to it. */
+.sc-hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background-image:
+    radial-gradient(circle at 28% 16%, rgba(255,196,110,.4), transparent 42%),
+    radial-gradient(circle at 85% 82%, rgba(140,210,160,.2), transparent 55%),
+    linear-gradient(160deg, #3a7350 0%, #1c4530 42%, #0a1a11 100%);
+  background-size:cover;
+  background-position:center;
+}
+.sc-hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,20,13,.25) 0%,rgba(6,20,13,.35) 45%,rgba(6,20,13,.82) 100%)}
 
 .sc-hero-topbar{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:18px 18px 0}
 .sc-icon-btn{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.14);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;cursor:pointer}
@@ -18,11 +27,8 @@ body.sc-home-active .sc-header-hideable{display:none}
 
 .sc-hero-content{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 20px 40px;gap:6px}
 .sc-hero-logo{width:110px;height:110px;border-radius:50%;object-fit:cover;background:#fbf7ec;border:4px solid #fbf7ec;box-shadow:0 10px 30px rgba(0,0,0,.4);margin-bottom:14px}
-.sc-hero-title{margin:0;font-size:clamp(32px,8vw,46px);font-weight:900;text-shadow:0 3px 14px rgba(0,0,0,.5)}
-.sc-hero-sub{margin:2px 0 0;font-size:clamp(15px,3.4vw,19px);font-weight:600;text-shadow:0 2px 8px rgba(0,0,0,.45)}
-.sc-hero-divider{display:flex;align-items:center;gap:10px;color:#cfe6d8;margin:10px 0;font-size:14px}
-.sc-hero-divider span{width:36px;height:1px;background:rgba(255,255,255,.4)}
-.sc-hero-tagline{margin:0 0 26px;font-size:clamp(13px,3vw,15px);color:#e7f2ea;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+.sc-hero-title{margin:0;font-size:clamp(28px,7vw,42px);font-weight:900;line-height:1.3;text-shadow:0 3px 14px rgba(0,0,0,.5)}
+.sc-hero-sub{margin:6px 0 30px;font-size:clamp(15px,3.4vw,19px);font-weight:600;text-shadow:0 2px 8px rgba(0,0,0,.45)}
 
 .sc-hero-buttons{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:22px}
 .sc-glass-btn{display:flex;flex-direction:column;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.3);background:rgba(20,55,38,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:20px;padding:18px 22px;color:#fff;font-weight:800;cursor:pointer;min-width:150px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
