@@ -1,100 +1,92 @@
 <!DOCTYPE html>
+
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0d2e23" />
-  <title>รินลดา พันธุ์ไม้ — ผลงานจัดสวน</title>
-  <link rel="icon" type="image/webp" href="assets/rinlada-logo-main.webp" />
-  <link rel="apple-touch-icon" href="assets/rinlada-logo-main.webp" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="showcase.css?v=40" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<meta content="#0d2e23" name="theme-color"/>
+<title>รินลดา พันธุ์ไม้ — ผลงานจัดสวน</title>
+<link href="assets/rinlada-logo-main.webp" rel="icon" type="image/webp"/>
+<link href="assets/rinlada-logo-main.webp" rel="apple-touch-icon"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="style.css" rel="stylesheet"/>
+<link href="showcase.css" rel="stylesheet"/>
 </head>
 <body>
-  <section id="showcaseHomePage" class="page active sc-home">
-    <header class="sc-home-nav">
-      <button type="button" class="sc-nav-icon" id="scMenuBtn" aria-label="เปิดเมนู" aria-expanded="false">
-        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      </button>
-      <span class="sc-nav-brand" aria-label="รินลดา พันธุ์ไม้"><img src="assets/rinlada-logo-main.webp" alt="โลโก้รินลดา พันธุ์ไม้" /><span class="sr-only">รินลดา พันธุ์ไม้</span></span>
-      <button type="button" class="sc-nav-icon" id="scBellBtn" aria-label="แจ้งเตือน">
-        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-    </header>
-
-    <nav id="scMenuDropdown" class="sc-menu-dropdown" aria-label="เมนูหลัก">
-      <button type="button" onclick="showPage('showcaseHome');closeScMenu()">หน้าแรก</button>
-      <button type="button" onclick="showPage('showcaseStyles');closeScMenu()">แบบสวน</button>
-      <button type="button" onclick="showPage('showcasePlants');closeScMenu()">ต้นไม้</button>
-    </nav>
-
-    <section class="sc-hero-panel" aria-label="แนะนำรินลดา การ์เด้น">
-      <div class="sc-hero-image" id="scHeroBg" aria-hidden="true"></div>
-      <div class="sc-hero-gradient" aria-hidden="true"></div>
-      <div class="sc-hero-copy">
-        <p class="sc-hero-label">LANDSCAPE DESIGN • PLANT LIBRARY</p>
-        <h1>ออกแบบสวนที่ใช่<br><span>สำหรับบ้านของคุณ</span></h1>
-        <p>รวมไอเดียจัดสวนและพรรณไม้สำหรับทุกพื้นที่ ใช้งานง่ายทั้งมือถือและคอมพิวเตอร์</p>
-        <button type="button" class="sc-primary-cta" onclick="showPage('showcaseStyles')">
+<section class="page active sc-home" id="showcaseHomePage">
+<header class="sc-home-nav">
+<button aria-expanded="false" aria-label="เปิดเมนู" class="sc-nav-icon" id="scMenuBtn" type="button">
+<svg height="22" viewbox="0 0 24 24" width="22"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path></svg>
+</button>
+<span class="sc-nav-brand"><img alt="โลโก้รินลดา พันธุ์ไม้" src="assets/rinlada-logo-main.webp"/><span>รินลดา พันธุ์ไม้</span></span>
+<button aria-label="แจ้งเตือน" class="sc-nav-icon" id="scBellBtn" type="button">
+<svg height="20" viewbox="0 0 24 24" width="20"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</header>
+<nav aria-label="เมนูหลัก" class="sc-menu-dropdown" id="scMenuDropdown">
+<button onclick="showPage('showcaseHome');closeScMenu()" type="button">หน้าแรก</button>
+<button onclick="showPage('showcaseStyles');closeScMenu()" type="button">แบบสวน</button>
+<button onclick="showPage('showcasePlants');closeScMenu()" type="button">ต้นไม้</button>
+</nav>
+<section aria-label="แนะนำรินลดา การ์เด้น" class="sc-hero-panel">
+<div aria-hidden="true" class="sc-hero-image" id="scHeroBg"></div>
+<div aria-hidden="true" class="sc-hero-gradient"></div>
+<div class="sc-hero-copy"><h2 class="sc-brand-title">รินลดา พันธุ์ไม้</h2>
+<p class="sc-hero-label">LANDSCAPE DESIGN • PLANT LIBRARY</p>
+<h1>ออกแบบสวนที่ใช่<br/><span>สำหรับบ้านของคุณ</span></h1>
+<p>รวมไอเดียจัดสวนและพรรณไม้สำหรับทุกพื้นที่ ใช้งานง่ายทั้งมือถือและคอมพิวเตอร์</p>
+<button class="sc-primary-cta" onclick="showPage('showcaseStyles')" type="button">
           เริ่มออกแบบสวน <span>→</span>
-        </button>
-      </div>
-    </section>
-
-    <section class="sc-choice-section">
-      <div class="sc-choice-head">
-        <p>EXPLORE RINLADA</p>
-        <h2>เลือกสิ่งที่คุณต้องการ</h2>
-      </div>
-
-      <div class="sc-feature-stack">
-        <button type="button" class="sc-feature-card sc-feature-card--garden" onclick="showPage('showcaseStyles')">
-          <span class="sc-feature-overlay"></span>
-          <span class="sc-feature-content">
-            <small>GARDEN COLLECTION</small>
-            <strong>Modern Garden</strong>
-            <em>สำรวจแบบสวนหลากหลายสไตล์</em>
-            <span class="sc-feature-link">ดูแบบสวน <b>→</b></span>
-          </span>
-        </button>
-
-        <button type="button" class="sc-feature-card sc-feature-card--plants" onclick="showPage('showcasePlants')">
-          <span class="sc-feature-overlay"></span>
-          <span class="sc-feature-content">
-            <small>PLANT LIBRARY</small>
-            <strong>พรรณไม้สำหรับสวน</strong>
-            <em>ค้นหาต้นไม้หลายชนิดสำหรับพื้นที่ของคุณ</em>
-            <span class="sc-feature-link">ดูฐานข้อมูลต้นไม้ <b>→</b></span>
-          </span>
-        </button>
-      </div>
-    </section>
-  </section>
-
-  <main class="container sc-main-shell">
-    <section id="showcaseStylesPage" class="page sc-content-page">
-      <div class="sc-page-toolbar"><button type="button" class="sc-back-link" onclick="showPage('showcaseHome')">← กลับหน้าแรก</button><span class="sc-page-badge sc-brand-badge"><img src="assets/rinlada-logo-main.webp" alt="" />Garden Collection</span></div>
-      <div class="page-head sc-page-head"><div><p class="eyebrow">GARDEN STYLES</p><h2>แบบสวนของเรา</h2><p class="sc-page-intro">ค้นหาแบบสวนที่เหมาะกับพื้นที่และบรรยากาศที่คุณต้องการ</p></div></div>
-      <div class="filters sc-filter-panel"><label class="sc-search-box" for="scStyleSearch"><svg viewBox="0 0 24 24" width="20" height="20"><path d="m21 21-4.35-4.35M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="currentColor" stroke-width="2"/></svg><input id="scStyleSearch" class="input" type="search" placeholder="ค้นหาแบบสวน" autocomplete="off" /></label><select id="scStyleCategoryFilter" class="input sc-select"><option value="">ทุกหมวด</option><option>Modern</option><option>Tropical</option><option>Japanese</option><option>English</option><option>Mediterranean</option><option>Desert</option><option>Natural</option><option>Water</option><option>Commercial</option><option>Small Space</option></select></div>
-      <div id="scStyleCount" class="meta sc-count"></div><div id="scStyleList" class="style-grid"></div>
-    </section>
-
-    <section id="showcasePlantsPage" class="page sc-content-page">
-      <div class="sc-page-toolbar"><button type="button" class="sc-back-link" onclick="showPage('showcaseHome')">← กลับหน้าแรก</button><span class="sc-page-badge sc-brand-badge"><img src="assets/rinlada-logo-main.webp" alt="" />Plant Library</span></div>
-      <div class="page-head sc-page-head"><div><p class="eyebrow">PLANT GALLERY</p><h2>พรรณไม้ของเรา</h2><p class="sc-page-intro">ค้นหาและเลือกชมต้นไม้สำหรับใช้ในงานจัดสวน</p></div></div>
-      <div class="filters sc-filter-panel sc-plant-filter"><label class="sc-search-box" for="scPlantSearch"><svg viewBox="0 0 24 24" width="20" height="20"><path d="m21 21-4.35-4.35M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="currentColor" stroke-width="2"/></svg><input id="scPlantSearch" class="input" type="search" placeholder="ค้นหาชื่อต้นไม้" autocomplete="off" /></label></div>
-      <div id="scPlantCount" class="meta sc-count"></div><div id="scPlantList" class="showcase-plant-grid"></div><div class="plant-load-more"><button id="scLoadMorePlantsBtn" class="btn btn-secondary sc-load-more" style="display:none">โหลดเพิ่ม</button></div>
-    </section>
-  </main>
-
-  <dialog id="scStyleDetailDialog" class="modal style-detail-modal"><div class="style-detail-wrap"><div class="modal-head"><div><p id="scStyleDetailCategory" class="eyebrow"></p><h3 id="scStyleDetailName"></h3></div><button type="button" class="icon-btn close-dialog" aria-label="ปิด">×</button></div><div id="scStyleDetailHero" class="style-detail-hero"></div><div id="scStyleDetailThumbs" class="style-detail-thumbs"></div><p id="scStyleDetailDescription" class="style-detail-description"></p><div class="detail-grid"><div class="detail-box"><span>งบประมาณโดยประมาณ</span><strong id="scStyleDetailBudget"></strong></div><div class="detail-box"><span>การดูแล</span><strong id="scStyleDetailMaintenance"></strong></div><div class="detail-box"><span>ระดับความยาก</span><strong id="scStyleDetailDifficulty"></strong></div><div class="detail-box"><span>เหมาะกับ</span><strong id="scStyleDetailSuitable"></strong></div></div><div class="detail-section"><h4>ต้นไม้ที่ใช้ในสวนนี้</h4><div id="scStyleDetailLinkedPlants" class="style-linked-plants"></div></div><div class="detail-section"><h4>พรรณไม้แนะนำ</h4><div id="scStyleDetailPlants" class="chips"></div></div><div class="detail-section"><h4>วัสดุแนะนำ</h4><div id="scStyleDetailMaterials" class="chips"></div></div><div class="detail-section"><h4>แนวทางสีและบรรยากาศ</h4><p id="scStyleDetailMood" class="meta"></p></div></div></dialog>
-  <dialog id="scPlantLightbox" class="modal showcase-lightbox"><div class="style-detail-wrap"><div class="modal-head"><h3 id="scPlantLightboxName"></h3><button type="button" class="icon-btn close-dialog" aria-label="ปิด">×</button></div><img id="scPlantLightboxImage" class="showcase-lightbox-img" alt="" /></div></dialog>
-
-  <script src="data/garden-styles-data.js"></script>
-  <script src="firebase-client.js"></script>
-  <script src="showcase.js"></script>
+</button>
+</div>
+</section>
+<section class="sc-choice-section">
+<div class="sc-choice-head">
+<p>EXPLORE RINLADA</p>
+<h2>เลือกสิ่งที่คุณต้องการ</h2>
+</div>
+<div class="sc-feature-stack">
+<button class="sc-feature-card sc-feature-card--garden" onclick="showPage('showcaseStyles')" type="button">
+<span class="sc-feature-overlay"></span>
+<span class="sc-feature-content">
+<small>GARDEN COLLECTION</small>
+<strong>Modern Garden</strong>
+<em>สำรวจแบบสวนหลากหลายสไตล์</em>
+<span class="sc-feature-link">ดูแบบสวน <b>→</b></span>
+</span>
+</button>
+<button class="sc-feature-card sc-feature-card--plants" onclick="showPage('showcasePlants')" type="button">
+<span class="sc-feature-overlay"></span>
+<span class="sc-feature-content">
+<small>PLANT LIBRARY</small>
+<strong>พรรณไม้สำหรับสวน</strong>
+<em>ค้นหาต้นไม้หลายชนิดสำหรับพื้นที่ของคุณ</em>
+<span class="sc-feature-link">ดูฐานข้อมูลต้นไม้ <b>→</b></span>
+</span>
+</button>
+</div>
+</section>
+</section>
+<main class="container sc-main-shell">
+<section class="page sc-content-page" id="showcaseStylesPage">
+<div class="sc-page-toolbar"><button class="sc-back-link" onclick="showPage('showcaseHome')" type="button">← กลับหน้าแรก</button><span class="sc-page-badge sc-brand-badge"><img alt="" src="assets/rinlada-logo-main.webp"/>Garden Collection</span></div>
+<div class="page-head sc-page-head"><div><p class="eyebrow">GARDEN STYLES</p><h2>แบบสวนของเรา</h2><p class="sc-page-intro">ค้นหาแบบสวนที่เหมาะกับพื้นที่และบรรยากาศที่คุณต้องการ</p></div></div>
+<div class="filters sc-filter-panel"><label class="sc-search-box" for="scStyleSearch"><svg height="20" viewbox="0 0 24 24" width="20"><path d="m21 21-4.35-4.35M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="currentColor" stroke-width="2"></path></svg><input autocomplete="off" class="input" id="scStyleSearch" placeholder="ค้นหาแบบสวน" type="search"/></label><select class="input sc-select" id="scStyleCategoryFilter"><option value="">ทุกหมวด</option><option>Modern</option><option>Tropical</option><option>Japanese</option><option>English</option><option>Mediterranean</option><option>Desert</option><option>Natural</option><option>Water</option><option>Commercial</option><option>Small Space</option></select></div>
+<div class="meta sc-count" id="scStyleCount"></div><div class="style-grid" id="scStyleList"></div>
+</section>
+<section class="page sc-content-page" id="showcasePlantsPage">
+<div class="sc-page-toolbar"><button class="sc-back-link" onclick="showPage('showcaseHome')" type="button">← กลับหน้าแรก</button><span class="sc-page-badge sc-brand-badge"><img alt="" src="assets/rinlada-logo-main.webp"/>Plant Library</span></div>
+<div class="page-head sc-page-head"><div><p class="eyebrow">PLANT GALLERY</p><h2>พรรณไม้ของเรา</h2><p class="sc-page-intro">ค้นหาและเลือกชมต้นไม้สำหรับใช้ในงานจัดสวน</p></div></div>
+<div class="filters sc-filter-panel sc-plant-filter"><label class="sc-search-box" for="scPlantSearch"><svg height="20" viewbox="0 0 24 24" width="20"><path d="m21 21-4.35-4.35M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="currentColor" stroke-width="2"></path></svg><input autocomplete="off" class="input" id="scPlantSearch" placeholder="ค้นหาชื่อต้นไม้" type="search"/></label></div>
+<div class="meta sc-count" id="scPlantCount"></div><div class="showcase-plant-grid" id="scPlantList"></div><div class="plant-load-more"><button class="btn btn-secondary sc-load-more" id="scLoadMorePlantsBtn" style="display:none">โหลดเพิ่ม</button></div>
+</section>
+</main>
+<dialog class="modal style-detail-modal" id="scStyleDetailDialog"><div class="style-detail-wrap"><div class="modal-head"><div><p class="eyebrow" id="scStyleDetailCategory"></p><h3 id="scStyleDetailName"></h3></div><button aria-label="ปิด" class="icon-btn close-dialog" type="button">×</button></div><div class="style-detail-hero" id="scStyleDetailHero"></div><div class="style-detail-thumbs" id="scStyleDetailThumbs"></div><p class="style-detail-description" id="scStyleDetailDescription"></p><div class="detail-grid"><div class="detail-box"><span>งบประมาณโดยประมาณ</span><strong id="scStyleDetailBudget"></strong></div><div class="detail-box"><span>การดูแล</span><strong id="scStyleDetailMaintenance"></strong></div><div class="detail-box"><span>ระดับความยาก</span><strong id="scStyleDetailDifficulty"></strong></div><div class="detail-box"><span>เหมาะกับ</span><strong id="scStyleDetailSuitable"></strong></div></div><div class="detail-section"><h4>ต้นไม้ที่ใช้ในสวนนี้</h4><div class="style-linked-plants" id="scStyleDetailLinkedPlants"></div></div><div class="detail-section"><h4>พรรณไม้แนะนำ</h4><div class="chips" id="scStyleDetailPlants"></div></div><div class="detail-section"><h4>วัสดุแนะนำ</h4><div class="chips" id="scStyleDetailMaterials"></div></div><div class="detail-section"><h4>แนวทางสีและบรรยากาศ</h4><p class="meta" id="scStyleDetailMood"></p></div></div></dialog>
+<dialog class="modal showcase-lightbox" id="scPlantLightbox"><div class="style-detail-wrap"><div class="modal-head"><h3 id="scPlantLightboxName"></h3><button aria-label="ปิด" class="icon-btn close-dialog" type="button">×</button></div><img alt="" class="showcase-lightbox-img" id="scPlantLightboxImage"/></div></dialog>
+<script src="data/garden-styles-data.js"></script>
+<script src="firebase-client.js"></script>
+<script src="showcase.js"></script>
 </body>
 </html>
