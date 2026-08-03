@@ -226,3 +226,14 @@ async function initFromFirestore(){
   }
 }
 initFromFirestore();
+
+// REST-only Firestore has no realtime listener (that needs the SDK), so we
+// poll instead: refetch periodically so a photo/style added on another
+// device (e.g. the back office) shows up here without a manual reload.
+// Skipped while a detail dialog/lightbox is open so a background refresh
+// doesn't yank content out from under someone mid-view.
+const FIRESTORE_POLL_MS=20000;
+setInterval(()=>{
+  if(document.querySelector("dialog[open]")) return;
+  initFromFirestore();
+},FIRESTORE_POLL_MS);
