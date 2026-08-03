@@ -618,13 +618,22 @@ function resizeImageToDataURL(file,targetDim=800,maxBytes=250*1024){
         ctx.imageSmoothingEnabled=true;
         ctx.imageSmoothingQuality="high";
         ctx.drawImage(img,sx,sy,side,side,0,0,targetDim,targetDim);
+        // Safari has historically not supported WebP canvas export: per spec,
+        // an unsupported requested type silently falls back to PNG — which
+        // ignores the quality parameter entirely, so our size-reduction loop
+        // would do nothing and ship a multi-MB lossless PNG instead of a
+        // ~250KB photo. That matches exactly what was reported (uploads that
+        // work fine for text but hang/fail once a photo is attached). Detect
+        // the fallback by checking the returned data URL's actual mime type,
+        // and use JPEG instead — quality-adjustable and reliable everywhere.
+        const mime=canvas.toDataURL("image/webp",0.92).startsWith("data:image/webp") ? "image/webp" : "image/jpeg";
         let quality=0.92;
-        let dataUrl=canvas.toDataURL("image/webp",quality);
+        let dataUrl=canvas.toDataURL(mime,quality);
         // Back off quality in small steps until the encoded size fits the budget
         // (base64 ~= 4/3 of raw bytes), but don't go below a floor that turns visibly soft.
         while(dataUrl.length*0.75>maxBytes && quality>0.55){
           quality-=0.05;
-          dataUrl=canvas.toDataURL("image/webp",quality);
+          dataUrl=canvas.toDataURL(mime,quality);
         }
         resolve(dataUrl);
       };
