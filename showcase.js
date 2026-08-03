@@ -10,9 +10,12 @@ function load(key, fallback){
 }
 function esc(s=""){ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m])); }
 
-const styleOverrides = load(STORAGE.styleOverrides, {});
-const plantOverrides = load(STORAGE.plantOverrides, {});
-const siteSettings = load(STORAGE.siteSettings, {});
+// Seeded from localStorage first (instant, works offline / same-browser as
+// admin), then overwritten by initFromFirestore() once the cloud data
+// arrives so the showcase reflects the back office from any device.
+let styleOverrides = load(STORAGE.styleOverrides, {});
+let plantOverrides = load(STORAGE.plantOverrides, {});
+let siteSettings = load(STORAGE.siteSettings, {});
 
 function mergedStyles(){
   return gardenStyles.map(s=>styleOverrides[s.id] ? {...s, ...styleOverrides[s.id]} : s);
@@ -44,19 +47,25 @@ document.getElementById("scBellBtn").addEventListener("click",()=>alert("ยั�
 // ---- Plant data (all 300, merged with back-office overrides) ----
 // Loaded once up front so garden-style detail pages can show linked real
 // plants even before the visitor opens the plant gallery tab.
+let rawPlants=[];
 let allPlants=[];
 let plantById=new Map();
+function rebuildAllPlants(){
+  allPlants=rawPlants.map(p=>plantOverrides[p.id] ? {...p, ...plantOverrides[p.id]} : p);
+  plantById=new Map(allPlants.map(p=>[p.id,p]));
+}
 async function loadAllPlants(){
   try{
     const response=await fetch("./data/plants.json",{cache:"no-store"});
     if(!response.ok) throw new Error(`HTTP ${response.status}`);
     const data=await response.json();
     if(!Array.isArray(data)) throw new Error("รูปแบบฐานข้อมูลไม่ถูกต้อง");
-    allPlants=data.map(p=>plantOverrides[p.id] ? {...p, ...plantOverrides[p.id]} : p);
-    plantById=new Map(allPlants.map(p=>[p.id,p]));
+    rawPlants=data;
+    rebuildAllPlants();
     renderScPlantGallery();
   }catch(error){
     console.error("Showcase plant data error:",error);
+    rawPlants=[];
     allPlants=[];
     plantById=new Map();
     document.getElementById("scPlantCount").textContent="โหลดข้อมูลไม่สำเร็จ";
@@ -191,3 +200,29 @@ document.getElementById("scLoadMorePlantsBtn").addEventListener("click",()=>{
 renderScStyles();
 loadAllPlants();
 applyHeroBackground();
+
+// Pull the latest overrides/hero photo from Firestore so this page reflects
+// the back office from any device, not just the browser that saved them.
+// Falls back to whatever localStorage already had (or nothing) if the
+// cloud is unreachable — the showcase must still render either way.
+async function initFromFirestore(){
+  try{
+    const [remoteStyleOverrides,remotePlantOverrides,remoteHero]=await Promise.all([
+      fbList("styleOverrides"),
+      fbList("plantOverrides"),
+      fbGet("siteSettings","hero")
+    ]);
+    styleOverrides={};
+    remoteStyleOverrides.forEach(s=>{const {id,...rest}=s;styleOverrides[id]=rest;});
+    plantOverrides={};
+    remotePlantOverrides.forEach(p=>{const {id,...rest}=p;plantOverrides[id]=rest;});
+    if(remoteHero){const {id,...rest}=remoteHero;siteSettings=rest;}
+    renderScStyles();
+    rebuildAllPlants();
+    renderScPlantGallery();
+    applyHeroBackground();
+  }catch(error){
+    console.error("Showcase Firestore sync failed, staying on local data:",error);
+  }
+}
+initFromFirestore();

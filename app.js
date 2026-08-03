@@ -22,17 +22,20 @@ let selectedBoqProjectId = "";
 
 function saveSiteSettings(){
   localStorage.setItem(STORAGE.siteSettings, JSON.stringify(siteSettings));
+  fbSet("siteSettings","hero",siteSettings).then(()=>setCloudStatus(true)).catch(err=>{console.error("Firestore siteSettings save failed:",err);setCloudStatus(false);});
 }
 
-function savePlantOverrides(){
+function savePlantOverrides(id){
   localStorage.setItem(STORAGE.plantOverrides, JSON.stringify(plantOverrides));
+  if(id) fbSet("plantOverrides",id,plantOverrides[id]).then(()=>setCloudStatus(true)).catch(err=>{console.error("Firestore plantOverrides save failed:",err);setCloudStatus(false);});
 }
 function getPlant(id){
   const p=plants.find(x=>x.id===id);
   return p ? {...p, ...plantOverrides[id]} : null;
 }
-function saveStyleOverrides(){
+function saveStyleOverrides(id){
   localStorage.setItem(STORAGE.styleOverrides, JSON.stringify(styleOverrides));
+  if(id) fbSet("styleOverrides",id,styleOverrides[id]).then(()=>setCloudStatus(true)).catch(err=>{console.error("Firestore styleOverrides save failed:",err);setCloudStatus(false);});
 }
 function getStyle(id){
   const s=gardenStyles.find(x=>x.id===id);
@@ -153,6 +156,7 @@ document.getElementById("customerForm").addEventListener("submit",e=>{
   const data={id:id||uid("cus"),name:document.getElementById("customerName").value.trim(),phone:document.getElementById("customerPhone").value.trim(),line:document.getElementById("customerLine").value.trim(),address:document.getElementById("customerAddress").value.trim(),note:document.getElementById("customerNote").value.trim()};
   if(id) customers=customers.map(c=>c.id===id?data:c); else customers.unshift(data);
   document.getElementById("customerDialog").close(); save();
+  fbSet("customers",data.id,data).then(()=>setCloudStatus(true)).catch(err=>{console.error("Firestore customer save failed:",err);setCloudStatus(false);});
 });
 
 function openProject(id=""){
@@ -178,12 +182,15 @@ document.getElementById("projectForm").addEventListener("submit",e=>{
   const data={id:id||uid("pro"),name:document.getElementById("projectName").value.trim(),customerId:document.getElementById("projectCustomer").value,location:document.getElementById("projectLocation").value.trim(),area:Number(document.getElementById("projectArea").value)||0,budget:Number(document.getElementById("projectBudget").value)||0,styleId:document.getElementById("projectStyle").value,status:document.getElementById("projectStatus").value,startDate:document.getElementById("projectStartDate").value,note:document.getElementById("projectNote").value.trim(),createdAt:existing?.createdAt||new Date().toISOString()};
   if(id) projects=projects.map(p=>p.id===id?data:p); else projects.unshift(data);
   document.getElementById("projectDialog").close(); save();
+  fbSet("projects",data.id,data).then(()=>setCloudStatus(true)).catch(err=>{console.error("Firestore project save failed:",err);setCloudStatus(false);});
 });
 
 document.getElementById("boqForm").addEventListener("submit",e=>{
   e.preventDefault();
-  boqItems.unshift({id:uid("boq"),projectId:selectedBoqProjectId,category:document.getElementById("boqCategory").value,item:document.getElementById("boqItem").value.trim(),qty:Number(document.getElementById("boqQty").value)||0,unit:document.getElementById("boqUnit").value.trim(),cost:Number(document.getElementById("boqCost").value)||0,price:Number(document.getElementById("boqPrice").value)||0});
+  const boqData={id:uid("boq"),projectId:selectedBoqProjectId,category:document.getElementById("boqCategory").value,item:document.getElementById("boqItem").value.trim(),qty:Number(document.getElementById("boqQty").value)||0,unit:document.getElementById("boqUnit").value.trim(),cost:Number(document.getElementById("boqCost").value)||0,price:Number(document.getElementById("boqPrice").value)||0};
+  boqItems.unshift(boqData);
   document.getElementById("boqDialog").close(); save();
+  fbSet("boq",boqData.id,boqData).then(()=>setCloudStatus(true)).catch(err=>{console.error("Firestore BOQ save failed:",err);setCloudStatus(false);});
 });
 
 function fillProjectOptions(){
@@ -258,12 +265,33 @@ function renderBoq(){
   document.getElementById("boqMargin").textContent=`${margin.toFixed(1)}%`;
 }
 function deleteCustomer(id){
-  if(confirm("ลบลูกค้ารายนี้หรือไม่?")){customers=customers.filter(c=>c.id!==id);projects=projects.map(p=>p.customerId===id?{...p,customerId:""}:p);save();}
+  if(confirm("ลบลูกค้ารายนี้หรือไม่?")){
+    const affectedProjects=projects.filter(p=>p.customerId===id);
+    customers=customers.filter(c=>c.id!==id);
+    projects=projects.map(p=>p.customerId===id?{...p,customerId:""}:p);
+    save();
+    fbDelete("customers",id).then(()=>setCloudStatus(true)).catch(err=>{console.error("Firestore customer delete failed:",err);setCloudStatus(false);});
+    affectedProjects.forEach(p=>fbSet("projects",p.id,{...p,customerId:""}).catch(err=>console.error("Firestore project unlink failed:",err)));
+  }
 }
 function deleteProject(id){
-  if(confirm("ลบโครงการและรายการ BOQ ของโครงการนี้หรือไม่?")){projects=projects.filter(p=>p.id!==id);boqItems=boqItems.filter(i=>i.projectId!==id);if(selectedBoqProjectId===id)selectedBoqProjectId="";save();}
+  if(confirm("ลบโครงการและรายการ BOQ ของโครงการนี้หรือไม่?")){
+    const removedBoqIds=boqItems.filter(i=>i.projectId===id).map(i=>i.id);
+    projects=projects.filter(p=>p.id!==id);
+    boqItems=boqItems.filter(i=>i.projectId!==id);
+    if(selectedBoqProjectId===id)selectedBoqProjectId="";
+    save();
+    fbDelete("projects",id).then(()=>setCloudStatus(true)).catch(err=>{console.error("Firestore project delete failed:",err);setCloudStatus(false);});
+    removedBoqIds.forEach(boqId=>fbDelete("boq",boqId).catch(err=>console.error("Firestore BOQ delete failed:",err)));
+  }
 }
-function deleteBoq(id){if(confirm("ลบรายการนี้หรือไม่?")){boqItems=boqItems.filter(i=>i.id!==id);save();}}
+function deleteBoq(id){
+  if(confirm("ลบรายการนี้หรือไม่?")){
+    boqItems=boqItems.filter(i=>i.id!==id);
+    save();
+    fbDelete("boq",id).then(()=>setCloudStatus(true)).catch(err=>{console.error("Firestore BOQ delete failed:",err);setCloudStatus(false);});
+  }
+}
 function openProjectBoq(id){selectedBoqProjectId=id;showPage("boq");renderBoqProjectSelect();renderBoq();}
 function createFromStyle(id){showPage("projects");openProject();document.getElementById("projectStyle").value=id;}
 
@@ -417,7 +445,7 @@ document.getElementById("styleEditForm").addEventListener("submit",e=>{
     plantIds:styleEditPlantIds.slice()
   };
   styleOverrides[id]=override;
-  saveStyleOverrides();
+  saveStyleOverrides(id);
   document.getElementById("styleEditDialog").close();
   renderStyles();
 });
@@ -632,7 +660,7 @@ document.getElementById("plantEditForm").addEventListener("submit",e=>{
   };
   if(plantEditImageData) override.image=plantEditImageData;
   plantOverrides[id]=override;
-  savePlantOverrides();
+  savePlantOverrides(id);
   document.getElementById("plantEditDialog").close();
   renderPlants();
 });
@@ -644,3 +672,49 @@ document.getElementById("editPlantBtn").addEventListener("click",()=>{
 function renderAll(){fillProjectOptions();renderDashboard();renderCustomers();renderProjects();renderStyles();renderBoqProjectSelect();renderBoq();}
 renderAll();
 loadPlantDatabase();
+
+function setCloudStatus(ok){
+  const el=document.getElementById("cloudStatus");
+  if(!el) return;
+  el.textContent=ok?"☁️ ซิงก์ข้อมูลแล้ว":"📴 ออฟไลน์ (ใช้ข้อมูลในเครื่อง)";
+  el.style.color=ok?"var(--primary)":"var(--danger)";
+}
+
+// On load, pull the latest data from Firestore (source of truth across
+// devices) and overlay it on top of whatever localStorage already showed,
+// so the page is usable instantly and then refreshes once the cloud data
+// arrives. If Firestore is unreachable, silently keep using localStorage —
+// the app must keep working offline.
+async function initFromFirestore(){
+  try{
+    const [remoteCustomers,remoteProjects,remoteBoq,remotePlantOverrides,remoteStyleOverrides,remoteHero]=await Promise.all([
+      fbList("customers"),
+      fbList("projects"),
+      fbList("boq"),
+      fbList("plantOverrides"),
+      fbList("styleOverrides"),
+      fbGet("siteSettings","hero")
+    ]);
+    customers=remoteCustomers;
+    projects=remoteProjects;
+    boqItems=remoteBoq;
+    plantOverrides={};
+    remotePlantOverrides.forEach(p=>{const {id,...rest}=p;plantOverrides[id]=rest;});
+    styleOverrides={};
+    remoteStyleOverrides.forEach(s=>{const {id,...rest}=s;styleOverrides[id]=rest;});
+    if(remoteHero){const {id,...rest}=remoteHero;siteSettings=rest;}
+    localStorage.setItem(STORAGE.customers,JSON.stringify(customers));
+    localStorage.setItem(STORAGE.projects,JSON.stringify(projects));
+    localStorage.setItem(STORAGE.boq,JSON.stringify(boqItems));
+    localStorage.setItem(STORAGE.plantOverrides,JSON.stringify(plantOverrides));
+    localStorage.setItem(STORAGE.styleOverrides,JSON.stringify(styleOverrides));
+    localStorage.setItem(STORAGE.siteSettings,JSON.stringify(siteSettings));
+    renderAll();
+    if(plants.length) renderPlants();
+    setCloudStatus(true);
+  }catch(error){
+    console.error("Firestore initial sync failed, staying on local data:",error);
+    setCloudStatus(false);
+  }
+}
+initFromFirestore();

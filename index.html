@@ -13,7 +13,8 @@
       <p class="eyebrow">LANDSCAPE MANAGEMENT</p>
       <h1>Garden Plan Editor</h1>
     </div>
-    <div class="actions" style="margin-top:0">
+    <div class="actions" style="margin-top:0;align-items:center">
+      <span id="cloudStatus" class="badge">กำลังเชื่อมต่อ...</span>
       <button id="heroSettingsBtn" class="btn btn-ghost">ตั้งค่ารูปหน้าแรกโชว์เคส</button>
       <button id="resetAllBtn" class="btn btn-ghost">ล้างข้อมูลทั้งหมด</button>
     </div>
@@ -388,6 +389,7 @@
   </dialog>
 
   <script src="data/garden-styles-data.js"></script>
+  <script src="firebase-client.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
