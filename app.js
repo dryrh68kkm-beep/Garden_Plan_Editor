@@ -2,7 +2,8 @@ const STORAGE = {
   customers: "garden_customers_v1",
   projects: "garden_projects_v1",
   boq: "garden_boq_v1",
-  plantOverrides: "garden_plant_overrides_v1"
+  plantOverrides: "garden_plant_overrides_v1",
+  styleOverrides: "garden_style_overrides_v1"
 };
 
 const gardenStyles = [
@@ -1364,6 +1365,7 @@ let customers = load(STORAGE.customers, []);
 let projects = load(STORAGE.projects, []);
 let boqItems = load(STORAGE.boq, []);
 let plantOverrides = load(STORAGE.plantOverrides, {});
+let styleOverrides = load(STORAGE.styleOverrides, {});
 let selectedBoqProjectId = "";
 
 function savePlantOverrides(){
@@ -1372,6 +1374,16 @@ function savePlantOverrides(){
 function getPlant(id){
   const p=plants.find(x=>x.id===id);
   return p ? {...p, ...plantOverrides[id]} : null;
+}
+function saveStyleOverrides(){
+  localStorage.setItem(STORAGE.styleOverrides, JSON.stringify(styleOverrides));
+}
+function getStyle(id){
+  const s=gardenStyles.find(x=>x.id===id);
+  return s ? {...s, ...styleOverrides[id]} : null;
+}
+function mergedStyles(){
+  return gardenStyles.map(s=>styleOverrides[s.id] ? {...s, ...styleOverrides[s.id]} : s);
 }
 function mergedPlants(){
   return plants.map(p=>plantOverrides[p.id] ? {...p, ...plantOverrides[p.id]} : p);
@@ -1506,14 +1518,14 @@ function renderProjects(){
 function renderStyles(){
   const q=(document.getElementById("styleSearch")?.value||"").toLowerCase();
   const category=document.getElementById("styleCategoryFilter")?.value||"";
-  const rows=gardenStyles.filter(s=>{
+  const rows=mergedStyles().filter(s=>{
     const hay=[s.name,s.category,s.desc,s.mood,...s.plants,...s.materials].join(" ").toLowerCase();
     return (!category||s.category===category)&&hay.includes(q);
   });
   document.getElementById("styleCount").textContent=`แสดง ${rows.length} จาก ${gardenStyles.length} แบบ`;
   document.getElementById("styleList").innerHTML=rows.length?rows.map(s=>`
     <article class="style-card">
-      <div class="style-cover">${s.icon}</div>
+      <div class="style-cover"${s.image?` style="background-image:url('${esc(s.image)}')"`:""}>${s.image?"":s.icon}</div>
       <div class="style-body">
         <div class="category-label">${esc(s.category)}</div>
         <h3>${esc(s.name)}</h3>
@@ -1524,6 +1536,7 @@ function renderStyles(){
         </div>
         <div class="style-actions">
           <button class="btn btn-secondary" onclick="openStyleDetail('${s.id}')">ดูรายละเอียด</button>
+          <button class="small-btn" onclick="openStyleEdit('${s.id}')">แก้ไข</button>
           <button class="btn btn-primary" onclick="createFromStyle('${s.id}')">ใช้แบบนี้</button>
         </div>
       </div>
@@ -1559,12 +1572,14 @@ document.getElementById("styleSearch").addEventListener("input",renderStyles);
 document.getElementById("styleCategoryFilter").addEventListener("change",renderStyles);
 
 function openStyleDetail(id){
-  const s=gardenStyles.find(x=>x.id===id);
+  const s=getStyle(id);
   if(!s) return;
   selectedStyleId=id;
   document.getElementById("styleDetailCategory").textContent=s.category;
   document.getElementById("styleDetailName").textContent=s.name;
-  document.getElementById("styleDetailHero").textContent=s.icon;
+  const hero=document.getElementById("styleDetailHero");
+  if(s.image){ hero.style.backgroundImage=`url('${s.image}')`; hero.textContent=""; }
+  else{ hero.style.backgroundImage=""; hero.textContent=s.icon; }
   document.getElementById("styleDetailDescription").textContent=s.desc;
   document.getElementById("styleDetailBudget").textContent=s.budget;
   document.getElementById("styleDetailMaintenance").textContent=s.maintenance;
@@ -1591,6 +1606,69 @@ document.getElementById("copyStylePromptBtn").addEventListener("click",async()=>
   }
 });
 
+let styleEditImageData;
+function openStyleEdit(id){
+  const s=getStyle(id);
+  if(!s) return;
+  document.getElementById("styleEditId").value=id;
+  document.getElementById("styleEditTitle").textContent=`แก้ไข: ${s.name}`;
+  document.getElementById("styleEditDesc").value=s.desc||"";
+  document.getElementById("styleEditBudget").value=s.budget||"";
+  document.getElementById("styleEditMaintenance").value=s.maintenance||"";
+  document.getElementById("styleEditDifficulty").value=s.difficulty||"";
+  document.getElementById("styleEditSuitable").value=(s.suitableFor||[]).join(", ");
+  document.getElementById("styleEditPlants").value=(s.plants||[]).join(", ");
+  document.getElementById("styleEditMaterials").value=(s.materials||[]).join(", ");
+  document.getElementById("styleEditMood").value=s.mood||"";
+  document.getElementById("styleEditImage").value="";
+  styleEditImageData=s.image||"";
+  const preview=document.getElementById("styleEditPreview");
+  const wrap=document.getElementById("styleEditPreviewWrap");
+  if(styleEditImageData){ preview.src=styleEditImageData; wrap.style.display="flex"; }
+  else{ preview.src=""; wrap.style.display="none"; }
+  document.getElementById("styleEditDialog").showModal();
+}
+document.getElementById("styleEditImage").addEventListener("change",async e=>{
+  const file=e.target.files[0];
+  if(!file) return;
+  try{
+    styleEditImageData=await resizeImageToDataURL(file);
+    document.getElementById("styleEditPreview").src=styleEditImageData;
+    document.getElementById("styleEditPreviewWrap").style.display="flex";
+  }catch{
+    alert("ไม่สามารถอ่านไฟล์รูปภาพนี้ได้");
+  }
+});
+document.getElementById("styleEditRemoveImageBtn").addEventListener("click",()=>{
+  styleEditImageData="";
+  document.getElementById("styleEditImage").value="";
+  document.getElementById("styleEditPreview").src="";
+  document.getElementById("styleEditPreviewWrap").style.display="none";
+});
+const splitTags=v=>v.split(",").map(x=>x.trim()).filter(Boolean);
+document.getElementById("styleEditForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const id=document.getElementById("styleEditId").value;
+  const override={
+    desc:document.getElementById("styleEditDesc").value.trim(),
+    budget:document.getElementById("styleEditBudget").value.trim(),
+    maintenance:document.getElementById("styleEditMaintenance").value.trim(),
+    difficulty:document.getElementById("styleEditDifficulty").value.trim(),
+    suitableFor:splitTags(document.getElementById("styleEditSuitable").value),
+    plants:splitTags(document.getElementById("styleEditPlants").value),
+    materials:splitTags(document.getElementById("styleEditMaterials").value),
+    mood:document.getElementById("styleEditMood").value.trim()
+  };
+  if(styleEditImageData) override.image=styleEditImageData;
+  styleOverrides[id]=override;
+  saveStyleOverrides();
+  document.getElementById("styleEditDialog").close();
+  renderStyles();
+});
+document.getElementById("editStyleBtn").addEventListener("click",()=>{
+  document.getElementById("styleDetailDialog").close();
+  openStyleEdit(selectedStyleId);
+});
 
 async function loadPlantDatabase(){
   const counter=document.getElementById("plantCount");

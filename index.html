@@ -270,10 +270,39 @@
       </div>
 
       <div class="modal-actions">
+        <button id="editStyleBtn" type="button" class="btn btn-secondary">แก้ไขรูป / ข้อมูล</button>
         <button id="copyStylePromptBtn" type="button" class="btn btn-secondary">คัดลอก Prompt</button>
         <button id="useStyleBtn" type="button" class="btn btn-primary">ใช้แบบนี้สร้างโครงการ</button>
       </div>
     </div>
+  </dialog>
+
+  <dialog id="styleEditDialog" class="modal">
+    <form id="styleEditForm" method="dialog">
+      <div class="modal-head"><h3 id="styleEditTitle">แก้ไขข้อมูลแบบสวน</h3><button type="button" class="icon-btn close-dialog">×</button></div>
+      <input type="hidden" id="styleEditId" />
+      <label>รูปภาพแบบสวน<input id="styleEditImage" class="input" type="file" accept="image/*" /></label>
+      <div id="styleEditPreviewWrap" class="plant-edit-preview-wrap">
+        <img id="styleEditPreview" class="plant-edit-preview" alt="" />
+        <button type="button" id="styleEditRemoveImageBtn" class="small-btn danger">ลบรูป</button>
+      </div>
+      <label>คำอธิบาย<textarea id="styleEditDesc" class="input" rows="2"></textarea></label>
+      <div class="two-col">
+        <label>งบประมาณโดยประมาณ<input id="styleEditBudget" class="input" /></label>
+        <label>การดูแล<input id="styleEditMaintenance" class="input" /></label>
+      </div>
+      <div class="two-col">
+        <label>ระดับความยาก<input id="styleEditDifficulty" class="input" /></label>
+        <label>เหมาะกับ (คั่นด้วย ,)<input id="styleEditSuitable" class="input" /></label>
+      </div>
+      <label>พรรณไม้แนะนำ (คั่นด้วย ,)<input id="styleEditPlants" class="input" /></label>
+      <label>วัสดุแนะนำ (คั่นด้วย ,)<input id="styleEditMaterials" class="input" /></label>
+      <label>แนวทางสีและบรรยากาศ<input id="styleEditMood" class="input" /></label>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost close-dialog">ยกเลิก</button>
+        <button class="btn btn-primary" value="default">บันทึก</button>
+      </div>
+    </form>
   </dialog>
 
 
