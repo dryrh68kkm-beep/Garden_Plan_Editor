@@ -3,98 +3,136 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#163a2a" />
-  <title>ผลงานจัดสวน — โชว์เคส</title>
+  <meta name="theme-color" content="#173f31" />
+  <meta name="description" content="รินลดา พันธุ์ไม้ — รวมผลงานจัดสวนและฐานข้อมูลต้นไม้สำหรับสวนสวยของคุณ" />
+  <title>รินลดา พันธุ์ไม้ — ผลงานจัดสวน</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="showcase.css" />
 </head>
 <body>
-
   <section id="showcaseHomePage" class="page active sc-hero">
-    <div class="sc-hero-bg" id="scHeroBg"></div>
+    <div class="sc-hero-bg" id="scHeroBg" aria-hidden="true"></div>
+    <div class="sc-hero-overlay" aria-hidden="true"></div>
 
-    <div class="sc-hero-topbar">
-      <button type="button" class="sc-icon-btn" id="scMenuBtn" aria-label="เมนู">
-        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 6h18M3 12h18M3 18h18" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+    <header class="sc-hero-topbar">
+      <button type="button" class="sc-icon-btn" id="scMenuBtn" aria-label="เปิดเมนู" aria-expanded="false">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
+      <div class="sc-top-brand">RINLADA GARDEN</div>
       <button type="button" class="sc-icon-btn" id="scBellBtn" aria-label="แจ้งเตือน">
-        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 22a2.2 2.2 0 0 0 2.2-2.2H9.8A2.2 2.2 0 0 0 12 22Zm7-6.2V11a7 7 0 0 0-5.6-6.86V3a1.4 1.4 0 1 0-2.8 0v1.14A7 7 0 0 0 5 11v4.8L3 17.8V19h18v-1.2l-2-2Z" fill="#fff"/></svg>
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-    </div>
-    <div id="scMenuDropdown" class="sc-menu-dropdown">
+    </header>
+
+    <nav id="scMenuDropdown" class="sc-menu-dropdown" aria-label="เมนูหลัก">
       <button type="button" onclick="showPage('showcaseHome');closeScMenu()">หน้าแรก</button>
       <button type="button" onclick="showPage('showcaseStyles');closeScMenu()">แบบสวน</button>
       <button type="button" onclick="showPage('showcasePlants');closeScMenu()">ต้นไม้</button>
-    </div>
+    </nav>
 
     <div class="sc-hero-content">
-      <img class="sc-hero-logo" src="assets/rinlada-logo.webp" alt="รินลดา พันธุ์ไม้" />
-      <h1 class="sc-hero-title">ยินดีต้อนรับสู่<br />รินลดา พันธุ์ไม้</h1>
-      <p class="sc-hero-sub">ออกแบบสวนในฝันของคุณ</p>
+      <div class="sc-hero-copy">
+        <img class="sc-hero-logo" src="assets/rinlada-logo.webp" alt="โลโก้รินลดา พันธุ์ไม้" />
+        <p class="sc-hero-kicker">LANDSCAPE • PLANTS • INSPIRATION</p>
+        <h1 class="sc-hero-title">เปลี่ยนพื้นที่ธรรมดา<br /><span>ให้เป็นสวนในฝัน</span></h1>
+        <p class="sc-hero-sub">ค้นหาแรงบันดาลใจจากผลงานจัดสวนหลากหลายสไตล์ พร้อมเลือกพรรณไม้ที่เหมาะกับพื้นที่ของคุณ</p>
 
-      <div class="sc-hero-buttons">
-        <button type="button" class="sc-glass-btn" onclick="showPage('showcaseStyles')">
-          <span class="sc-glass-icon">🏡</span>
-          <span>แบบสวน</span>
-        </button>
-        <button type="button" class="sc-glass-btn" onclick="showPage('showcasePlants')">
-          <span class="sc-glass-icon">🌿</span>
-          <span>ฐานข้อมูลต้นไม้</span>
-        </button>
-      </div>
-
-      <button type="button" class="sc-cta-btn" onclick="showPage('showcaseStyles')">
-        <span class="sc-cta-icon">🌱</span>
-        เริ่มออกแบบสวนของคุณ
-        <span class="sc-cta-arrow">›</span>
-      </button>
-    </div>
-  </section>
-
-  <main class="container">
-    <section id="showcaseStylesPage" class="page">
-      <button type="button" class="sc-back-link" onclick="showPage('showcaseHome')">← กลับหน้าแรก</button>
-      <div class="page-head">
-        <div>
-          <p class="eyebrow">GARDEN STYLES</p>
-          <h2>แบบสวนของเรา</h2>
+        <div class="sc-hero-actions">
+          <button type="button" class="sc-cta-btn" onclick="showPage('showcaseStyles')">
+            <span class="sc-cta-icon">🌱</span>
+            สำรวจแบบสวน
+            <span class="sc-cta-arrow">→</span>
+          </button>
+          <button type="button" class="sc-secondary-btn" onclick="showPage('showcasePlants')">ดูฐานข้อมูลต้นไม้</button>
         </div>
       </div>
-      <div class="filters">
-        <input id="scStyleSearch" class="input" type="search" placeholder="ค้นหาชื่อแบบสวน หมวด หรือคำอธิบาย" />
-        <select id="scStyleCategoryFilter" class="input">
-          <option value="">ทุกหมวด</option>
-          <option>Modern</option>
-          <option>Tropical</option>
-          <option>Japanese</option>
-          <option>English</option>
-          <option>Mediterranean</option>
-          <option>Desert</option>
-          <option>Natural</option>
-          <option>Water</option>
-          <option>Commercial</option>
-          <option>Small Space</option>
-        </select>
+
+      <div class="sc-feature-grid" aria-label="เมนูทางลัด">
+        <button type="button" class="sc-feature-card" onclick="showPage('showcaseStyles')">
+          <span class="sc-feature-icon">🏡</span>
+          <span class="sc-feature-copy"><strong>แบบสวน</strong><small>เลือกชมไอเดียตามสไตล์</small></span>
+          <span class="sc-feature-arrow">↗</span>
+        </button>
+        <button type="button" class="sc-feature-card" onclick="showPage('showcasePlants')">
+          <span class="sc-feature-icon">🌿</span>
+          <span class="sc-feature-copy"><strong>พรรณไม้</strong><small>ค้นหาต้นไม้สำหรับสวน</small></span>
+          <span class="sc-feature-arrow">↗</span>
+        </button>
       </div>
-      <div id="scStyleCount" class="meta"></div>
+
+      <div class="sc-stats" aria-label="ข้อมูลเว็บไซต์">
+        <div><strong>หลายสไตล์</strong><span>ไอเดียสวนครบทุกบรรยากาศ</span></div>
+        <div><strong>ค้นหาง่าย</strong><span>กรองแบบสวนและต้นไม้ได้ทันที</span></div>
+        <div><strong>ใช้งานได้ทุกจอ</strong><span>รองรับมือถือ แท็บเล็ต และคอมพิวเตอร์</span></div>
+      </div>
+    </div>
+
+    <div class="sc-scroll-hint" aria-hidden="true"><span></span>เลื่อนเพื่อค้นหาแรงบันดาลใจ</div>
+  </section>
+
+  <main class="container sc-main-shell">
+    <section id="showcaseStylesPage" class="page sc-content-page">
+      <div class="sc-page-toolbar">
+        <button type="button" class="sc-back-link" onclick="showPage('showcaseHome')">← กลับหน้าแรก</button>
+        <span class="sc-page-badge">Garden Collection</span>
+      </div>
+
+      <div class="page-head sc-page-head">
+        <div>
+          <p class="eyebrow">GARDEN STYLES</p>
+          <h2>ค้นหาสวนที่เป็นคุณ</h2>
+          <p class="sc-page-intro">เลือกชมแบบสวนตามสไตล์ พื้นที่ และบรรยากาศที่คุณต้องการ</p>
+        </div>
+      </div>
+
+      <div class="filters sc-filter-panel">
+        <label class="sc-search-box" for="scStyleSearch">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="m21 21-4.35-4.35M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input id="scStyleSearch" class="input" type="search" placeholder="ค้นหาชื่อแบบสวน หมวด หรือคำอธิบาย" autocomplete="off" />
+        </label>
+        <label class="sc-select-wrap">
+          <span class="sr-only">เลือกหมวดสวน</span>
+          <select id="scStyleCategoryFilter" class="input">
+            <option value="">ทุกหมวด</option>
+            <option>Modern</option><option>Tropical</option><option>Japanese</option><option>English</option>
+            <option>Mediterranean</option><option>Desert</option><option>Natural</option><option>Water</option>
+            <option>Commercial</option><option>Small Space</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="sc-result-bar"><div id="scStyleCount" class="meta"></div><span>คลิกการ์ดเพื่อดูรายละเอียด</span></div>
       <div id="scStyleList" class="style-grid"></div>
     </section>
 
-    <section id="showcasePlantsPage" class="page">
-      <button type="button" class="sc-back-link" onclick="showPage('showcaseHome')">← กลับหน้าแรก</button>
-      <div class="page-head">
+    <section id="showcasePlantsPage" class="page sc-content-page">
+      <div class="sc-page-toolbar">
+        <button type="button" class="sc-back-link" onclick="showPage('showcaseHome')">← กลับหน้าแรก</button>
+        <span class="sc-page-badge">Plant Library</span>
+      </div>
+
+      <div class="page-head sc-page-head">
         <div>
           <p class="eyebrow">PLANT GALLERY</p>
-          <h2>ต้นไม้ในผลงานของเรา</h2>
+          <h2>พรรณไม้สำหรับทุกมุมสวน</h2>
+          <p class="sc-page-intro">ค้นหาต้นไม้ที่ใช้ในผลงาน พร้อมดูภาพขนาดใหญ่เพื่อช่วยตัดสินใจ</p>
         </div>
       </div>
-      <div class="filters">
-        <input id="scPlantSearch" class="input" type="search" placeholder="ค้นหาชื่อต้นไม้" />
+
+      <div class="filters sc-filter-panel sc-plant-filter">
+        <label class="sc-search-box" for="scPlantSearch">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="m21 21-4.35-4.35M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input id="scPlantSearch" class="input" type="search" placeholder="ค้นหาชื่อต้นไม้" autocomplete="off" />
+        </label>
       </div>
-      <div id="scPlantCount" class="meta"></div>
+
+      <div class="sc-result-bar"><div id="scPlantCount" class="meta"></div><span>เลือกภาพเพื่อดูแบบเต็มจอ</span></div>
       <div id="scPlantList" class="showcase-plant-grid"></div>
       <div class="plant-load-more">
-        <button id="scLoadMorePlantsBtn" class="btn btn-secondary" style="display:none">โหลดเพิ่ม</button>
+        <button id="scLoadMorePlantsBtn" class="btn btn-secondary sc-load-more" style="display:none">โหลดรายการเพิ่มเติม</button>
       </div>
     </section>
   </main>
@@ -102,52 +140,37 @@
   <dialog id="scStyleDetailDialog" class="modal style-detail-modal">
     <div class="style-detail-wrap">
       <div class="modal-head">
-        <div>
-          <p id="scStyleDetailCategory" class="eyebrow"></p>
-          <h3 id="scStyleDetailName"></h3>
-        </div>
-        <button type="button" class="icon-btn close-dialog">×</button>
+        <div><p id="scStyleDetailCategory" class="eyebrow"></p><h3 id="scStyleDetailName"></h3></div>
+        <button type="button" class="icon-btn close-dialog" aria-label="ปิดหน้าต่าง">×</button>
       </div>
-
       <div id="scStyleDetailHero" class="style-detail-hero"></div>
       <div id="scStyleDetailThumbs" class="style-detail-thumbs"></div>
       <p id="scStyleDetailDescription" class="style-detail-description"></p>
-
       <div class="detail-grid">
         <div class="detail-box"><span>งบประมาณโดยประมาณ</span><strong id="scStyleDetailBudget"></strong></div>
         <div class="detail-box"><span>การดูแล</span><strong id="scStyleDetailMaintenance"></strong></div>
         <div class="detail-box"><span>ระดับความยาก</span><strong id="scStyleDetailDifficulty"></strong></div>
         <div class="detail-box"><span>เหมาะกับ</span><strong id="scStyleDetailSuitable"></strong></div>
       </div>
-
-      <div class="detail-section">
-        <h4>ต้นไม้ที่ใช้ในสวนนี้</h4>
-        <div id="scStyleDetailLinkedPlants" class="style-linked-plants"></div>
-      </div>
-      <div class="detail-section">
-        <h4>พรรณไม้แนะนำ</h4>
-        <div id="scStyleDetailPlants" class="chips"></div>
-      </div>
-      <div class="detail-section">
-        <h4>วัสดุแนะนำ</h4>
-        <div id="scStyleDetailMaterials" class="chips"></div>
-      </div>
-      <div class="detail-section">
-        <h4>แนวทางสีและบรรยากาศ</h4>
-        <p id="scStyleDetailMood" class="meta"></p>
-      </div>
+      <div class="detail-section"><h4>ต้นไม้ที่ใช้ในสวนนี้</h4><div id="scStyleDetailLinkedPlants" class="style-linked-plants"></div></div>
+      <div class="detail-section"><h4>พรรณไม้แนะนำ</h4><div id="scStyleDetailPlants" class="chips"></div></div>
+      <div class="detail-section"><h4>วัสดุแนะนำ</h4><div id="scStyleDetailMaterials" class="chips"></div></div>
+      <div class="detail-section"><h4>แนวทางสีและบรรยากาศ</h4><p id="scStyleDetailMood" class="meta"></p></div>
     </div>
   </dialog>
 
   <dialog id="scPlantLightbox" class="modal showcase-lightbox">
     <div class="style-detail-wrap">
-      <div class="modal-head">
-        <h3 id="scPlantLightboxName"></h3>
-        <button type="button" class="icon-btn close-dialog">×</button>
-      </div>
+      <div class="modal-head"><h3 id="scPlantLightboxName"></h3><button type="button" class="icon-btn close-dialog" aria-label="ปิดหน้าต่าง">×</button></div>
       <img id="scPlantLightboxImage" class="showcase-lightbox-img" alt="" />
     </div>
   </dialog>
+
+  <nav class="sc-bottom-nav" aria-label="เมนูด้านล่าง">
+    <button type="button" onclick="showPage('showcaseHome')"><span>⌂</span>หน้าแรก</button>
+    <button type="button" onclick="showPage('showcaseStyles')"><span>🏡</span>แบบสวน</button>
+    <button type="button" onclick="showPage('showcasePlants')"><span>🌿</span>ต้นไม้</button>
+  </nav>
 
   <script src="data/garden-styles-data.js"></script>
   <script src="firebase-client.js"></script>
