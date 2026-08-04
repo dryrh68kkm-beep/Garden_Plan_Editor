@@ -10,6 +10,15 @@ function load(key, fallback){
 }
 function esc(s=""){ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m])); }
 function money(v){ return new Intl.NumberFormat("th-TH",{style:"currency",currency:"THB",maximumFractionDigits:0}).format(Number(v)||0); }
+// Opens a LINE chat with the shop's Official Account, pre-filled with a
+// message about the specific plant — LINE's oaMessage deep link supports
+// prefilling text this way (no LINE Login/Messaging API needed).
+const LINE_OA_ID="@225yhyoy";
+function lineOrderUrl(p){
+  const priceText=p.salePrice?` ราคา ${money(p.salePrice)}${p.unit?`/${p.unit}`:""}`:"";
+  const text=`สนใจสั่งซื้อ: ${p.thaiName}${priceText}`;
+  return `https://line.me/R/oaMessage/${LINE_OA_ID}/?${encodeURIComponent(text)}`;
+}
 // Maps both the new ง่าย/ปานกลาง/ยาก scale and the older ต่ำ/กลาง/สูง values
 // (still used by the static 300-item catalog) to the same colored-dot label.
 const MAINTENANCE_LABELS={"ต่ำ":"🟢 ง่าย","กลาง":"🟡 ปานกลาง","สูง":"🔴 ยาก","ง่าย":"🟢 ง่าย","ปานกลาง":"🟡 ปานกลาง","ยาก":"🔴 ยาก"};
@@ -249,6 +258,7 @@ function renderScPlantGallery(){
         <div class="showcase-plant-caption">${esc(p.thaiName)}</div>
         ${p.salePrice?`<div class="showcase-plant-price-tag">🏷️ ${money(p.salePrice)}${p.unit?` / ${esc(p.unit)}`:""}</div>`:""}
       </div>
+      <a class="showcase-order-btn" href="${esc(lineOrderUrl(p))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 สั่งซื้อผ่าน LINE</a>
     </article>`).join(""):'<div class="empty">ยังไม่มีรูปต้นไม้ในผลงาน</div>';
   const loadMoreBtn=document.getElementById("scLoadMorePlantsBtn");
   const remaining=rows.length-visibleRows.length;
@@ -298,6 +308,7 @@ function openScPlantLightbox(id){
     priceTag.style.display="none";
   }
   document.getElementById("scPlantLightboxBestSeller").style.display=p.bestSeller?"inline-flex":"none";
+  document.getElementById("scPlantLightboxOrderBtn").href=lineOrderUrl(p);
   document.getElementById("scPlantLightboxLight").textContent=p.light||"-";
   document.getElementById("scPlantLightboxWater").textContent=p.water||"-";
   document.getElementById("scPlantLightboxMaintenance").textContent=maintenanceLabel(p.maintenance);
