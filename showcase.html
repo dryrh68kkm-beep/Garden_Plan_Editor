@@ -77,11 +77,13 @@
   <main class="container sc-main-shell">
     <section id="showcaseStylesPage" class="page sc-content-page">
       <div class="sc-page-toolbar"><button type="button" class="sc-back-link" onclick="showPage('showcaseHome')">← กลับหน้าแรก</button><span class="sc-page-badge sc-brand-badge"><img src="assets/rinlada-logo-main.webp" alt="" />Garden Collection</span></div>
-      <div class="page-head sc-page-head"><div><p class="eyebrow">OUR WORK</p><h2>ผลงานจัดสวนจริง</h2><p class="sc-page-intro">ตัวอย่างสวนจริงที่เราออกแบบและจัดให้ลูกค้า</p></div></div>
+      <div class="page-head sc-page-head"><div><p class="eyebrow">GARDEN STYLES</p><h2>แบบสวนของเรา</h2><p class="sc-page-intro">ค้นหาแบบสวนที่เหมาะกับพื้นที่และบรรยากาศที่คุณต้องการ</p></div></div>
+      <div class="filters sc-filter-panel"><label class="sc-search-box" for="scStyleSearch"><svg viewBox="0 0 24 24" width="20" height="20"><path d="m21 21-4.35-4.35M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="currentColor" stroke-width="2"/></svg><input id="scStyleSearch" class="input" type="search" placeholder="ค้นหาแบบสวน" autocomplete="off" /></label><select id="scStyleCategoryFilter" class="input sc-select"><option value="">ทุกหมวด</option><option>Modern</option><option>Tropical</option><option>Japanese</option><option>English</option><option>Mediterranean</option><option>Desert</option><option>Natural</option><option>Water</option><option>Commercial</option><option>Small Space</option></select></div>
+
+      <div class="page-head sc-page-head" style="margin-top:36px"><div><p class="eyebrow">OUR WORK</p><h2>ผลงานจัดสวนจริง</h2><p class="sc-page-intro">ตัวอย่างสวนจริงที่เราออกแบบและจัดให้ลูกค้า</p></div></div>
       <div id="scPortfolioList" class="style-grid sc-portfolio-grid"></div>
 
-      <div class="page-head sc-page-head" style="margin-top:36px"><div><p class="eyebrow">GARDEN STYLES</p><h2>แบบสวนของเรา</h2><p class="sc-page-intro">ค้นหาแบบสวนที่เหมาะกับพื้นที่และบรรยากาศที่คุณต้องการ</p></div></div>
-      <div class="filters sc-filter-panel"><label class="sc-search-box" for="scStyleSearch"><svg viewBox="0 0 24 24" width="20" height="20"><path d="m21 21-4.35-4.35M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="currentColor" stroke-width="2"/></svg><input id="scStyleSearch" class="input" type="search" placeholder="ค้นหาแบบสวน" autocomplete="off" /></label><select id="scStyleCategoryFilter" class="input sc-select"><option value="">ทุกหมวด</option><option>Modern</option><option>Tropical</option><option>Japanese</option><option>English</option><option>Mediterranean</option><option>Desert</option><option>Natural</option><option>Water</option><option>Commercial</option><option>Small Space</option></select></div>
+      <div class="page-head sc-page-head" style="margin-top:36px"><div><p class="eyebrow">GARDEN STYLES</p><h2>แบบสวนทั้งหมด</h2></div></div>
       <div id="scStyleCount" class="meta sc-count"></div><div id="scStyleList" class="style-grid"></div>
     </section>
 
@@ -99,6 +101,6 @@
 
   <script src="data/garden-styles-data.js?v=202608040537"></script>
   <script src="firebase-client.js?v=202608040537"></script>
-  <script src="showcase.js?v=202608040537"></script>
+  <script src="showcase.js?v=202608040847"></script>
 </body>
 </html>
