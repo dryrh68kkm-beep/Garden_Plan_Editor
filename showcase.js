@@ -384,7 +384,9 @@ function openScPlantLightbox(id){
   } else {
     priceTag.style.display="none";
   }
-  document.getElementById("scPlantLightboxBestSeller").style.display=p.bestSeller?"inline-flex":"none";
+  const lightboxBestSeller=document.getElementById("scPlantLightboxBestSeller");
+  lightboxBestSeller.textContent="🔥 สินค้าขายดี";
+  lightboxBestSeller.style.display=p.bestSeller?"inline-flex":"none";
   document.getElementById("scPlantLightboxOrderBtn").href=lineOrderUrl(p);
   document.getElementById("scPlantLightboxLight").textContent=p.light||"-";
   document.getElementById("scPlantLightboxWater").textContent=p.water||"-";
