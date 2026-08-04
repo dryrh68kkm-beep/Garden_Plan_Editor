@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#163a2a" />
   <title>Garden Plan Editor</title>
-  <link rel="stylesheet" href="style.css?v=202608040537" />
+  <link rel="stylesheet" href="style.css?v=202608041459" />
 </head>
 <body>
   <header class="topbar">
@@ -38,6 +38,11 @@
         </div>
         <button id="addPortfolioBtn" class="btn btn-primary">+ เพิ่มผลงาน</button>
       </div>
+      <div class="quick-edit-bar">
+        <select id="portfolioQuickEdit" class="input">
+          <option value="">✏️ แก้ไขด่วน: เลือกผลงานที่ต้องการแก้ไข...</option>
+        </select>
+      </div>
       <div id="portfolioCount" class="meta"></div>
       <div id="portfolioList" class="style-grid portfolio-grid"></div>
 
@@ -61,6 +66,11 @@
           <option>Water</option>
           <option>Commercial</option>
           <option>Small Space</option>
+        </select>
+      </div>
+      <div class="quick-edit-bar">
+        <select id="styleQuickEdit" class="input">
+          <option value="">✏️ แก้ไขด่วน: เลือกแบบสวนที่ต้องการแก้ไข...</option>
         </select>
       </div>
       <div id="styleCount" class="meta"></div>
@@ -87,6 +97,11 @@
           <option>รำไร</option>
           <option>ร่ม</option>
           <option>รำไรถึงแดด</option>
+        </select>
+      </div>
+      <div class="quick-edit-bar">
+        <select id="plantQuickEdit" class="input">
+          <option value="">✏️ แก้ไขด่วน: เลือกต้นไม้ที่ต้องการแก้ไข...</option>
         </select>
       </div>
 
@@ -157,25 +172,37 @@
     <form id="styleEditForm" method="dialog">
       <div class="modal-head"><div class="modal-head-title"><img src="assets/rinlada-logo-main.webp" class="modal-logo" alt="" /><h3 id="styleEditTitle">แก้ไขข้อมูลแบบสวน</h3></div><button type="button" class="icon-btn close-dialog">×</button></div>
       <input type="hidden" id="styleEditId" />
-      <label>รูปภาพแบบสวน (เพิ่มได้หลายมุม)<input id="styleEditImage" class="input" type="file" accept="image/*" multiple /></label>
-      <div id="styleEditGallery" class="style-edit-gallery"></div>
-      <label>คำอธิบาย<textarea id="styleEditDesc" class="input" rows="2"></textarea></label>
-      <div class="two-col">
-        <label>งบประมาณโดยประมาณ<input id="styleEditBudget" class="input" /></label>
-        <label>การดูแล<input id="styleEditMaintenance" class="input" /></label>
+      <div class="form-section">
+        <p class="form-section-title">รูปภาพ</p>
+        <label>รูปภาพแบบสวน (เพิ่มได้หลายมุม)<input id="styleEditImage" class="input" type="file" accept="image/*" multiple /></label>
+        <div id="styleEditGallery" class="style-edit-gallery"></div>
       </div>
-      <div class="two-col">
-        <label>ระดับความยาก<input id="styleEditDifficulty" class="input" /></label>
-        <label>เหมาะกับ (คั่นด้วย ,)<input id="styleEditSuitable" class="input" /></label>
+      <div class="form-section">
+        <p class="form-section-title">ข้อมูลพื้นฐาน</p>
+        <label>คำอธิบาย<textarea id="styleEditDesc" class="input" rows="2"></textarea></label>
+        <div class="two-col">
+          <label>งบประมาณโดยประมาณ<input id="styleEditBudget" class="input" /></label>
+          <label>การดูแล<input id="styleEditMaintenance" class="input" /></label>
+        </div>
+        <div class="two-col">
+          <label>ระดับความยาก<input id="styleEditDifficulty" class="input" /></label>
+          <label>เหมาะกับ (คั่นด้วย ,)<input id="styleEditSuitable" class="input" /></label>
+        </div>
       </div>
-      <label>พรรณไม้แนะนำ (คั่นด้วย ,)<input id="styleEditPlants" class="input" /></label>
-      <label>วัสดุแนะนำ (คั่นด้วย ,)<input id="styleEditMaterials" class="input" /></label>
-      <label>แนวทางสีและบรรยากาศ<input id="styleEditMood" class="input" /></label>
-      <label>ต้นไม้ที่ใช้ในสวนนี้ (เลือกจากฐานข้อมูลจริง)
-        <input id="styleEditPlantSearch" class="input" type="text" placeholder="พิมพ์ชื่อต้นไม้เพื่อค้นหา..." autocomplete="off" />
-      </label>
-      <div id="styleEditPlantResults" class="style-edit-plant-results"></div>
-      <div id="styleEditPlantSelected" class="chips"></div>
+      <div class="form-section">
+        <p class="form-section-title">พรรณไม้และวัสดุ</p>
+        <label>พรรณไม้แนะนำ (คั่นด้วย ,)<input id="styleEditPlants" class="input" /></label>
+        <label>วัสดุแนะนำ (คั่นด้วย ,)<input id="styleEditMaterials" class="input" /></label>
+        <label>แนวทางสีและบรรยากาศ<input id="styleEditMood" class="input" /></label>
+      </div>
+      <div class="form-section">
+        <p class="form-section-title">ต้นไม้ที่ใช้จริง</p>
+        <label>ต้นไม้ที่ใช้ในสวนนี้ (เลือกจากฐานข้อมูลจริง)
+          <input id="styleEditPlantSearch" class="input" type="text" placeholder="พิมพ์ชื่อต้นไม้เพื่อค้นหา..." autocomplete="off" />
+        </label>
+        <div id="styleEditPlantResults" class="style-edit-plant-results"></div>
+        <div id="styleEditPlantSelected" class="chips"></div>
+      </div>
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost close-dialog">ยกเลิก</button>
         <button class="btn btn-primary" value="default">บันทึก</button>
@@ -213,15 +240,21 @@
     <form id="portfolioEditForm" method="dialog">
       <div class="modal-head"><div class="modal-head-title"><img src="assets/rinlada-logo-main.webp" class="modal-logo" alt="" /><h3 id="portfolioEditFormTitle">เพิ่มผลงานจัดสวน</h3></div><button type="button" class="icon-btn close-dialog">×</button></div>
       <input type="hidden" id="portfolioEditId" />
-      <label>รูปภาพผลงาน (เพิ่มได้หลายรูป)<input id="portfolioEditImage" class="input" type="file" accept="image/*" multiple /></label>
-      <div id="portfolioEditGallery" class="style-edit-gallery"></div>
-      <label>ชื่อ / สถานที่โครงการ<input id="portfolioEditTitleInput" class="input" placeholder="เช่น บ้านคุณสมชาย ต.บางแก้ว" /></label>
-      <label>สถานที่ (รายละเอียดเพิ่มเติม)<input id="portfolioEditLocation" class="input" placeholder="เช่น อ.บางพลี จ.สมุทรปราการ" /></label>
-      <div class="two-col">
-        <label>งบประมาณที่ใช้จริง<input id="portfolioEditBudget" class="input" placeholder="เช่น 45,000 บาท" /></label>
-        <label>ระยะเวลาทำงาน<input id="portfolioEditDuration" class="input" placeholder="เช่น 5 วัน" /></label>
+      <div class="form-section">
+        <p class="form-section-title">รูปภาพ</p>
+        <label>รูปภาพผลงาน (เพิ่มได้หลายรูป)<input id="portfolioEditImage" class="input" type="file" accept="image/*" multiple /></label>
+        <div id="portfolioEditGallery" class="style-edit-gallery"></div>
       </div>
-      <label>คำอธิบายเพิ่มเติม<textarea id="portfolioEditDescription" class="input" rows="2"></textarea></label>
+      <div class="form-section">
+        <p class="form-section-title">ข้อมูลโครงการ</p>
+        <label>ชื่อ / สถานที่โครงการ<input id="portfolioEditTitleInput" class="input" placeholder="เช่น บ้านคุณสมชาย ต.บางแก้ว" /></label>
+        <label>สถานที่ (รายละเอียดเพิ่มเติม)<input id="portfolioEditLocation" class="input" placeholder="เช่น อ.บางพลี จ.สมุทรปราการ" /></label>
+        <div class="two-col">
+          <label>งบประมาณที่ใช้จริง<input id="portfolioEditBudget" class="input" placeholder="เช่น 45,000 บาท" /></label>
+          <label>ระยะเวลาทำงาน<input id="portfolioEditDuration" class="input" placeholder="เช่น 5 วัน" /></label>
+        </div>
+        <label>คำอธิบายเพิ่มเติม<textarea id="portfolioEditDescription" class="input" rows="2"></textarea></label>
+      </div>
       <div class="modal-actions">
         <button id="portfolioEditDeleteBtn" type="button" class="small-btn danger" style="display:none;margin-right:auto">ลบผลงานนี้</button>
         <button type="button" class="btn btn-ghost close-dialog">ยกเลิก</button>
@@ -277,14 +310,23 @@
     <form id="plantEditForm" method="dialog">
       <div class="modal-head"><div class="modal-head-title"><img src="assets/rinlada-logo-main.webp" class="modal-logo" alt="" /><h3 id="plantEditTitle">แก้ไขข้อมูลต้นไม้</h3></div><button type="button" class="icon-btn close-dialog">×</button></div>
       <input type="hidden" id="plantEditId" />
-      <div class="two-col">
-        <label>ต้นทุน/หน่วย<input id="plantEditCost" class="input" type="number" min="0" step="0.01" /></label>
-        <label>ราคาขาย/หน่วย<input id="plantEditPrice" class="input" type="number" min="0" step="0.01" /></label>
+      <div class="form-section">
+        <p class="form-section-title">ราคา</p>
+        <div class="two-col">
+          <label>ต้นทุน/หน่วย<input id="plantEditCost" class="input" type="number" min="0" step="0.01" /></label>
+          <label>ราคาขาย/หน่วย<input id="plantEditPrice" class="input" type="number" min="0" step="0.01" /></label>
+        </div>
+        <label class="checkbox-label"><input id="plantEditBestSeller" type="checkbox" /> 🔥 สินค้าขายดี</label>
       </div>
-      <label>รูปภาพต้นไม้ (เพิ่มได้หลายรูป)<input id="plantEditImage" class="input" type="file" accept="image/*" multiple /></label>
-      <div id="plantEditGallery" class="style-edit-gallery"></div>
-      <label>ความเชื่อ / ความมงคล<textarea id="plantEditAuspicious" class="input" rows="2" placeholder="เช่น เป็นไม้มงคล เสริมความก้าวหน้าและเงินทอง"></textarea></label>
-      <label class="checkbox-label"><input id="plantEditBestSeller" type="checkbox" /> 🔥 สินค้าขายดี</label>
+      <div class="form-section">
+        <p class="form-section-title">รูปภาพ</p>
+        <label>รูปภาพต้นไม้ (เพิ่มได้หลายรูป)<input id="plantEditImage" class="input" type="file" accept="image/*" multiple /></label>
+        <div id="plantEditGallery" class="style-edit-gallery"></div>
+      </div>
+      <div class="form-section">
+        <p class="form-section-title">ความเชื่อและความมงคล</p>
+        <label>ความเชื่อ / ความมงคล<textarea id="plantEditAuspicious" class="input" rows="2" placeholder="เช่น เป็นไม้มงคล เสริมความก้าวหน้าและเงินทอง"></textarea></label>
+      </div>
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost close-dialog">ยกเลิก</button>
         <button class="btn btn-primary" value="default">บันทึก</button>
@@ -296,47 +338,62 @@
     <form id="plantAddForm" method="dialog">
       <div class="modal-head"><div class="modal-head-title"><img src="assets/rinlada-logo-main.webp" class="modal-logo" alt="" /><h3 id="plantAddTitle">เพิ่มต้นไม้ใหม่</h3></div><button type="button" class="icon-btn close-dialog">×</button></div>
       <input type="hidden" id="plantAddId" />
-      <label>ชื่อไทย<input id="plantAddThaiName" class="input" required /></label>
-      <div class="two-col">
-        <label>ชื่ออังกฤษ<input id="plantAddEnglishName" class="input" /></label>
-        <label>ชื่อวิทยาศาสตร์<input id="plantAddScientificName" class="input" /></label>
+      <div class="form-section">
+        <p class="form-section-title">ข้อมูลพื้นฐาน</p>
+        <label>ชื่อไทย<input id="plantAddThaiName" class="input" required /></label>
+        <div class="two-col">
+          <label>ชื่ออังกฤษ<input id="plantAddEnglishName" class="input" /></label>
+          <label>ชื่อวิทยาศาสตร์<input id="plantAddScientificName" class="input" /></label>
+        </div>
+        <label>หมวดหมู่<input id="plantAddCategory" class="input" list="plantAddCategoryOptions" placeholder="เช่น ไม้ยืนต้น, ไม้พุ่ม" /></label>
+        <datalist id="plantAddCategoryOptions"></datalist>
       </div>
-      <label>หมวดหมู่<input id="plantAddCategory" class="input" list="plantAddCategoryOptions" placeholder="เช่น ไม้ยืนต้น, ไม้พุ่ม" /></label>
-      <datalist id="plantAddCategoryOptions"></datalist>
-      <div class="two-col">
-        <label>สภาพแสง<select id="plantAddLight" class="input">
-          <option value="">ไม่ระบุ</option>
-          <option>แดดจัด</option>
-          <option>แดดรำไร</option>
-          <option>รำไร</option>
-          <option>ร่ม</option>
-          <option>รำไรถึงแดด</option>
-        </select></label>
-        <label>น้ำ<select id="plantAddWater" class="input">
-          <option value="">ไม่ระบุ</option>
-          <option>น้อย</option>
-          <option>น้อยถึงปานกลาง</option>
-          <option>ปานกลาง</option>
-          <option>มาก</option>
-        </select></label>
-      </div>
-      <div class="two-col">
+      <div class="form-section">
+        <p class="form-section-title">การดูแล</p>
+        <div class="two-col">
+          <label>สภาพแสง<select id="plantAddLight" class="input">
+            <option value="">ไม่ระบุ</option>
+            <option>แดดจัด</option>
+            <option>แดดรำไร</option>
+            <option>รำไร</option>
+            <option>ร่ม</option>
+            <option>รำไรถึงแดด</option>
+          </select></label>
+          <label>น้ำ<select id="plantAddWater" class="input">
+            <option value="">ไม่ระบุ</option>
+            <option>น้อย</option>
+            <option>น้อยถึงปานกลาง</option>
+            <option>ปานกลาง</option>
+            <option>มาก</option>
+          </select></label>
+        </div>
         <label>ระดับการดูแล<select id="plantAddMaintenance" class="input">
           <option value="">ไม่ระบุ</option>
           <option value="ง่าย">🟢 ง่าย</option>
           <option value="ปานกลาง">🟡 ปานกลาง</option>
           <option value="ยาก">🔴 ยาก</option>
         </select></label>
-        <label>หน่วย<input id="plantAddUnit" class="input" placeholder="ต้น" /></label>
       </div>
-      <div class="two-col">
-        <label>ต้นทุน/หน่วย<input id="plantAddCost" class="input" type="number" min="0" step="0.01" /></label>
-        <label>ราคาขาย/หน่วย<input id="plantAddPrice" class="input" type="number" min="0" step="0.01" /></label>
+      <div class="form-section">
+        <p class="form-section-title">ราคาและหน่วย</p>
+        <div class="two-col">
+          <label>หน่วย<input id="plantAddUnit" class="input" placeholder="ต้น" /></label>
+          <label class="checkbox-label" style="align-self:flex-end"><input id="plantAddBestSeller" type="checkbox" /> 🔥 สินค้าขายดี</label>
+        </div>
+        <div class="two-col">
+          <label>ต้นทุน/หน่วย<input id="plantAddCost" class="input" type="number" min="0" step="0.01" /></label>
+          <label>ราคาขาย/หน่วย<input id="plantAddPrice" class="input" type="number" min="0" step="0.01" /></label>
+        </div>
       </div>
-      <label>รูปภาพต้นไม้ (เพิ่มได้หลายรูป)<input id="plantAddImage" class="input" type="file" accept="image/*" multiple /></label>
-      <div id="plantAddGallery" class="style-edit-gallery"></div>
-      <label>ความเชื่อ / ความมงคล<textarea id="plantAddAuspicious" class="input" rows="2" placeholder="เช่น เป็นไม้มงคล เสริมความก้าวหน้าและเงินทอง"></textarea></label>
-      <label class="checkbox-label"><input id="plantAddBestSeller" type="checkbox" /> 🔥 สินค้าขายดี</label>
+      <div class="form-section">
+        <p class="form-section-title">รูปภาพ</p>
+        <label>รูปภาพต้นไม้ (เพิ่มได้หลายรูป)<input id="plantAddImage" class="input" type="file" accept="image/*" multiple /></label>
+        <div id="plantAddGallery" class="style-edit-gallery"></div>
+      </div>
+      <div class="form-section">
+        <p class="form-section-title">ความเชื่อและความมงคล</p>
+        <label>ความเชื่อ / ความมงคล<textarea id="plantAddAuspicious" class="input" rows="2" placeholder="เช่น เป็นไม้มงคล เสริมความก้าวหน้าและเงินทอง"></textarea></label>
+      </div>
       <div class="modal-actions">
         <button type="button" id="plantAddDeleteBtn" class="small-btn danger" style="display:none;margin-right:auto">ลบต้นไม้นี้</button>
         <button type="button" class="btn btn-ghost close-dialog">ยกเลิก</button>
@@ -347,6 +404,6 @@
 
   <script src="data/garden-styles-data.js?v=202608040537"></script>
   <script src="firebase-client.js?v=202608040537"></script>
-  <script src="app.js?v=202608040720"></script>
+  <script src="app.js?v=202608041459"></script>
 </body>
 </html>

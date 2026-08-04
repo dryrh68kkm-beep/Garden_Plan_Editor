@@ -159,7 +159,22 @@ function renderStyles(){
       </div>
     </article>`;
   }).join(""):'<div class="empty">ไม่พบแบบสวนที่ค้นหา</div>';
+  fillStyleQuickEdit();
 }
+// Lets the admin jump straight to editing a style by name instead of
+// scrolling/searching the 50-card grid for its "แก้ไข" button. Always lists
+// every style regardless of the current search/category filter above.
+function fillStyleQuickEdit(){
+  const select=document.getElementById("styleQuickEdit");
+  const rows=mergedStyles().slice().sort((a,b)=>a.name.localeCompare(b.name,"th"));
+  select.innerHTML='<option value="">✏️ แก้ไขด่วน: เลือกแบบสวนที่ต้องการแก้ไข...</option>'
+    +rows.map(s=>`<option value="${esc(s.id)}">${esc(s.name)} (${esc(s.category)})</option>`).join("");
+}
+document.getElementById("styleQuickEdit").addEventListener("change",e=>{
+  const id=e.target.value;
+  if(id) openStyleEdit(id);
+  e.target.value="";
+});
 let selectedStyleId="";
 document.getElementById("styleSearch").addEventListener("input",renderStyles);
 document.getElementById("styleCategoryFilter").addEventListener("change",renderStyles);
@@ -197,7 +212,19 @@ function renderPortfolio(){
       </div>
     </article>`;
   }).join(""):'<div class="empty">ยังไม่มีผลงานจัดสวน กด "+ เพิ่มผลงาน" เพื่อเริ่มเพิ่มรูปผลงานจริง</div>';
+  fillPortfolioQuickEdit();
 }
+function fillPortfolioQuickEdit(){
+  const select=document.getElementById("portfolioQuickEdit");
+  const rows=portfolioItems.slice().sort((a,b)=>(a.title||"").localeCompare(b.title||"","th"));
+  select.innerHTML='<option value="">✏️ แก้ไขด่วน: เลือกผลงานที่ต้องการแก้ไข...</option>'
+    +rows.map(item=>`<option value="${esc(item.id)}">${esc(item.title||"ผลงานจัดสวน")}</option>`).join("");
+}
+document.getElementById("portfolioQuickEdit").addEventListener("change",e=>{
+  const id=e.target.value;
+  if(id) openPortfolioEdit(id);
+  e.target.value="";
+});
 function openPortfolioDetail(id){
   const item=portfolioItems.find(x=>x.id===id);
   if(!item) return;
@@ -504,7 +531,21 @@ function fillPlantFilters(){
   const categories=[...new Set(plants.map(p=>p.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"th"));
   select.innerHTML='<option value="">ทุกประเภท</option>'+categories.map(x=>`<option>${esc(x)}</option>`).join("");
   select.value=current;
+  fillPlantQuickEdit();
 }
+// Lets the admin jump straight to editing a plant by name instead of
+// scrolling/searching the (potentially 300+ card) grid below.
+function fillPlantQuickEdit(){
+  const select=document.getElementById("plantQuickEdit");
+  const rows=plants.slice().sort((a,b)=>a.thaiName.localeCompare(b.thaiName,"th"));
+  select.innerHTML='<option value="">✏️ แก้ไขด่วน: เลือกต้นไม้ที่ต้องการแก้ไข...</option>'
+    +rows.map(p=>`<option value="${esc(p.id)}">${esc(p.thaiName)}${p.englishName?` (${esc(p.englishName)})`:""}</option>`).join("");
+}
+document.getElementById("plantQuickEdit").addEventListener("change",e=>{
+  const id=e.target.value;
+  if(id) openPlantEdit(id);
+  e.target.value="";
+});
 
 const PLANT_PAGE_SIZE=24;
 let plantVisibleCount=PLANT_PAGE_SIZE;
