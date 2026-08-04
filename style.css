@@ -33,6 +33,7 @@ button,input,select,textarea{font:inherit}.topbar{background:#10291d;color:#fff;
 @media(max-width:800px){.admin-actions{padding-left:0;border-left:0;border-top:1px solid rgba(255,255,255,.22);padding-top:10px;width:100%}}
 @media(max-width:560px){.topbar-actions{width:100%}.sync-group{justify-content:space-between;width:100%}.admin-actions{flex-direction:column;align-items:stretch}.admin-actions .btn{width:100%}}
 
+.portfolio-grid{margin-bottom:8px}
 .style-card .category-label{font-size:11px;font-weight:800;letter-spacing:.12em;color:#6b7e70;text-transform:uppercase}
 .style-card .style-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .style-card .style-actions .btn{flex:1}

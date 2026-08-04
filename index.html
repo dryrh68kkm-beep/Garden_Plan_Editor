@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#163a2a" />
   <title>Garden Plan Editor</title>
-  <link rel="stylesheet" href="style.css?v=202608040414" />
+  <link rel="stylesheet" href="style.css?v=202608040537" />
 </head>
 <body>
   <header class="topbar">
@@ -32,6 +32,16 @@
   <main class="container">
     <section id="stylesPage" class="page active">
       <div class="page-head">
+        <div>
+          <p class="eyebrow">OUR WORK</p>
+          <h2>ผลงานจัดสวนจริง</h2>
+        </div>
+        <button id="addPortfolioBtn" class="btn btn-primary">+ เพิ่มผลงาน</button>
+      </div>
+      <div id="portfolioCount" class="meta"></div>
+      <div id="portfolioList" class="style-grid portfolio-grid"></div>
+
+      <div class="page-head" style="margin-top:36px">
         <div>
           <p class="eyebrow">GARDEN STYLES</p>
           <h2>แบบสวนสำเร็จรูป 50 แบบ</h2>
@@ -173,6 +183,52 @@
     </form>
   </dialog>
 
+  <dialog id="portfolioDetailDialog" class="modal style-detail-modal">
+    <div class="style-detail-wrap">
+      <div class="modal-head">
+        <div class="modal-head-title">
+          <img src="assets/rinlada-logo-main.webp" class="modal-logo" alt="" />
+          <div>
+            <p class="eyebrow">ผลงานจัดสวนจริง</p>
+            <h3 id="portfolioDetailName"></h3>
+          </div>
+        </div>
+        <button type="button" class="icon-btn close-dialog">×</button>
+      </div>
+      <div id="portfolioDetailHero" class="style-detail-hero"></div>
+      <div id="portfolioDetailThumbs" class="style-detail-thumbs"></div>
+      <div class="detail-grid">
+        <div class="detail-box"><span>สถานที่</span><strong id="portfolioDetailLocation"></strong></div>
+        <div class="detail-box"><span>งบประมาณที่ใช้จริง</span><strong id="portfolioDetailBudget"></strong></div>
+        <div class="detail-box"><span>ระยะเวลาทำงาน</span><strong id="portfolioDetailDuration"></strong></div>
+      </div>
+      <p id="portfolioDetailDescription" class="style-detail-description"></p>
+      <div class="modal-actions">
+        <button id="editPortfolioBtn" type="button" class="btn btn-secondary">แก้ไขรูป / ข้อมูล</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="portfolioEditDialog" class="modal">
+    <form id="portfolioEditForm" method="dialog">
+      <div class="modal-head"><div class="modal-head-title"><img src="assets/rinlada-logo-main.webp" class="modal-logo" alt="" /><h3 id="portfolioEditFormTitle">เพิ่มผลงานจัดสวน</h3></div><button type="button" class="icon-btn close-dialog">×</button></div>
+      <input type="hidden" id="portfolioEditId" />
+      <label>รูปภาพผลงาน (เพิ่มได้หลายรูป)<input id="portfolioEditImage" class="input" type="file" accept="image/*" multiple /></label>
+      <div id="portfolioEditGallery" class="style-edit-gallery"></div>
+      <label>ชื่อ / สถานที่โครงการ<input id="portfolioEditTitleInput" class="input" placeholder="เช่น บ้านคุณสมชาย ต.บางแก้ว" /></label>
+      <label>สถานที่ (รายละเอียดเพิ่มเติม)<input id="portfolioEditLocation" class="input" placeholder="เช่น อ.บางพลี จ.สมุทรปราการ" /></label>
+      <div class="two-col">
+        <label>งบประมาณที่ใช้จริง<input id="portfolioEditBudget" class="input" placeholder="เช่น 45,000 บาท" /></label>
+        <label>ระยะเวลาทำงาน<input id="portfolioEditDuration" class="input" placeholder="เช่น 5 วัน" /></label>
+      </div>
+      <label>คำอธิบายเพิ่มเติม<textarea id="portfolioEditDescription" class="input" rows="2"></textarea></label>
+      <div class="modal-actions">
+        <button id="portfolioEditDeleteBtn" type="button" class="small-btn danger" style="display:none;margin-right:auto">ลบผลงานนี้</button>
+        <button type="button" class="btn btn-ghost close-dialog">ยกเลิก</button>
+        <button class="btn btn-primary" value="default">บันทึก</button>
+      </div>
+    </form>
+  </dialog>
 
   <dialog id="plantDetailDialog" class="modal style-detail-modal">
     <div class="style-detail-wrap">
@@ -289,8 +345,8 @@
     </form>
   </dialog>
 
-  <script src="data/garden-styles-data.js?v=202608040414"></script>
-  <script src="firebase-client.js?v=202608040414"></script>
-  <script src="app.js?v=202608040414"></script>
+  <script src="data/garden-styles-data.js?v=202608040537"></script>
+  <script src="firebase-client.js?v=202608040537"></script>
+  <script src="app.js?v=202608040537"></script>
 </body>
 </html>

@@ -1,7 +1,8 @@
 const STORAGE = {
   plantOverrides: "garden_plant_overrides_v1",
   styleOverrides: "garden_style_overrides_v1",
-  customPlants: "garden_custom_plants_v1"
+  customPlants: "garden_custom_plants_v1",
+  gardenPortfolio: "garden_portfolio_v1"
 };
 
 // gardenStyles is defined in data/garden-styles-data.js, loaded via a <script> tag before this file.
@@ -29,6 +30,22 @@ async function savePlantOverrides(id){
 async function saveCustomPlant(plant){
   localStorage.setItem(STORAGE.customPlants, JSON.stringify(customPlants));
   await cloudSave(()=>fbSet("customPlants",plant.id,plant),"ต้นไม้ที่เพิ่มเอง");
+}
+// ---- Garden portfolio (real completed projects, shown to build trust
+// alongside the 50 style templates — a separate collection since these are
+// actual jobs done for actual customers, not reusable style presets). ----
+let portfolioItems = load(STORAGE.gardenPortfolio, []);
+async function savePortfolioItem(item){
+  localStorage.setItem(STORAGE.gardenPortfolio, JSON.stringify(portfolioItems));
+  await cloudSave(()=>fbSet("gardenPortfolio",item.id,item),"ผลงานจัดสวน");
+}
+async function deletePortfolioItem(id){
+  if(!confirm("ลบผลงานจัดสวนรายการนี้หรือไม่?")) return;
+  portfolioItems=portfolioItems.filter(x=>x.id!==id);
+  renderPortfolio();
+  localStorage.setItem(STORAGE.gardenPortfolio, JSON.stringify(portfolioItems));
+  document.getElementById("portfolioEditDialog").close();
+  await cloudSave(()=>fbDelete("gardenPortfolio",id),"การลบผลงานจัดสวน");
 }
 async function deleteCustomPlant(id){
   if(!confirm("ลบต้นไม้ที่เพิ่มเองรายการนี้หรือไม่?")) return;
@@ -106,7 +123,7 @@ document.querySelectorAll(".close-dialog").forEach(b=>b.addEventListener("click"
 
 document.getElementById("resetAllBtn").onclick=()=>{
   if(confirm("ต้องการล้างข้อมูลแบบสวน ต้นไม้ที่เพิ่มเอง และรูปภาพที่แนบทั้งหมดหรือไม่?")){
-    plantOverrides={};styleOverrides={};customPlants=[];
+    plantOverrides={};styleOverrides={};customPlants=[];portfolioItems=[];
     Object.values(STORAGE).forEach(k=>localStorage.removeItem(k));
     rebuildPlantsList();
     resetPlantPaging();
@@ -159,6 +176,131 @@ function renderStyleDetailGallery(images,icon,heroId,thumbsId){
   thumbs.querySelectorAll("img").forEach(el=>el.addEventListener("click",()=>setActive(Number(el.dataset.idx))));
   setActive(0);
 }
+function renderPortfolio(){
+  document.getElementById("portfolioCount").textContent=portfolioItems.length?`${portfolioItems.length} ผลงาน`:"";
+  document.getElementById("portfolioList").innerHTML=portfolioItems.length?portfolioItems.map(item=>{
+    const cover=(item.images||[])[0];
+    return `
+    <article class="style-card portfolio-card">
+      <div class="style-cover"${cover?` style="background-image:url('${esc(cover)}')"`:""}>${cover?"":"🏡"}</div>
+      <div class="style-body">
+        <h3>${esc(item.title||"ผลงานจัดสวน")}</h3>
+        ${item.location?`<p class="meta">📍 ${esc(item.location)}</p>`:""}
+        <div class="chips">
+          ${item.budget?`<span class="chip">งบประมาณ ${esc(item.budget)}</span>`:""}
+          ${item.duration?`<span class="chip">ใช้เวลา ${esc(item.duration)}</span>`:""}
+        </div>
+        <div class="style-actions">
+          <button class="btn btn-primary" onclick="openPortfolioDetail('${item.id}')">ดูรายละเอียด</button>
+          <button class="small-btn" onclick="openPortfolioEdit('${item.id}')">แก้ไข</button>
+        </div>
+      </div>
+    </article>`;
+  }).join(""):'<div class="empty">ยังไม่มีผลงานจัดสวน กด "+ เพิ่มผลงาน" เพื่อเริ่มเพิ่มรูปผลงานจริง</div>';
+}
+function openPortfolioDetail(id){
+  const item=portfolioItems.find(x=>x.id===id);
+  if(!item) return;
+  selectedPortfolioId=id;
+  document.getElementById("portfolioDetailName").textContent=item.title||"ผลงานจัดสวน";
+  document.getElementById("portfolioDetailLocation").textContent=item.location||"-";
+  renderStyleDetailGallery(item.images||[],"🏡","portfolioDetailHero","portfolioDetailThumbs");
+  document.getElementById("portfolioDetailBudget").textContent=item.budget||"-";
+  document.getElementById("portfolioDetailDuration").textContent=item.duration||"-";
+  document.getElementById("portfolioDetailDescription").textContent=item.description||"";
+  document.getElementById("portfolioDetailDialog").showModal();
+}
+document.getElementById("editPortfolioBtn").addEventListener("click",()=>{
+  document.getElementById("portfolioDetailDialog").close();
+  openPortfolioEdit(selectedPortfolioId);
+});
+let selectedPortfolioId="";
+let portfolioEditImages=[];
+function renderPortfolioEditGallery(){
+  document.getElementById("portfolioEditGallery").innerHTML=portfolioEditImages.map((src,i)=>`
+    <div class="style-edit-gallery-item">
+      <img src="${esc(src)}" alt="" />
+      <button type="button" class="style-edit-gallery-remove" onclick="removePortfolioEditImage(${i})">×</button>
+    </div>`).join("");
+}
+function removePortfolioEditImage(idx){
+  portfolioEditImages.splice(idx,1);
+  renderPortfolioEditGallery();
+}
+function openPortfolioAdd(){
+  document.getElementById("portfolioEditId").value="";
+  document.getElementById("portfolioEditFormTitle").textContent="เพิ่มผลงานจัดสวน";
+  document.getElementById("portfolioEditTitleInput").value="";
+  document.getElementById("portfolioEditLocation").value="";
+  document.getElementById("portfolioEditBudget").value="";
+  document.getElementById("portfolioEditDuration").value="";
+  document.getElementById("portfolioEditDescription").value="";
+  document.getElementById("portfolioEditImage").value="";
+  portfolioEditImages=[];
+  renderPortfolioEditGallery();
+  document.getElementById("portfolioEditDeleteBtn").style.display="none";
+  document.getElementById("portfolioEditDialog").showModal();
+}
+function openPortfolioEdit(id){
+  const item=portfolioItems.find(x=>x.id===id);
+  if(!item) return;
+  document.getElementById("portfolioEditId").value=item.id;
+  document.getElementById("portfolioEditFormTitle").textContent=`แก้ไข: ${item.title||"ผลงานจัดสวน"}`;
+  document.getElementById("portfolioEditTitleInput").value=item.title||"";
+  document.getElementById("portfolioEditLocation").value=item.location||"";
+  document.getElementById("portfolioEditBudget").value=item.budget||"";
+  document.getElementById("portfolioEditDuration").value=item.duration||"";
+  document.getElementById("portfolioEditDescription").value=item.description||"";
+  document.getElementById("portfolioEditImage").value="";
+  portfolioEditImages=(item.images||[]).slice();
+  renderPortfolioEditGallery();
+  document.getElementById("portfolioEditDeleteBtn").style.display="inline-flex";
+  document.getElementById("portfolioEditDialog").showModal();
+}
+document.getElementById("addPortfolioBtn").addEventListener("click",openPortfolioAdd);
+document.getElementById("portfolioEditImage").addEventListener("change",async e=>{
+  const files=Array.from(e.target.files||[]);
+  if(!files.length) return;
+  try{
+    for(const file of files){
+      portfolioEditImages.push(await resizeImageToDataURL(file));
+    }
+    renderPortfolioEditGallery();
+  }catch{
+    alert("ไม่สามารถอ่านไฟล์รูปภาพนี้ได้");
+  }
+  e.target.value="";
+});
+document.getElementById("portfolioEditDeleteBtn").addEventListener("click",()=>{
+  const id=document.getElementById("portfolioEditId").value;
+  if(id) deletePortfolioItem(id);
+});
+document.getElementById("portfolioEditForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const title=document.getElementById("portfolioEditTitleInput").value.trim();
+  if(!title){ alert("กรุณาระบุชื่อ/สถานที่โครงการ"); return; }
+  const existingId=document.getElementById("portfolioEditId").value;
+  const id=existingId||uid("portfolio");
+  const item={
+    id, title,
+    location:document.getElementById("portfolioEditLocation").value.trim(),
+    budget:document.getElementById("portfolioEditBudget").value.trim(),
+    duration:document.getElementById("portfolioEditDuration").value.trim(),
+    description:document.getElementById("portfolioEditDescription").value.trim(),
+    images:portfolioEditImages.slice()
+  };
+  if(!checkDocSizeOrWarn(item,"ผลงานนี้")) return;
+  portfolioItems=existingId
+    ? portfolioItems.map(x=>x.id===id?item:x)
+    : [...portfolioItems, item];
+  renderPortfolio();
+  const btn=e.target.querySelector("button.btn-primary");
+  const originalLabel=btn.textContent;
+  btn.disabled=true; btn.textContent="กำลังบันทึกขึ้นคลาวด์...";
+  await savePortfolioItem(item);
+  btn.disabled=false; btn.textContent=originalLabel;
+  document.getElementById("portfolioEditDialog").close();
+});
 function linkedPlantsHtml(plantIds,onClickFn){
   if(!plantIds||!plantIds.length) return '<div class="meta">ยังไม่ได้เลือกต้นไม้สำหรับสวนนี้</div>';
   return plantIds.map(id=>{
@@ -694,7 +836,7 @@ document.getElementById("plantAddForm").addEventListener("submit",async e=>{
   document.getElementById("plantAddDialog").close();
 });
 
-function renderAll(){renderStyles();}
+function renderAll(){renderStyles();renderPortfolio();}
 renderAll();
 loadPlantDatabase();
 loadCareBeliefs();
@@ -737,19 +879,22 @@ async function cloudSave(fn,label){
 // the app must keep working offline.
 async function initFromFirestore(){
   try{
-    const [remotePlantOverrides,remoteStyleOverrides,remoteCustomPlants]=await Promise.all([
+    const [remotePlantOverrides,remoteStyleOverrides,remoteCustomPlants,remotePortfolio]=await Promise.all([
       fbList("plantOverrides"),
       fbList("styleOverrides"),
-      fbList("customPlants")
+      fbList("customPlants"),
+      fbList("gardenPortfolio")
     ]);
     plantOverrides={};
     remotePlantOverrides.forEach(p=>{const {id,...rest}=p;plantOverrides[id]=rest;});
     styleOverrides={};
     remoteStyleOverrides.forEach(s=>{const {id,...rest}=s;styleOverrides[id]=rest;});
     customPlants=remoteCustomPlants;
+    portfolioItems=remotePortfolio;
     localStorage.setItem(STORAGE.plantOverrides,JSON.stringify(plantOverrides));
     localStorage.setItem(STORAGE.styleOverrides,JSON.stringify(styleOverrides));
     localStorage.setItem(STORAGE.customPlants,JSON.stringify(customPlants));
+    localStorage.setItem(STORAGE.gardenPortfolio,JSON.stringify(portfolioItems));
     renderAll();
     rebuildPlantsList();
     if(plants.length) renderPlants();

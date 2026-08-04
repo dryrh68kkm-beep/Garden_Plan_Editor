@@ -1,7 +1,8 @@
 const STORAGE = {
   plantOverrides: "garden_plant_overrides_v1",
   styleOverrides: "garden_style_overrides_v1",
-  customPlants: "garden_custom_plants_v1"
+  customPlants: "garden_custom_plants_v1",
+  gardenPortfolio: "garden_portfolio_v1"
 };
 
 function load(key, fallback){
@@ -30,6 +31,7 @@ function maintenanceLabel(m){ return MAINTENANCE_LABELS[m]||m||"-"; }
 let styleOverrides = load(STORAGE.styleOverrides, {});
 let plantOverrides = load(STORAGE.plantOverrides, {});
 let customPlants = load(STORAGE.customPlants, []);
+let portfolioItems = load(STORAGE.gardenPortfolio, []);
 
 function mergedStyles(){
   return gardenStyles.map(s=>styleOverrides[s.id] ? {...s, ...styleOverrides[s.id]} : s);
@@ -307,6 +309,44 @@ function openScStyleDetail(id){
 document.getElementById("scStyleSearch").addEventListener("input",renderScStyles);
 document.getElementById("scStyleCategoryFilter").addEventListener("change",renderScStyles);
 
+// ---- Garden portfolio (real completed projects) ----
+function renderScPortfolio(){
+  const list=document.getElementById("scPortfolioList");
+  list.innerHTML=portfolioItems.length?portfolioItems.map(item=>{
+    const images=(item.images||[]);
+    const cover=images[0];
+    const extraThumbs=images.slice(1,4);
+    return `
+    <article class="style-card" onclick="openScPortfolioDetail('${item.id}')">
+      <div class="style-cover"${cover?` style="background-image:url('${esc(cover)}')"`:""}>${cover?"":"🏡"}</div>
+      ${extraThumbs.length?`<div class="style-cover-thumbs">${extraThumbs.map(src=>`<div class="style-cover-thumb" style="background-image:url('${esc(src)}')"></div>`).join("")}</div>`:""}
+      <div class="style-body">
+        <h3>${esc(item.title||"ผลงานจัดสวน")}</h3>
+        ${item.location?`<p class="meta">📍 ${esc(item.location)}</p>`:""}
+        <div class="chips">
+          ${item.budget?`<span class="chip">งบประมาณ ${esc(item.budget)}</span>`:""}
+          ${item.duration?`<span class="chip">ใช้เวลา ${esc(item.duration)}</span>`:""}
+        </div>
+        <div class="style-actions">
+          <button class="btn btn-primary" onclick="event.stopPropagation();openScPortfolioDetail('${item.id}')">ดูรายละเอียด</button>
+        </div>
+      </div>
+    </article>`;
+  }).join(""):'<div class="empty">เร็วๆ นี้เราจะนำผลงานจัดสวนจริงมาให้ชมครับ</div>';
+}
+function openScPortfolioDetail(id){
+  const item=portfolioItems.find(x=>x.id===id);
+  if(!item) return;
+  document.getElementById("scPortfolioDetailName").textContent=item.title||"ผลงานจัดสวน";
+  renderScGallery(item.images||[],"🏡","scPortfolioDetailHero","scPortfolioDetailThumbs");
+  document.getElementById("scPortfolioDetailLocation").textContent=item.location||"-";
+  document.getElementById("scPortfolioDetailBudget").textContent=item.budget||"-";
+  document.getElementById("scPortfolioDetailDuration").textContent=item.duration||"-";
+  document.getElementById("scPortfolioDetailDescription").textContent=item.description||"";
+  document.getElementById("scPortfolioDetailDialog").showModal();
+  requestAnimationFrame(()=>{ document.getElementById("scPortfolioDetailHero").scrollLeft=0; });
+}
+
 // ---- Plant gallery (photos attached in the back office only) ----
 const PLANT_PAGE_SIZE=24;
 let scPlantVisibleCount=PLANT_PAGE_SIZE;
@@ -434,6 +474,7 @@ document.getElementById("scLoadMorePlantsBtn").addEventListener("click",()=>{
 });
 
 renderScStyles();
+renderScPortfolio();
 loadAllPlants();
 loadCareBeliefs();
 
@@ -443,17 +484,21 @@ loadCareBeliefs();
 // unreachable — the showcase must still render either way.
 async function initFromFirestore(){
   try{
-    const [remoteStyleOverrides,remotePlantOverrides,remoteCustomPlants]=await Promise.all([
+    const [remoteStyleOverrides,remotePlantOverrides,remoteCustomPlants,remotePortfolio]=await Promise.all([
       fbList("styleOverrides"),
       fbList("plantOverrides"),
-      fbList("customPlants")
+      fbList("customPlants"),
+      fbList("gardenPortfolio")
     ]);
     styleOverrides={};
     remoteStyleOverrides.forEach(s=>{const {id,...rest}=s;styleOverrides[id]=rest;});
     plantOverrides={};
     remotePlantOverrides.forEach(p=>{const {id,...rest}=p;plantOverrides[id]=rest;});
     customPlants=remoteCustomPlants;
+    portfolioItems=remotePortfolio;
+    localStorage.setItem(STORAGE.gardenPortfolio,JSON.stringify(portfolioItems));
     renderScStyles();
+    renderScPortfolio();
     rebuildAllPlants();
     fillScPlantCategoryFilter();
     renderScPlantGallery();
