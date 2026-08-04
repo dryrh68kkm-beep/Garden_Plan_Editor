@@ -304,6 +304,41 @@ document.getElementById("editStyleBtn").addEventListener("click",()=>{
   openStyleEdit(selectedStyleId);
 });
 
+// Supplementary care/belief info for the 300-item catalog (data/plant-care-beliefs.json),
+// keyed by plantId. Not part of the editable plant record — belief text is
+// only surfaced once hasVerifiedBelief is true, per that file's own policy
+// ("ข้อมูลความเชื่อต้องมีแหล่งอ้างอิงก่อนเปลี่ยน sourceStatus เป็น verified").
+let careBeliefsById=new Map();
+async function loadCareBeliefs(){
+  try{
+    const response=await fetch("./data/plant-care-beliefs.json",{cache:"no-store"});
+    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data=await response.json();
+    if(!Array.isArray(data)) throw new Error("รูปแบบฐานข้อมูลไม่ถูกต้อง");
+    careBeliefsById=new Map(data.map(r=>[r.plantId,r]));
+  }catch(error){
+    console.error("Plant care/beliefs database error:",error);
+    careBeliefsById=new Map();
+  }
+}
+// Merges admin-entered fields (which always win when set) with the
+// supplementary care/belief dataset for the 300-item catalog.
+function plantCareInfo(p){
+  const cb=careBeliefsById.get(p.id);
+  const care=cb?.care||{};
+  const belief=cb?.belief;
+  return {
+    wateringInstruction:care.wateringInstruction||"",
+    lightInstruction:care.lightInstruction||"",
+    pruning:care.pruning||"",
+    fertilizer:care.fertilizer||"",
+    pestCheck:care.pestCheck||"",
+    careNotes:care.careNotes||"",
+    auspicious:p.auspicious||(belief&&belief.hasVerifiedBelief?belief.summary:""),
+    auspiciousTitle:belief&&belief.hasVerifiedBelief?belief.title:"",
+    placementBelief:belief&&belief.hasVerifiedBelief?belief.placementBelief:""
+  };
+}
 async function loadPlantDatabase(){
   const counter=document.getElementById("plantCount");
   if(counter) counter.textContent="กำลังโหลดฐานข้อมูล...";
@@ -399,9 +434,26 @@ function openPlantDetail(id){
   document.getElementById("plantDetailPrice").textContent=money(p.salePrice)+" / "+p.unit;
   document.getElementById("plantDetailStyles").innerHTML=(p.styles||[]).map(id=>`<span class="chip">${esc(styleName(id))}</span>`).join("");
   renderStyleDetailGallery(plantImages(p),"🌱","plantDetailIcon","plantDetailThumbs");
+  const info=plantCareInfo(p);
+  const careItems=[
+    info.wateringInstruction&&["💧 การรดน้ำ",info.wateringInstruction],
+    info.lightInstruction&&["☀️ แสง",info.lightInstruction],
+    info.pruning&&["✂️ การตัดแต่ง",info.pruning],
+    info.fertilizer&&["🌱 ปุ๋ย",info.fertilizer],
+    info.pestCheck&&["🔍 ตรวจโรค/แมลง",info.pestCheck],
+    info.careNotes&&["📝 หมายเหตุ",info.careNotes]
+  ].filter(Boolean);
+  const careSection=document.getElementById("plantDetailCareSection");
+  if(careItems.length){
+    document.getElementById("plantDetailCareList").innerHTML=careItems.map(([label,text])=>`<li><b>${esc(label)}:</b> ${esc(text)}</li>`).join("");
+    careSection.style.display="block";
+  } else {
+    careSection.style.display="none";
+  }
   const auspiciousSection=document.getElementById("plantDetailAuspiciousSection");
-  if(p.auspicious){
-    document.getElementById("plantDetailAuspicious").textContent=p.auspicious;
+  if(info.auspicious){
+    document.getElementById("plantDetailAuspiciousTitle").textContent=info.auspiciousTitle?`ความเชื่อ / ความมงคล — ${info.auspiciousTitle}`:"ความเชื่อ / ความมงคล";
+    document.getElementById("plantDetailAuspicious").textContent=info.auspicious+(info.placementBelief?` (${info.placementBelief})`:"");
     auspiciousSection.style.display="block";
   } else {
     auspiciousSection.style.display="none";
@@ -645,6 +697,7 @@ document.getElementById("plantAddForm").addEventListener("submit",async e=>{
 function renderAll(){renderStyles();}
 renderAll();
 loadPlantDatabase();
+loadCareBeliefs();
 
 function setCloudStatus(ok){
   const el=document.getElementById("cloudStatus");

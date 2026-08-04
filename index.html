@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#163a2a" />
   <title>Garden Plan Editor</title>
-  <link rel="stylesheet" href="style.css?v=202608040225" />
+  <link rel="stylesheet" href="style.css?v=202608040234" />
 </head>
 <body>
   <header class="topbar">
@@ -193,8 +193,12 @@
         <div class="detail-box"><span>ต้นทุน</span><strong id="plantDetailCost"></strong></div>
         <div class="detail-box"><span>ราคาขาย</span><strong id="plantDetailPrice"></strong></div>
       </div>
+      <div id="plantDetailCareSection" class="detail-section" style="display:none">
+        <h4>คำแนะนำการดูแล</h4>
+        <ul id="plantDetailCareList" class="care-list"></ul>
+      </div>
       <div id="plantDetailAuspiciousSection" class="detail-section" style="display:none">
-        <h4>ความเชื่อ / ความมงคล</h4>
+        <h4 id="plantDetailAuspiciousTitle">ความเชื่อ / ความมงคล</h4>
         <p id="plantDetailAuspicious" class="meta"></p>
       </div>
       <div class="detail-section">
@@ -279,8 +283,8 @@
     </form>
   </dialog>
 
-  <script src="data/garden-styles-data.js?v=202608040225"></script>
-  <script src="firebase-client.js?v=202608040225"></script>
-  <script src="app.js?v=202608040225"></script>
+  <script src="data/garden-styles-data.js?v=202608040234"></script>
+  <script src="firebase-client.js?v=202608040234"></script>
+  <script src="app.js?v=202608040234"></script>
 </body>
 </html>

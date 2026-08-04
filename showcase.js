@@ -72,6 +72,34 @@ function fillScPlantCategoryFilter(){
   select.innerHTML='<option value="">ทุกประเภท</option>'+categories.map(x=>`<option>${esc(x)}</option>`).join("");
   select.value=current;
 }
+// Supplementary care/belief info for the 300-item catalog (data/plant-care-beliefs.json),
+// keyed by plantId. Belief text is only surfaced once hasVerifiedBelief is
+// true, per that file's own policy.
+let careBeliefsById=new Map();
+async function loadCareBeliefs(){
+  try{
+    const response=await fetch("./data/plant-care-beliefs.json",{cache:"no-store"});
+    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data=await response.json();
+    if(!Array.isArray(data)) throw new Error("รูปแบบฐานข้อมูลไม่ถูกต้อง");
+    careBeliefsById=new Map(data.map(r=>[r.plantId,r]));
+  }catch(error){
+    console.error("Plant care/beliefs database error:",error);
+    careBeliefsById=new Map();
+  }
+}
+function plantCareInfo(p){
+  const cb=careBeliefsById.get(p.id);
+  const care=cb?.care||{};
+  const belief=cb?.belief;
+  return {
+    wateringInstruction:care.wateringInstruction||"",
+    lightInstruction:care.lightInstruction||"",
+    auspicious:p.auspicious||(belief&&belief.hasVerifiedBelief?belief.summary:""),
+    auspiciousTitle:belief&&belief.hasVerifiedBelief?belief.title:"",
+    placementBelief:belief&&belief.hasVerifiedBelief?belief.placementBelief:""
+  };
+}
 async function loadAllPlants(){
   try{
     const response=await fetch("./data/plants.json",{cache:"no-store"});
@@ -273,9 +301,18 @@ function openScPlantLightbox(id){
   document.getElementById("scPlantLightboxLight").textContent=p.light||"-";
   document.getElementById("scPlantLightboxWater").textContent=p.water||"-";
   document.getElementById("scPlantLightboxMaintenance").textContent=maintenanceLabel(p.maintenance);
+  const info=plantCareInfo(p);
+  const wateringNote=document.getElementById("scPlantLightboxWateringNote");
+  if(info.wateringInstruction){
+    wateringNote.textContent=`💧 ${info.wateringInstruction}`;
+    wateringNote.style.display="block";
+  } else {
+    wateringNote.style.display="none";
+  }
   const auspiciousSection=document.getElementById("scPlantLightboxAuspiciousSection");
-  if(p.auspicious){
-    document.getElementById("scPlantLightboxAuspicious").textContent=p.auspicious;
+  if(info.auspicious){
+    document.getElementById("scPlantLightboxAuspiciousTitle").textContent=info.auspiciousTitle?`ความเชื่อ / ความมงคล — ${info.auspiciousTitle}`:"ความเชื่อ / ความมงคล";
+    document.getElementById("scPlantLightboxAuspicious").textContent=info.auspicious+(info.placementBelief?` (${info.placementBelief})`:"");
     auspiciousSection.style.display="block";
   } else {
     auspiciousSection.style.display="none";
@@ -293,6 +330,7 @@ document.getElementById("scLoadMorePlantsBtn").addEventListener("click",()=>{
 
 renderScStyles();
 loadAllPlants();
+loadCareBeliefs();
 
 // Pull the latest overrides from Firestore so this page reflects the back
 // office from any device, not just the browser that saved them. Falls back
