@@ -54,6 +54,27 @@ function showPage(name){
 }
 document.querySelectorAll(".close-dialog").forEach(b=>b.addEventListener("click",()=>b.closest("dialog").close()));
 
+// Swipe right (like a mobile "back" gesture) on a content page returns to
+// the showcase home page. Skipped while a dialog (lightbox/detail) is open
+// so swiping inside a photo carousel there doesn't also navigate the page
+// underneath, and ignored on mostly-vertical swipes (page scrolling).
+let scSwipeStartX=0, scSwipeStartY=0;
+document.addEventListener("touchstart",e=>{
+  if(e.touches.length!==1) return;
+  scSwipeStartX=e.touches[0].clientX;
+  scSwipeStartY=e.touches[0].clientY;
+},{passive:true});
+document.addEventListener("touchend",e=>{
+  if(document.querySelector("dialog[open]")) return;
+  const activePage=document.querySelector(".page.active");
+  if(!activePage||activePage.id==="showcaseHomePage") return;
+  const touch=e.changedTouches[0];
+  if(!touch) return;
+  const dx=touch.clientX-scSwipeStartX;
+  const dy=touch.clientY-scSwipeStartY;
+  if(dx>80&&Math.abs(dy)<60) showPage("showcaseHome");
+},{passive:true});
+
 function closeScMenu(){ document.getElementById("scMenuDropdown").classList.remove("open"); }
 document.getElementById("scMenuBtn").addEventListener("click",e=>{
   e.stopPropagation();
