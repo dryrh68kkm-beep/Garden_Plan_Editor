@@ -230,3 +230,17 @@
 .brand-logo{width:96px;height:96px}
 .brand-title{font-size:1.7rem}
 }
+
+/* Portfolio (real completed projects) is a quick teaser grid — keep cards
+   compact (2-up even on phones, short cover, no chips) so it doesn't eat a
+   full screen per project before customers ever reach the style catalog. */
+.sc-portfolio-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px}
+.sc-portfolio-grid .style-cover{height:130px;font-size:30px}
+.sc-portfolio-grid .style-cover-thumbs{display:none}
+.sc-portfolio-grid .style-body{padding:10px 12px}
+.sc-portfolio-grid .style-body h3{font-size:.88rem;margin:0 0 2px;line-height:1.3}
+.sc-portfolio-grid .style-body .meta{font-size:.72rem;margin:0}
+.sc-portfolio-grid .chips{display:none}
+.sc-portfolio-grid .style-actions{margin-top:8px}
+.sc-portfolio-grid .style-actions .btn{padding:7px 8px;font-size:.72rem;border-radius:9px}
+@media(max-width:640px){.sc-portfolio-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px}.sc-portfolio-grid .style-cover{height:100px}}
