@@ -10,6 +10,10 @@ function load(key, fallback){
 }
 function esc(s=""){ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m])); }
 function money(v){ return new Intl.NumberFormat("th-TH",{style:"currency",currency:"THB",maximumFractionDigits:0}).format(Number(v)||0); }
+// Maps both the new ง่าย/ปานกลาง/ยาก scale and the older ต่ำ/กลาง/สูง values
+// (still used by the static 300-item catalog) to the same colored-dot label.
+const MAINTENANCE_LABELS={"ต่ำ":"🟢 ง่าย","กลาง":"🟡 ปานกลาง","สูง":"🔴 ยาก","ง่าย":"🟢 ง่าย","ปานกลาง":"🟡 ปานกลาง","ยาก":"🔴 ยาก"};
+function maintenanceLabel(m){ return MAINTENANCE_LABELS[m]||m||"-"; }
 
 // Seeded from localStorage first (instant, works offline / same-browser as
 // admin), then overwritten by initFromFirestore() once the cloud data
@@ -266,6 +270,16 @@ function openScPlantLightbox(id){
     priceTag.style.display="none";
   }
   document.getElementById("scPlantLightboxBestSeller").style.display=p.bestSeller?"inline-flex":"none";
+  document.getElementById("scPlantLightboxLight").textContent=p.light||"-";
+  document.getElementById("scPlantLightboxWater").textContent=p.water||"-";
+  document.getElementById("scPlantLightboxMaintenance").textContent=maintenanceLabel(p.maintenance);
+  const auspiciousSection=document.getElementById("scPlantLightboxAuspiciousSection");
+  if(p.auspicious){
+    document.getElementById("scPlantLightboxAuspicious").textContent=p.auspicious;
+    auspiciousSection.style.display="block";
+  } else {
+    auspiciousSection.style.display="none";
+  }
   document.getElementById("scPlantLightbox").showModal();
   requestAnimationFrame(()=>{ document.getElementById("scPlantLightboxCarousel").scrollLeft=0; });
 }

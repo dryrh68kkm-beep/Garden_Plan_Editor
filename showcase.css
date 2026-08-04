@@ -25,6 +25,7 @@
 .showcase-plant-caption{font-weight:800;font-size:1.05rem;color:var(--ink)}
 .showcase-plant-price-tag{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;border-radius:999px;font-weight:800;font-size:.85rem;padding:6px 12px;background:linear-gradient(135deg,var(--green-2),var(--green));color:#fff}
 .showcase-lightbox-img-wrap{position:relative}
+.showcase-lightbox-care{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
 .showcase-lightbox-carousel{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .showcase-lightbox-carousel::-webkit-scrollbar{display:none}
 .showcase-lightbox-slide{flex:0 0 100%;scroll-snap-align:start;display:flex;justify-content:center}

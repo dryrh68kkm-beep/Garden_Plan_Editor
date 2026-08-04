@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#163a2a" />
   <title>Garden Plan Editor</title>
-  <link rel="stylesheet" href="style.css?v=202608031558" />
+  <link rel="stylesheet" href="style.css?v=202608040156" />
 </head>
 <body>
   <header class="topbar">
@@ -193,6 +193,10 @@
         <div class="detail-box"><span>ต้นทุน</span><strong id="plantDetailCost"></strong></div>
         <div class="detail-box"><span>ราคาขาย</span><strong id="plantDetailPrice"></strong></div>
       </div>
+      <div id="plantDetailAuspiciousSection" class="detail-section" style="display:none">
+        <h4>ความเชื่อ / ความมงคล</h4>
+        <p id="plantDetailAuspicious" class="meta"></p>
+      </div>
       <div class="detail-section">
         <h4>เหมาะกับแบบสวน</h4>
         <div id="plantDetailStyles" class="chips"></div>
@@ -213,6 +217,7 @@
       </div>
       <label>รูปภาพต้นไม้ (เพิ่มได้หลายรูป)<input id="plantEditImage" class="input" type="file" accept="image/*" multiple /></label>
       <div id="plantEditGallery" class="style-edit-gallery"></div>
+      <label>ความเชื่อ / ความมงคล<textarea id="plantEditAuspicious" class="input" rows="2" placeholder="เช่น เป็นไม้มงคล เสริมความก้าวหน้าและเงินทอง"></textarea></label>
       <label class="checkbox-label"><input id="plantEditBestSeller" type="checkbox" /> 🔥 สินค้าขายดี</label>
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost close-dialog">ยกเลิก</button>
@@ -264,6 +269,7 @@
       </div>
       <label>รูปภาพต้นไม้ (เพิ่มได้หลายรูป)<input id="plantAddImage" class="input" type="file" accept="image/*" multiple /></label>
       <div id="plantAddGallery" class="style-edit-gallery"></div>
+      <label>ความเชื่อ / ความมงคล<textarea id="plantAddAuspicious" class="input" rows="2" placeholder="เช่น เป็นไม้มงคล เสริมความก้าวหน้าและเงินทอง"></textarea></label>
       <label class="checkbox-label"><input id="plantAddBestSeller" type="checkbox" /> 🔥 สินค้าขายดี</label>
       <div class="modal-actions">
         <button type="button" id="plantAddDeleteBtn" class="small-btn danger" style="display:none;margin-right:auto">ลบต้นไม้นี้</button>
@@ -273,8 +279,8 @@
     </form>
   </dialog>
 
-  <script src="data/garden-styles-data.js?v=202608031558"></script>
-  <script src="firebase-client.js?v=202608031558"></script>
-  <script src="app.js?v=202608031558"></script>
+  <script src="data/garden-styles-data.js?v=202608040156"></script>
+  <script src="firebase-client.js?v=202608040156"></script>
+  <script src="app.js?v=202608040156"></script>
 </body>
 </html>

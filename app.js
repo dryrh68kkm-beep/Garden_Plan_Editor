@@ -386,6 +386,13 @@ function openPlantDetail(id){
   document.getElementById("plantDetailPrice").textContent=money(p.salePrice)+" / "+p.unit;
   document.getElementById("plantDetailStyles").innerHTML=(p.styles||[]).map(id=>`<span class="chip">${esc(styleName(id))}</span>`).join("");
   renderStyleDetailGallery(plantImages(p),"🌱","plantDetailIcon","plantDetailThumbs");
+  const auspiciousSection=document.getElementById("plantDetailAuspiciousSection");
+  if(p.auspicious){
+    document.getElementById("plantDetailAuspicious").textContent=p.auspicious;
+    auspiciousSection.style.display="block";
+  } else {
+    auspiciousSection.style.display="none";
+  }
   document.getElementById("plantDetailDialog").showModal();
 }
 
@@ -461,6 +468,7 @@ function openPlantEdit(id){
   document.getElementById("plantEditCost").value=p.costPrice||0;
   document.getElementById("plantEditPrice").value=p.salePrice||0;
   document.getElementById("plantEditBestSeller").checked=!!p.bestSeller;
+  document.getElementById("plantEditAuspicious").value=p.auspicious||"";
   document.getElementById("plantEditImage").value="";
   plantEditImages=plantImages(p).slice();
   renderPlantEditGallery();
@@ -486,6 +494,7 @@ document.getElementById("plantEditForm").addEventListener("submit",async e=>{
     costPrice:Number(document.getElementById("plantEditCost").value)||0,
     salePrice:Number(document.getElementById("plantEditPrice").value)||0,
     bestSeller:document.getElementById("plantEditBestSeller").checked,
+    auspicious:document.getElementById("plantEditAuspicious").value.trim(),
     images:plantEditImages.slice(),
     image:plantEditImages[0]||""
   };
@@ -534,6 +543,7 @@ function openCustomPlantAdd(){
   document.getElementById("plantAddUnit").value="ต้น";
   document.getElementById("plantAddCost").value=0;
   document.getElementById("plantAddPrice").value=0;
+  document.getElementById("plantAddAuspicious").value="";
   document.getElementById("plantAddBestSeller").checked=false;
   document.getElementById("plantAddImage").value="";
   plantAddImages=[];
@@ -557,6 +567,7 @@ function openCustomPlantEdit(id){
   document.getElementById("plantAddUnit").value=p.unit||"ต้น";
   document.getElementById("plantAddCost").value=p.costPrice||0;
   document.getElementById("plantAddPrice").value=p.salePrice||0;
+  document.getElementById("plantAddAuspicious").value=p.auspicious||"";
   document.getElementById("plantAddBestSeller").checked=!!p.bestSeller;
   document.getElementById("plantAddImage").value="";
   plantAddImages=plantImages(p).slice();
@@ -601,6 +612,7 @@ document.getElementById("plantAddForm").addEventListener("submit",async e=>{
     costPrice:Number(document.getElementById("plantAddCost").value)||0,
     salePrice:Number(document.getElementById("plantAddPrice").value)||0,
     bestSeller:document.getElementById("plantAddBestSeller").checked,
+    auspicious:document.getElementById("plantAddAuspicious").value.trim(),
     images:plantAddImages.slice(),
     image:plantAddImages[0]||""
   };
