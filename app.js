@@ -879,11 +879,17 @@ function setCloudStatus(ok){
   el.textContent=ok?"☁️ ซิงก์ข้อมูลแล้ว":"📴 ออฟไลน์ (ใช้ข้อมูลในเครื่อง)";
   el.style.color=ok?"var(--primary)":"var(--danger)";
 }
-// Every save must actually wait for this before letting the user navigate
-// away (e.g. close a dialog) — otherwise a quick tab switch or page nav can
-// cancel the in-flight fetch and the write never reaches Firestore, even
-// though localStorage already looks saved.
+// Form submits fire cloudSave() in the background instead of awaiting it
+// (so the dialog can close immediately) — which means a save can still be
+// in flight after the dialog is gone. The periodic Firestore poll below used
+// to only check "is a dialog open" to avoid clobbering in-progress work; now
+// that saves outlive the dialog, it also needs to know "is a save still in
+// flight", or it can refetch the pre-save cloud copy mid-upload and stomp
+// the just-added item/photo back out of the local view until the write
+// finally lands. pendingCloudSaves tracks that.
+let pendingCloudSaves = 0;
 async function cloudSave(fn,label){
+  pendingCloudSaves++;
   try{
     await fn();
     setCloudStatus(true);
@@ -901,6 +907,8 @@ async function cloudSave(fn,label){
     // or a bug, and there's no devtools console to check on a phone.
     alert(`⚠️ บันทึก${label||"ข้อมูล"}ขึ้นคลาวด์ไม่สำเร็จ\n\nสาเหตุ: ${err.message||err}\n\nข้อมูลบันทึกไว้ในเครื่องนี้ชั่วคราวเท่านั้น กรุณาลองบันทึกซ้ำอีกครั้ง ไม่เช่นนั้นข้อมูลอาจหายไปเมื่อซิงก์ครั้งถัดไป`);
     return false;
+  }finally{
+    pendingCloudSaves--;
   }
 }
 
@@ -941,6 +949,10 @@ async function initFromFirestore(){
 initFromFirestore();
 
 document.getElementById("manualSyncBtn").addEventListener("click",async()=>{
+  if(pendingCloudSaves>0){
+    alert("⏳ กำลังบันทึกข้อมูลขึ้นคลาวด์อยู่ กรุณารอสักครู่แล้วลองซิงก์อีกครั้ง");
+    return;
+  }
   const btn=document.getElementById("manualSyncBtn");
   btn.disabled=true;
   btn.textContent="🔄 กำลังซิงก์...";
@@ -953,10 +965,12 @@ document.getElementById("manualSyncBtn").addEventListener("click",async()=>{
 // REST-only Firestore has no realtime listener (that needs the SDK), so we
 // poll instead: refetch periodically and re-render if the page has been
 // open a while, so a change made on another device shows up here without
-// needing a manual reload. Skipped while any dialog is open so a background
-// refresh can't blow away a form the user is actively filling in.
+// needing a manual reload. Skipped while any dialog is open (still filling
+// in a form) or while a save is still in flight (see pendingCloudSaves
+// above) so a background refresh can't blow away in-progress work.
 const FIRESTORE_POLL_MS=20000;
 setInterval(()=>{
   if(document.querySelector("dialog[open]")) return;
+  if(pendingCloudSaves>0) return;
   initFromFirestore();
 },FIRESTORE_POLL_MS);
