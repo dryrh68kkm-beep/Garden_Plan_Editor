@@ -51,15 +51,25 @@ function plantImages(p){
 // the incoming page in from the left — the same direction as the
 // swipe-right-to-go-back gesture, so navigating (by tap or swipe) feels
 // like one consistent "back" motion instead of an instant cut.
+const SC_PAGE_TRANSITION_MS=340;
 function showPage(name){
   const next=document.getElementById(`${name}Page`);
   const current=document.querySelector(".page.active");
   if(!current||current===next){
     document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
     next.classList.add("active");
-    window.scrollTo(0,0);
+    next.scrollTop=0;
+    window.scrollTo({top:0,left:0,behavior:"instant"});
     return;
   }
+  // Reset scroll position on both the outgoing element (so it doesn't
+  // still show mid-scroll once it becomes a fixed overlay) and the
+  // incoming one, using "instant" — html{scroll-behavior:smooth} would
+  // otherwise animate this scroll at the same time as the slide
+  // transform, fighting it and making the whole thing look janky.
+  current.scrollTop=0;
+  next.scrollTop=0;
+  window.scrollTo({top:0,left:0,behavior:"instant"});
   // Both pages carry .active during the transition so each still resolves
   // its own display value normally (e.g. the mobile home page's grid
   // layout override) — the transition classes only add position/transform.
@@ -67,14 +77,15 @@ function showPage(name){
   next.classList.add("active","sc-page-enter");
   void next.offsetWidth;
   requestAnimationFrame(()=>{
-    current.classList.add("sc-page-exit-active");
-    next.classList.add("sc-page-enter-active");
+    requestAnimationFrame(()=>{
+      current.classList.add("sc-page-exit-active");
+      next.classList.add("sc-page-enter-active");
+    });
   });
-  window.scrollTo(0,0);
   setTimeout(()=>{
     current.classList.remove("active","sc-page-exit","sc-page-exit-active");
     next.classList.remove("sc-page-enter","sc-page-enter-active");
-  },340);
+  },SC_PAGE_TRANSITION_MS);
 }
 document.querySelectorAll(".close-dialog").forEach(b=>b.addEventListener("click",()=>b.closest("dialog").close()));
 
