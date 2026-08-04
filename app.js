@@ -294,12 +294,12 @@ document.getElementById("portfolioEditForm").addEventListener("submit",async e=>
     ? portfolioItems.map(x=>x.id===id?item:x)
     : [...portfolioItems, item];
   renderPortfolio();
-  const btn=e.target.querySelector("button.btn-primary");
-  const originalLabel=btn.textContent;
-  btn.disabled=true; btn.textContent="กำลังบันทึกขึ้นคลาวด์...";
-  await savePortfolioItem(item);
-  btn.disabled=false; btn.textContent=originalLabel;
   document.getElementById("portfolioEditDialog").close();
+  // Save to the cloud in the background instead of blocking the dialog open
+  // with a disabled "saving..." button — the item is already visible in the
+  // list from the localStorage write above, and cloudSave() still alerts on
+  // a real failure (it never throws), so nothing silently gets lost.
+  savePortfolioItem(item);
 });
 function linkedPlantsHtml(plantIds,onClickFn){
   if(!plantIds||!plantIds.length) return '<div class="meta">ยังไม่ได้เลือกต้นไม้สำหรับสวนนี้</div>';
@@ -434,12 +434,9 @@ document.getElementById("styleEditForm").addEventListener("submit",async e=>{
   if(!checkDocSizeOrWarn(override,"แบบสวนนี้")) return;
   styleOverrides[id]=override;
   renderStyles();
-  const btn=e.target.querySelector("button.btn-primary");
-  const originalLabel=btn.textContent;
-  btn.disabled=true; btn.textContent="กำลังบันทึกขึ้นคลาวด์...";
-  await saveStyleOverrides(id);
-  btn.disabled=false; btn.textContent=originalLabel;
   document.getElementById("styleEditDialog").close();
+  // Background save — see the comment on the portfolio form's submit handler.
+  saveStyleOverrides(id);
 });
 document.getElementById("editStyleBtn").addEventListener("click",()=>{
   document.getElementById("styleDetailDialog").close();
@@ -707,12 +704,9 @@ document.getElementById("plantEditForm").addEventListener("submit",async e=>{
   if(!checkDocSizeOrWarn(override,"ต้นไม้นี้")) return;
   plantOverrides[id]=override;
   renderPlants();
-  const btn=e.target.querySelector("button.btn-primary");
-  const originalLabel=btn.textContent;
-  btn.disabled=true; btn.textContent="กำลังบันทึกขึ้นคลาวด์...";
-  await savePlantOverrides(id);
-  btn.disabled=false; btn.textContent=originalLabel;
   document.getElementById("plantEditDialog").close();
+  // Background save — see the comment on the portfolio form's submit handler.
+  savePlantOverrides(id);
 });
 document.getElementById("editPlantBtn").addEventListener("click",()=>{
   document.getElementById("plantDetailDialog").close();
@@ -828,12 +822,9 @@ document.getElementById("plantAddForm").addEventListener("submit",async e=>{
     : [...customPlants, plant];
   rebuildPlantsList();
   resetPlantPaging();
-  const btn=e.target.querySelector("button.btn-primary");
-  const originalLabel=btn.textContent;
-  btn.disabled=true; btn.textContent="กำลังบันทึกขึ้นคลาวด์...";
-  await saveCustomPlant(plant);
-  btn.disabled=false; btn.textContent=originalLabel;
   document.getElementById("plantAddDialog").close();
+  // Background save — see the comment on the portfolio form's submit handler.
+  saveCustomPlant(plant);
 });
 
 function renderAll(){renderStyles();renderPortfolio();}
