@@ -496,7 +496,12 @@ async function initFromFirestore(){
     remotePlantOverrides.forEach(p=>{const {id,...rest}=p;plantOverrides[id]=rest;});
     customPlants=remoteCustomPlants;
     portfolioItems=remotePortfolio;
-    localStorage.setItem(STORAGE.gardenPortfolio,JSON.stringify(portfolioItems));
+    // A full localStorage quota on the visitor's own device (unrelated to
+    // this site) must never stop the page from rendering the data it just
+    // fetched — caching locally is a nice-to-have for instant reloads, not
+    // a requirement, and this write throwing sat inside the same try block
+    // as every render call below it, so it could silently skip all of them.
+    try{ localStorage.setItem(STORAGE.gardenPortfolio,JSON.stringify(portfolioItems)); }catch(err){ console.error("Could not cache portfolio locally (quota likely full):",err); }
     renderScStyles();
     renderScPortfolio();
     rebuildAllPlants();
