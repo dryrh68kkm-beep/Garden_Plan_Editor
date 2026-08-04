@@ -5,7 +5,82 @@ const STORAGE = {
   gardenPortfolio: "garden_portfolio_v1"
 };
 
-// gardenStyles is defined in data/garden-styles-data.js, loaded via a <script> tag before this file.
+// data/garden-styles-data.js sets window.GARDEN_STYLES with a different
+// field schema than this app was built against (nameTh/description/
+// budgetPerSqm/recommendedPlants/plantPalette/... instead of name/desc/
+// budget/plants/plantIds/...) and no longer declares a bare `gardenStyles`
+// global at all — that data file is regenerated and re-uploaded wholesale
+// from time to time (see README-UPDATE.md), so this adapter belongs here,
+// not patched into the generated file itself where it would just get
+// overwritten again. Everything below keeps using the plain `gardenStyles`
+// shape it always has; only this translation step is new.
+const CARE_LEVEL_TO_MAINTENANCE={low:"ต่ำ",medium:"กลาง",high:"สูง"};
+const LIGHT_CODE_TO_TH={fullSun:"แดดจัด",partialSun:"รำไรถึงแดด",brightShade:"แดดรำไร",shade:"ร่ม"};
+const WATER_CODE_TO_TH={low:"น้อย",medium:"ปานกลาง",high:"มาก",aquatic:"มาก"};
+const MAINTENANCE_TO_DIFFICULTY={"ต่ำ":"ง่าย","กลาง":"ปานกลาง","สูง":"ยาก"};
+function buildStyleAiPrompt(s){
+  return [
+    `ออกแบบภาพสวนสไตล์ "${s.nameTh||s.nameEn||""}" หมวด ${s.category||""}`,
+    s.description||"",
+    Array.isArray(s.recommendedPlants)&&s.recommendedPlants.length?`ใช้พรรณไม้: ${s.recommendedPlants.join(", ")}`:"",
+    Array.isArray(s.materials)&&s.materials.length?`วัสดุ: ${s.materials.join(", ")}`:"",
+    Array.isArray(s.palette)&&s.palette.length?`โทนสี: ${s.palette.join(", ")}`:""
+  ].filter(Boolean).join(" ");
+}
+function adaptStyle(s){
+  return {
+    id:s.id,
+    name:s.nameTh||s.nameEn||s.id,
+    category:s.category||"",
+    desc:s.description||"",
+    budget:s.budgetPerSqm?`${s.budgetPerSqm} บาท/ตร.ม.`:"",
+    maintenance:s.maintenance||"",
+    difficulty:MAINTENANCE_TO_DIFFICULTY[s.maintenance]||s.maintenance||"-",
+    suitableFor:Array.isArray(s.suitableFor)?s.suitableFor:[],
+    plants:Array.isArray(s.recommendedPlants)?s.recommendedPlants:[],
+    materials:Array.isArray(s.materials)?s.materials:[],
+    mood:Array.isArray(s.palette)?s.palette.join(", "):(s.palette||""),
+    aiPrompt:s.aiPrompt||buildStyleAiPrompt(s),
+    icon:"🌿",
+    plantIds:Array.isArray(s.plantPalette)?s.plantPalette.map(p=>p.plantId).filter(Boolean):[],
+    image:s.image||""
+  };
+}
+if(!Array.isArray(window.GARDEN_STYLES)) console.error("window.GARDEN_STYLES missing or invalid — check data/garden-styles-data.js");
+const gardenStyles = Array.isArray(window.GARDEN_STYLES) ? window.GARDEN_STYLES.map(adaptStyle) : [];
+
+// Same idea for data/plants.json: nameTh/categoryId/price/careLevel/... with
+// English light/water/careLevel codes instead of the Thai strings and
+// costPrice/salePrice split this app expects. categoriesById resolves
+// categoryId ("CAT01") to its Thai name, fetched alongside plants.json.
+let categoriesById = new Map();
+async function loadCategories(){
+  try{
+    const response=await fetch("./data/categories.json",{cache:"no-store"});
+    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data=await response.json();
+    if(Array.isArray(data)) categoriesById=new Map(data.map(c=>[c.id,c.nameTh]));
+  }catch(error){
+    console.error("Category lookup error (categories will show as raw codes):",error);
+  }
+}
+function adaptPlant(p){
+  return {
+    ...p,
+    id:p.id,
+    thaiName:p.nameTh||p.nameEn||p.id,
+    englishName:p.nameEn||"",
+    scientificName:p.scientificName||"",
+    category:categoriesById.get(p.categoryId)||p.categoryId||"",
+    light:LIGHT_CODE_TO_TH[p.light]||p.light||"",
+    water:WATER_CODE_TO_TH[p.water]||p.water||"",
+    maintenance:CARE_LEVEL_TO_MAINTENANCE[p.careLevel]||p.careLevel||"",
+    unit:p.unit||"ต้น",
+    costPrice:0,
+    salePrice:Number(p.price)||0,
+    bestSeller:false
+  };
+}
 
 // localStorage.setItem() throws once the browser's per-origin quota (often
 // as low as 5MB on mobile Safari) is full — very reachable once this app
@@ -540,11 +615,12 @@ async function loadPlantDatabase(){
   const counter=document.getElementById("plantCount");
   if(counter) counter.textContent="กำลังโหลดฐานข้อมูล...";
   try{
+    await loadCategories();
     const response=await fetch("./data/plants.json",{cache:"no-store"});
     if(!response.ok) throw new Error(`HTTP ${response.status}`);
     const data=await response.json();
     if(!Array.isArray(data)) throw new Error("รูปแบบฐานข้อมูลไม่ถูกต้อง");
-    basePlants=data;
+    basePlants=data.map(adaptPlant);
     rebuildPlantsList();
     resetPlantPaging();
   }catch(error){
