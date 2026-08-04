@@ -1,77 +1,98 @@
 [
   {
-    "id": "CAT001",
-    "name": "ไม้ยืนต้น",
-    "description": "ไม้ยืนต้นสำหรับจัดสวน"
+    "id": "CAT01",
+    "slug": "trees",
+    "nameTh": "ไม้ยืนต้น",
+    "nameEn": "Trees",
+    "sortOrder": 1,
+    "active": true
   },
   {
-    "id": "CAT002",
-    "name": "ไม้พุ่ม",
-    "description": "ไม้พุ่มตกแต่ง"
+    "id": "CAT02",
+    "slug": "shrubs",
+    "nameTh": "ไม้พุ่ม",
+    "nameEn": "Shrubs",
+    "sortOrder": 2,
+    "active": true
   },
   {
-    "id": "CAT003",
-    "name": "ปาล์ม",
-    "description": "ปาล์มทุกชนิด"
+    "id": "CAT03",
+    "slug": "foliage",
+    "nameTh": "ไม้ใบ",
+    "nameEn": "Foliage Plants",
+    "sortOrder": 3,
+    "active": true
   },
   {
-    "id": "CAT004",
-    "name": "สน",
-    "description": "สนประดับ"
+    "id": "CAT04",
+    "slug": "palms",
+    "nameTh": "ปาล์ม",
+    "nameEn": "Palms",
+    "sortOrder": 4,
+    "active": true
   },
   {
-    "id": "CAT005",
-    "name": "ไม้ใบ",
-    "description": "ไม้ใบประดับ"
+    "id": "CAT05",
+    "slug": "conifers",
+    "nameTh": "สนและไม้ทรงตั้ง",
+    "nameEn": "Conifers",
+    "sortOrder": 5,
+    "active": true
   },
   {
-    "id": "CAT006",
-    "name": "ไม้ดอก",
-    "description": "ไม้ดอก"
+    "id": "CAT06",
+    "slug": "flowers",
+    "nameTh": "ไม้ดอก",
+    "nameEn": "Flowering Plants",
+    "sortOrder": 6,
+    "active": true
   },
   {
-    "id": "CAT007",
-    "name": "ไม้คลุมดิน",
-    "description": "ไม้คลุมดิน"
+    "id": "CAT07",
+    "slug": "ferns",
+    "nameTh": "เฟิร์น",
+    "nameEn": "Ferns",
+    "sortOrder": 7,
+    "active": true
   },
   {
-    "id": "CAT008",
-    "name": "เฟิร์น",
-    "description": "เฟิร์น"
+    "id": "CAT08",
+    "slug": "groundcovers",
+    "nameTh": "ไม้คลุมดิน",
+    "nameEn": "Groundcovers",
+    "sortOrder": 8,
+    "active": true
   },
   {
-    "id": "CAT009",
-    "name": "ไผ่",
-    "description": "ไผ่ประดับ"
+    "id": "CAT09",
+    "slug": "bamboo",
+    "nameTh": "ไผ่",
+    "nameEn": "Bamboo",
+    "sortOrder": 9,
+    "active": true
   },
   {
-    "id": "CAT010",
-    "name": "ไม้น้ำ",
-    "description": "พืชน้ำ"
+    "id": "CAT10",
+    "slug": "aquatic",
+    "nameTh": "ไม้น้ำ",
+    "nameEn": "Aquatic Plants",
+    "sortOrder": 10,
+    "active": true
   },
   {
-    "id": "CAT011",
-    "name": "แคคตัส",
-    "description": "กระบองเพชร"
+    "id": "CAT11",
+    "slug": "herbs",
+    "nameTh": "สมุนไพร",
+    "nameEn": "Herbs",
+    "sortOrder": 11,
+    "active": true
   },
   {
-    "id": "CAT012",
-    "name": "ไม้อวบน้ำ",
-    "description": "Succulent"
-  },
-  {
-    "id": "CAT013",
-    "name": "ไม้เลื้อย",
-    "description": "ไม้เลื้อย"
-  },
-  {
-    "id": "CAT014",
-    "name": "สมุนไพร",
-    "description": "สมุนไพร"
-  },
-  {
-    "id": "CAT015",
-    "name": "ไม้ผล",
-    "description": "ไม้ผล"
+    "id": "CAT12",
+    "slug": "fruit",
+    "nameTh": "ไม้ผล",
+    "nameEn": "Fruit Trees",
+    "sortOrder": 12,
+    "active": true
   }
 ]
