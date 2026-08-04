@@ -82,43 +82,39 @@ function adaptPlant(p){
   };
 }
 
-// localStorage.setItem() throws once the browser's per-origin quota (often
-// as low as 5MB on mobile Safari) is full — very reachable once this app
-// has accumulated enough base64-encoded photos across styles/plants/
-// portfolio. Every save* function used to call localStorage.setItem()
-// directly BEFORE awaiting the actual Firestore save, so a quota error
-// there threw synchronously and the cloud save was never even attempted —
-// no alert, nothing queued for retry, dialog already closed looking
-// successful. The photo only "vanished" later once a sync refetched the
-// cloud copy that, correctly, never had it. Routing every local cache
-// write through this helper means a full local cache can never block the
-// real (cloud) save from being attempted.
-let localStorageQuotaWarned = false;
-function safeSetLocal(key, valueObj){
-  try{
-    localStorage.setItem(key, JSON.stringify(valueObj));
-    return true;
-  }catch(err){
-    console.error(`localStorage.setItem failed for ${key} (quota likely full):`,err);
-    if(!localStorageQuotaWarned){
-      localStorageQuotaWarned = true;
-      alert("⚠️ พื้นที่จัดเก็บข้อมูลสำรองในเครื่องนี้เต็ม\n\nข้อมูลจะยังพยายามบันทึกขึ้นคลาวด์ตามปกติ แต่จะไม่มีสำเนาสำรองในเครื่องจนกว่าจะมีพื้นที่ว่าง (ลองปิดแท็บอื่นๆ หรือล้างข้อมูลเบราว์เซอร์บางส่วนแล้วโหลดหน้านี้ใหม่)");
-    }
-    return false;
+// Local cache writes go through LS (IndexedDB, see local-store.js) instead
+// of localStorage directly — its quota is tied to actual free disk space
+// rather than localStorage's small (often ~5MB on mobile Safari) per-origin
+// cap, which this app could fill just from accumulated base64 photos.
+// safeSetLocal() also used to matter for a now-fixed bug: save* functions
+// wrote the local cache BEFORE awaiting the actual Firestore save, so a
+// quota error there threw synchronously and the cloud save was never even
+// attempted — no alert, nothing queued for retry, dialog already closed
+// looking successful, photo "vanished" later once a sync refetched the
+// cloud copy that, correctly, never had it. Kept as its own helper (rather
+// than calling LS.set directly) so that failure mode stays impossible
+// regardless of which storage backend is underneath.
+let localCacheWriteFailWarned = false;
+async function safeSetLocal(key, valueObj){
+  const ok = await LS.set(key, valueObj);
+  if(!ok && !localCacheWriteFailWarned){
+    localCacheWriteFailWarned = true;
+    alert("⚠️ ไม่สามารถบันทึกสำเนาสำรองข้อมูลในเครื่องนี้ได้\n\nข้อมูลจะยังพยายามบันทึกขึ้นคลาวด์ตามปกติ กรุณาตรวจสอบพื้นที่ว่างในอุปกรณ์นี้");
   }
+  return ok;
 }
 
 let plants = [];
 let selectedPlantId = "";
 
-let plantOverrides = load(STORAGE.plantOverrides, {});
-let styleOverrides = load(STORAGE.styleOverrides, {});
+let plantOverrides = {};
+let styleOverrides = {};
 
 // The 300-item catalog from data/plants.json (read-only) plus plants the
 // admin adds themselves, stored fully in Firestore ("customPlants") since
 // there's no server to write back into the static JSON file.
 let basePlants = [];
-let customPlants = load(STORAGE.customPlants, []);
+let customPlants = [];
 function rebuildPlantsList(){
   plants = [...basePlants, ...customPlants];
   fillPlantFilters();
@@ -135,7 +131,7 @@ async function saveCustomPlant(plant){
 // ---- Garden portfolio (real completed projects, shown to build trust
 // alongside the 50 style templates — a separate collection since these are
 // actual jobs done for actual customers, not reusable style presets). ----
-let portfolioItems = load(STORAGE.gardenPortfolio, []);
+let portfolioItems = [];
 async function savePortfolioItem(item){
   safeSetLocal(STORAGE.gardenPortfolio, portfolioItems);
   await saveDoc("gardenPortfolio",item.id,item,"ผลงานจัดสวน");
@@ -192,10 +188,6 @@ function plantImages(p){
   return [];
 }
 
-function load(key, fallback){
-  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
-  catch { return fallback; }
-}
 function uid(prefix){ return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,7)}`; }
 function money(v){ return new Intl.NumberFormat("th-TH",{style:"currency",currency:"THB",maximumFractionDigits:0}).format(Number(v)||0); }
 function esc(s=""){ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m])); }
@@ -229,8 +221,7 @@ document.querySelectorAll(".close-dialog").forEach(b=>b.addEventListener("click"
 document.getElementById("resetAllBtn").onclick=()=>{
   if(confirm("ต้องการล้างข้อมูลแบบสวน ต้นไม้ที่เพิ่มเอง และรูปภาพที่แนบทั้งหมดหรือไม่?")){
     plantOverrides={};styleOverrides={};customPlants=[];portfolioItems=[];failedSaves=new Map();
-    Object.values(STORAGE).forEach(k=>localStorage.removeItem(k));
-    localStorage.removeItem(FAILED_SAVES_KEY);
+    [STORAGE.plantOverrides,STORAGE.styleOverrides,STORAGE.customPlants,STORAGE.gardenPortfolio,FAILED_SAVES_KEY].forEach(k=>LS.remove(k));
     rebuildPlantsList();
     resetPlantPaging();
     renderAll();
@@ -430,7 +421,7 @@ document.getElementById("portfolioEditForm").addEventListener("submit",async e=>
   document.getElementById("portfolioEditDialog").close();
   // Save to the cloud in the background instead of blocking the dialog open
   // with a disabled "saving..." button — the item is already visible in the
-  // list from the localStorage write above, and cloudSave() still alerts on
+  // list from the in-memory update above, and cloudSave() still alerts on
   // a real failure (it never throws), so nothing silently gets lost.
   savePortfolioItem(item);
 });
@@ -980,6 +971,36 @@ renderAll();
 loadPlantDatabase();
 loadCareBeliefs();
 
+// Reading the local cache is async now (IndexedDB), so it can't populate
+// plantOverrides/styleOverrides/customPlants/portfolioItems/failedSaves via
+// a plain top-level `let x = load(...)` the way localStorage did — the page
+// renders once immediately above with empty local overrides (still shows
+// the 50 built-in styles fine), then this re-renders with the real local
+// backup as soon as it's read. initFromFirestore() is chained after it so
+// failedSaves is populated before the very first cloud sync tries to merge
+// it in.
+async function hydrateFromLocalCache(){
+  await LS.migrateFromLocalStorage([
+    STORAGE.plantOverrides, STORAGE.styleOverrides, STORAGE.customPlants,
+    STORAGE.gardenPortfolio, FAILED_SAVES_KEY
+  ]);
+  const [pO,sO,cP,pI,fS]=await Promise.all([
+    LS.get(STORAGE.plantOverrides,{}),
+    LS.get(STORAGE.styleOverrides,{}),
+    LS.get(STORAGE.customPlants,[]),
+    LS.get(STORAGE.gardenPortfolio,[]),
+    LS.get(FAILED_SAVES_KEY,[])
+  ]);
+  plantOverrides=pO;
+  styleOverrides=sO;
+  customPlants=cP;
+  portfolioItems=pI;
+  failedSaves=new Map((fS||[]).map(e=>[saveDocKey(e.collection,e.id),e]));
+  rebuildPlantsList();
+  renderAll();
+  if(plants.length) renderPlants();
+}
+
 function setCloudStatus(ok){
   const el=document.getElementById("cloudStatus");
   if(!el) return;
@@ -1020,26 +1041,22 @@ async function cloudSave(fn,label){
 // warning. Now a failed save is queued here, re-merged back into the local
 // data on every sync (so it keeps showing up), and retried automatically —
 // the admin doesn't have to notice the alert or manually redo anything.
-// Persisted to localStorage (not just kept in memory) because a Map that
+// Persisted to the local cache (not just kept in memory) because a Map that
 // only lives in a JS variable is gone the instant the tab reloads or gets
 // discarded (very easy to trigger on mobile Safari) — which silently
 // defeated the whole point of this queue: on the very next load,
 // initFromFirestore() would fetch the cloud copy that still lacks the
 // item (it genuinely never saved) with nothing left to re-merge it back
 // from, reproducing the exact "added it, then it vanished" bug this queue
-// exists to prevent.
+// exists to prevent. Populated by hydrateFromLocalCache() below, not here —
+// reading it is async now (IndexedDB), so it can't be a plain top-level
+// `let failedSaves = ...` initializer anymore.
 const FAILED_SAVES_KEY = "garden_failed_saves_v1";
-function loadFailedSaves(){
-  try{
-    const arr = JSON.parse(localStorage.getItem(FAILED_SAVES_KEY)) || [];
-    return new Map(arr.map(e=>[saveDocKey(e.collection,e.id),e]));
-  }catch{ return new Map(); }
-}
+let failedSaves = new Map();
+function saveDocKey(collection,id){ return `${collection}:${id}`; }
 function persistFailedSaves(){
   safeSetLocal(FAILED_SAVES_KEY, [...failedSaves.values()]);
 }
-let failedSaves = loadFailedSaves();
-function saveDocKey(collection,id){ return `${collection}:${id}`; }
 async function saveDoc(collection,id,obj,label){
   pendingCloudSaves++;
   try{
@@ -1076,10 +1093,10 @@ async function retryFailedSaves(){
 }
 
 // On load, pull the latest data from Firestore (source of truth across
-// devices) and overlay it on top of whatever localStorage already showed,
-// so the page is usable instantly and then refreshes once the cloud data
-// arrives. If Firestore is unreachable, silently keep using localStorage —
-// the app must keep working offline.
+// devices) and overlay it on top of whatever the local cache already
+// showed, so the page is usable instantly and then refreshes once the
+// cloud data arrives. If Firestore is unreachable, silently keep using the
+// local cache — the app must keep working offline.
 async function initFromFirestore(){
   try{
     const [remotePlantOverrides,remoteStyleOverrides,remoteCustomPlants,remotePortfolio]=await Promise.all([
@@ -1119,7 +1136,7 @@ async function initFromFirestore(){
     return false;
   }
 }
-initFromFirestore();
+hydrateFromLocalCache().then(initFromFirestore);
 
 document.getElementById("manualSyncBtn").addEventListener("click",async()=>{
   if(pendingCloudSaves>0){

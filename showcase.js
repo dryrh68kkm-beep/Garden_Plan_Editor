@@ -5,10 +5,6 @@ const STORAGE = {
   gardenPortfolio: "garden_portfolio_v1"
 };
 
-function load(key, fallback){
-  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
-  catch { return fallback; }
-}
 function esc(s=""){ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m])); }
 function money(v){ return new Intl.NumberFormat("th-TH",{style:"currency",currency:"THB",maximumFractionDigits:0}).format(Number(v)||0); }
 // Opens a LINE chat with the shop's Official Account, pre-filled with a
@@ -95,13 +91,35 @@ function adaptPlant(p){
   };
 }
 
-// Seeded from localStorage first (instant, works offline / same-browser as
-// admin), then overwritten by initFromFirestore() once the cloud data
-// arrives so the showcase reflects the back office from any device.
-let styleOverrides = load(STORAGE.styleOverrides, {});
-let plantOverrides = load(STORAGE.plantOverrides, {});
-let customPlants = load(STORAGE.customPlants, []);
-let portfolioItems = load(STORAGE.gardenPortfolio, []);
+// Seeded from the local cache first (instant, works offline / same-browser
+// as admin), then overwritten by initFromFirestore() once the cloud data
+// arrives so the showcase reflects the back office from any device. Reading
+// the cache (IndexedDB via local-store.js — see the comment on this in
+// app.js) is async, so these start empty and hydrateFromLocalCache() below
+// fills them in and re-renders as soon as it resolves, same pattern as the
+// cloud sync already uses.
+let styleOverrides = {};
+let plantOverrides = {};
+let customPlants = [];
+let portfolioItems = [];
+async function hydrateFromLocalCache(){
+  await LS.migrateFromLocalStorage([STORAGE.styleOverrides, STORAGE.plantOverrides, STORAGE.customPlants, STORAGE.gardenPortfolio]);
+  const [sO,pO,cP,pI]=await Promise.all([
+    LS.get(STORAGE.styleOverrides,{}),
+    LS.get(STORAGE.plantOverrides,{}),
+    LS.get(STORAGE.customPlants,[]),
+    LS.get(STORAGE.gardenPortfolio,[])
+  ]);
+  styleOverrides=sO;
+  plantOverrides=pO;
+  customPlants=cP;
+  portfolioItems=pI;
+  renderScStyles();
+  renderScPortfolio();
+  rebuildAllPlants();
+  fillScPlantCategoryFilter();
+  renderScPlantGallery();
+}
 
 function mergedStyles(){
   return gardenStyles.map(s=>styleOverrides[s.id] ? {...s, ...styleOverrides[s.id]} : s);
@@ -551,7 +569,7 @@ loadCareBeliefs();
 
 // Pull the latest overrides from Firestore so this page reflects the back
 // office from any device, not just the browser that saved them. Falls back
-// to whatever localStorage already had (or nothing) if the cloud is
+// to whatever the local cache already had (or nothing) if the cloud is
 // unreachable — the showcase must still render either way.
 async function initFromFirestore(){
   try{
@@ -567,12 +585,13 @@ async function initFromFirestore(){
     remotePlantOverrides.forEach(p=>{const {id,...rest}=p;plantOverrides[id]=rest;});
     customPlants=remoteCustomPlants;
     portfolioItems=remotePortfolio;
-    // A full localStorage quota on the visitor's own device (unrelated to
+    // A full local-cache quota on the visitor's own device (unrelated to
     // this site) must never stop the page from rendering the data it just
     // fetched — caching locally is a nice-to-have for instant reloads, not
-    // a requirement, and this write throwing sat inside the same try block
-    // as every render call below it, so it could silently skip all of them.
-    try{ localStorage.setItem(STORAGE.gardenPortfolio,JSON.stringify(portfolioItems)); }catch(err){ console.error("Could not cache portfolio locally (quota likely full):",err); }
+    // a requirement. LS.set() never throws (see local-store.js), so this
+    // can't skip the render calls below it the way a raw localStorage write
+    // once could.
+    LS.set(STORAGE.gardenPortfolio,portfolioItems);
     renderScStyles();
     renderScPortfolio();
     rebuildAllPlants();
@@ -582,7 +601,7 @@ async function initFromFirestore(){
     console.error("Showcase Firestore sync failed, staying on local data:",error);
   }
 }
-initFromFirestore();
+hydrateFromLocalCache().then(initFromFirestore);
 
 // REST-only Firestore has no realtime listener (that needs the SDK), so we
 // poll instead: refetch periodically so a photo/style added on another
