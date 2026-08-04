@@ -25,11 +25,11 @@ function rebuildPlantsList(){
 
 async function savePlantOverrides(id){
   localStorage.setItem(STORAGE.plantOverrides, JSON.stringify(plantOverrides));
-  if(id) await cloudSave(()=>fbSet("plantOverrides",id,plantOverrides[id]),"ข้อมูลต้นไม้");
+  if(id) await saveDoc("plantOverrides",id,plantOverrides[id],"ข้อมูลต้นไม้");
 }
 async function saveCustomPlant(plant){
   localStorage.setItem(STORAGE.customPlants, JSON.stringify(customPlants));
-  await cloudSave(()=>fbSet("customPlants",plant.id,plant),"ต้นไม้ที่เพิ่มเอง");
+  await saveDoc("customPlants",plant.id,plant,"ต้นไม้ที่เพิ่มเอง");
 }
 // ---- Garden portfolio (real completed projects, shown to build trust
 // alongside the 50 style templates — a separate collection since these are
@@ -37,11 +37,12 @@ async function saveCustomPlant(plant){
 let portfolioItems = load(STORAGE.gardenPortfolio, []);
 async function savePortfolioItem(item){
   localStorage.setItem(STORAGE.gardenPortfolio, JSON.stringify(portfolioItems));
-  await cloudSave(()=>fbSet("gardenPortfolio",item.id,item),"ผลงานจัดสวน");
+  await saveDoc("gardenPortfolio",item.id,item,"ผลงานจัดสวน");
 }
 async function deletePortfolioItem(id){
   if(!confirm("ลบผลงานจัดสวนรายการนี้หรือไม่?")) return;
   portfolioItems=portfolioItems.filter(x=>x.id!==id);
+  failedSaves.delete(saveDocKey("gardenPortfolio",id));
   renderPortfolio();
   localStorage.setItem(STORAGE.gardenPortfolio, JSON.stringify(portfolioItems));
   document.getElementById("portfolioEditDialog").close();
@@ -50,6 +51,7 @@ async function deletePortfolioItem(id){
 async function deleteCustomPlant(id){
   if(!confirm("ลบต้นไม้ที่เพิ่มเองรายการนี้หรือไม่?")) return;
   customPlants=customPlants.filter(p=>p.id!==id);
+  failedSaves.delete(saveDocKey("customPlants",id));
   rebuildPlantsList();
   resetPlantPaging();
   localStorage.setItem(STORAGE.customPlants, JSON.stringify(customPlants));
@@ -62,7 +64,7 @@ function getPlant(id){
 }
 async function saveStyleOverrides(id){
   localStorage.setItem(STORAGE.styleOverrides, JSON.stringify(styleOverrides));
-  if(id) await cloudSave(()=>fbSet("styleOverrides",id,styleOverrides[id]),"ข้อมูลแบบสวน");
+  if(id) await saveDoc("styleOverrides",id,styleOverrides[id],"ข้อมูลแบบสวน");
 }
 function getStyle(id){
   const s=gardenStyles.find(x=>x.id===id);
@@ -897,18 +899,53 @@ async function cloudSave(fn,label){
   }catch(err){
     console.error("Firestore save failed, staying on local data:",err);
     setCloudStatus(false);
-    // A quiet status badge is easy to miss — for saves that matter (a photo,
-    // a customer record) the user needs an unmissable signal that it only
-    // saved on this device, not the cloud, or they'll assume it's safe and
-    // the next background sync will silently overwrite it with the old
-    // (unsaved) cloud state — exactly what happened with a lost plant photo.
-    // Show the actual error text too — a generic "connection failed" message
-    // looks the same whether it's really the network, a permissions issue,
-    // or a bug, and there's no devtools console to check on a phone.
-    alert(`⚠️ บันทึก${label||"ข้อมูล"}ขึ้นคลาวด์ไม่สำเร็จ\n\nสาเหตุ: ${err.message||err}\n\nข้อมูลบันทึกไว้ในเครื่องนี้ชั่วคราวเท่านั้น กรุณาลองบันทึกซ้ำอีกครั้ง ไม่เช่นนั้นข้อมูลอาจหายไปเมื่อซิงก์ครั้งถัดไป`);
+    alert(`⚠️ บันทึก${label||"ข้อมูล"}ขึ้นคลาวด์ไม่สำเร็จ\n\nสาเหตุ: ${err.message||err}\n\nข้อมูลบันทึกไว้ในเครื่องนี้ชั่วคราวเท่านั้น กรุณาลองบันทึกซ้ำอีกครั้ง`);
     return false;
   }finally{
     pendingCloudSaves--;
+  }
+}
+
+// Same background-save timeout risk as pendingCloudSaves above, but for the
+// data itself, not just the sync guard: a weak connection (common on a job
+// site, not just a brief hiccup) can make fbSet() genuinely fail rather than
+// just run long. Previously that meant the item silently vanished on the
+// very next sync — it was never actually in Firestore, so refetching "the
+// truth" from the cloud dropped it, with only an easy-to-miss alert as
+// warning. Now a failed save is queued here, re-merged back into the local
+// data on every sync (so it keeps showing up), and retried automatically —
+// the admin doesn't have to notice the alert or manually redo anything.
+let failedSaves = new Map();
+function saveDocKey(collection,id){ return `${collection}:${id}`; }
+async function saveDoc(collection,id,obj,label){
+  pendingCloudSaves++;
+  try{
+    await fbSet(collection,id,obj);
+    failedSaves.delete(saveDocKey(collection,id));
+    setCloudStatus(true);
+    return true;
+  }catch(err){
+    console.error("Firestore save failed, will keep retrying in the background:",err);
+    setCloudStatus(false);
+    failedSaves.set(saveDocKey(collection,id),{collection,id,obj,label});
+    alert(`⚠️ บันทึก${label||"ข้อมูล"}ขึ้นคลาวด์ไม่สำเร็จ\n\nสาเหตุ: ${err.message||err}\n\nข้อมูลยังอยู่ในเครื่องนี้ ระบบจะลองบันทึกขึ้นคลาวด์ให้อัตโนมัติอีกครั้งเมื่อสัญญาณดีขึ้น ไม่ต้องกดบันทึกซ้ำ`);
+    return false;
+  }finally{
+    pendingCloudSaves--;
+  }
+}
+async function retryFailedSaves(){
+  for(const {collection,id,obj} of [...failedSaves.values()]){
+    pendingCloudSaves++;
+    try{
+      await fbSet(collection,id,obj);
+      failedSaves.delete(saveDocKey(collection,id));
+      setCloudStatus(true);
+    }catch(err){
+      console.error("Retry save still failing, will try again on the next sync:",err);
+    }finally{
+      pendingCloudSaves--;
+    }
   }
 }
 
@@ -931,6 +968,15 @@ async function initFromFirestore(){
     remoteStyleOverrides.forEach(s=>{const {id,...rest}=s;styleOverrides[id]=rest;});
     customPlants=remoteCustomPlants;
     portfolioItems=remotePortfolio;
+    // Re-apply any edit that's still waiting to reach the cloud (see
+    // failedSaves above) so this refresh doesn't wipe it back out just
+    // because it isn't in Firestore yet.
+    failedSaves.forEach(({collection,id,obj})=>{
+      if(collection==="plantOverrides") plantOverrides[id]=obj;
+      else if(collection==="styleOverrides") styleOverrides[id]=obj;
+      else if(collection==="customPlants") customPlants=customPlants.some(p=>p.id===id)?customPlants.map(p=>p.id===id?obj:p):[...customPlants,obj];
+      else if(collection==="gardenPortfolio") portfolioItems=portfolioItems.some(p=>p.id===id)?portfolioItems.map(p=>p.id===id?obj:p):[...portfolioItems,obj];
+    });
     localStorage.setItem(STORAGE.plantOverrides,JSON.stringify(plantOverrides));
     localStorage.setItem(STORAGE.styleOverrides,JSON.stringify(styleOverrides));
     localStorage.setItem(STORAGE.customPlants,JSON.stringify(customPlants));
@@ -939,6 +985,7 @@ async function initFromFirestore(){
     rebuildPlantsList();
     if(plants.length) renderPlants();
     setCloudStatus(true);
+    if(failedSaves.size) retryFailedSaves();
     return true;
   }catch(error){
     console.error("Firestore initial sync failed, staying on local data:",error);
