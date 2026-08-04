@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#163a2a" />
   <title>Garden Plan Editor</title>
-  <link rel="stylesheet" href="style.css?v=202608040234" />
+  <link rel="stylesheet" href="style.css?v=202608040414" />
 </head>
 <body>
   <header class="topbar">
@@ -94,9 +94,12 @@
   <dialog id="styleDetailDialog" class="modal style-detail-modal">
     <div class="style-detail-wrap">
       <div class="modal-head">
-        <div>
-          <p id="styleDetailCategory" class="eyebrow"></p>
-          <h3 id="styleDetailName"></h3>
+        <div class="modal-head-title">
+          <img src="assets/rinlada-logo-main.webp" class="modal-logo" alt="" />
+          <div>
+            <p id="styleDetailCategory" class="eyebrow"></p>
+            <h3 id="styleDetailName"></h3>
+          </div>
         </div>
         <button type="button" class="icon-btn close-dialog">×</button>
       </div>
@@ -142,7 +145,7 @@
 
   <dialog id="styleEditDialog" class="modal">
     <form id="styleEditForm" method="dialog">
-      <div class="modal-head"><h3 id="styleEditTitle">แก้ไขข้อมูลแบบสวน</h3><button type="button" class="icon-btn close-dialog">×</button></div>
+      <div class="modal-head"><div class="modal-head-title"><img src="assets/rinlada-logo-main.webp" class="modal-logo" alt="" /><h3 id="styleEditTitle">แก้ไขข้อมูลแบบสวน</h3></div><button type="button" class="icon-btn close-dialog">×</button></div>
       <input type="hidden" id="styleEditId" />
       <label>รูปภาพแบบสวน (เพิ่มได้หลายมุม)<input id="styleEditImage" class="input" type="file" accept="image/*" multiple /></label>
       <div id="styleEditGallery" class="style-edit-gallery"></div>
@@ -174,9 +177,12 @@
   <dialog id="plantDetailDialog" class="modal style-detail-modal">
     <div class="style-detail-wrap">
       <div class="modal-head">
-        <div>
-          <p id="plantDetailCode" class="eyebrow"></p>
-          <h3 id="plantDetailName"></h3>
+        <div class="modal-head-title">
+          <img src="assets/rinlada-logo-main.webp" class="modal-logo" alt="" />
+          <div>
+            <p id="plantDetailCode" class="eyebrow"></p>
+            <h3 id="plantDetailName"></h3>
+          </div>
         </div>
         <button type="button" class="icon-btn close-dialog">×</button>
       </div>
@@ -213,7 +219,7 @@
 
   <dialog id="plantEditDialog" class="modal">
     <form id="plantEditForm" method="dialog">
-      <div class="modal-head"><h3 id="plantEditTitle">แก้ไขข้อมูลต้นไม้</h3><button type="button" class="icon-btn close-dialog">×</button></div>
+      <div class="modal-head"><div class="modal-head-title"><img src="assets/rinlada-logo-main.webp" class="modal-logo" alt="" /><h3 id="plantEditTitle">แก้ไขข้อมูลต้นไม้</h3></div><button type="button" class="icon-btn close-dialog">×</button></div>
       <input type="hidden" id="plantEditId" />
       <div class="two-col">
         <label>ต้นทุน/หน่วย<input id="plantEditCost" class="input" type="number" min="0" step="0.01" /></label>
@@ -232,7 +238,7 @@
 
   <dialog id="plantAddDialog" class="modal">
     <form id="plantAddForm" method="dialog">
-      <div class="modal-head"><h3 id="plantAddTitle">เพิ่มต้นไม้ใหม่</h3><button type="button" class="icon-btn close-dialog">×</button></div>
+      <div class="modal-head"><div class="modal-head-title"><img src="assets/rinlada-logo-main.webp" class="modal-logo" alt="" /><h3 id="plantAddTitle">เพิ่มต้นไม้ใหม่</h3></div><button type="button" class="icon-btn close-dialog">×</button></div>
       <input type="hidden" id="plantAddId" />
       <label>ชื่อไทย<input id="plantAddThaiName" class="input" required /></label>
       <div class="two-col">
@@ -283,8 +289,8 @@
     </form>
   </dialog>
 
-  <script src="data/garden-styles-data.js?v=202608040234"></script>
-  <script src="firebase-client.js?v=202608040234"></script>
-  <script src="app.js?v=202608040234"></script>
+  <script src="data/garden-styles-data.js?v=202608040414"></script>
+  <script src="firebase-client.js?v=202608040414"></script>
+  <script src="app.js?v=202608040414"></script>
 </body>
 </html>
