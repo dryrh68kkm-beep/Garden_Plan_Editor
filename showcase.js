@@ -461,7 +461,7 @@ function renderScPlantGallery(){
     <article class="showcase-plant-tile" onclick="openScPlantLightbox('${p.id}')">
       <div class="showcase-plant-photo"><img src="${esc(plantImages(p)[0])}" alt="${esc(p.thaiName)}" loading="lazy" />${p.bestSeller?'<span class="best-seller-badge">🔥 ขายดี</span>':""}</div>
       <div class="showcase-plant-info">
-        <div class="showcase-plant-caption">${esc(p.thaiName)}</div>
+        <div class="showcase-plant-caption">${esc(p.thaiName)}${p.sizeLabel?` <span class="plant-size-tag">ขนาด${esc(p.sizeLabel)}</span>`:""}</div>
         ${p.salePrice?`<div class="showcase-plant-price-tag">🏷️ ${money(p.salePrice)}${p.unit?` / ${esc(p.unit)}`:""}</div>`:""}
       </div>
       <a class="showcase-order-btn" href="${esc(lineOrderUrl(p))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 สั่งซื้อผ่าน LINE</a>
@@ -504,7 +504,7 @@ function openScPlantLightbox(id){
   const p=plantById.get(id);
   const images=p?plantImages(p):[];
   if(!p||!images.length) return;
-  document.getElementById("scPlantLightboxName").textContent=p.thaiName+(p.englishName?` · ${p.englishName}`:"");
+  document.getElementById("scPlantLightboxName").textContent=[p.thaiName,p.sizeLabel?`ขนาด${p.sizeLabel}`:"",p.englishName].filter(Boolean).join(" · ");
   renderScPlantLightboxGallery(images);
   const priceTag=document.getElementById("scPlantLightboxPriceTag");
   if(p.salePrice){

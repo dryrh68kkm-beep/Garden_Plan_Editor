@@ -637,7 +637,7 @@ function fillPlantQuickEdit(){
   const select=document.getElementById("plantQuickEdit");
   const rows=plants.slice().sort((a,b)=>a.thaiName.localeCompare(b.thaiName,"th"));
   select.innerHTML='<option value="">✏️ แก้ไขด่วน: เลือกต้นไม้ที่ต้องการแก้ไข...</option>'
-    +rows.map(p=>`<option value="${esc(p.id)}">${esc(p.thaiName)}${p.englishName?` (${esc(p.englishName)})`:""}</option>`).join("");
+    +rows.map(p=>`<option value="${esc(p.id)}">${esc(p.id)} · ${esc(p.thaiName)}${p.sizeLabel?` (ขนาด${esc(p.sizeLabel)})`:""}${p.englishName?` — ${esc(p.englishName)}`:""}</option>`).join("");
 }
 document.getElementById("plantQuickEdit").addEventListener("change",e=>{
   const id=e.target.value;
@@ -667,8 +667,8 @@ function renderPlants(){
     <article class="plant-card">
       <div class="plant-thumb">${cover?`<img src="${esc(cover)}" alt="${esc(p.thaiName)}" loading="lazy" />`:"🌱"}${p.bestSeller?'<span class="best-seller-badge">🔥 ขายดี</span>':""}</div>
       <div class="plant-code">${esc(p.id)} · ${esc(p.category)}${p.custom?' · <span class="chip">เพิ่มเอง</span>':""}</div>
-      <h3>${esc(p.thaiName)}</h3>
-      <div>${esc(p.englishName||"-")}</div>
+      <h3>${esc(p.thaiName)}${p.sizeLabel?` <span class="plant-size-tag">ขนาด${esc(p.sizeLabel)}</span>`:""}</h3>
+      <div>${esc(p.englishName||"-")}${p.potSize?` · กระถาง ${esc(p.potSize)}`:""}</div>
       <div class="plant-scientific">${esc(p.scientificName||"")}</div>
       <div class="chips">
         <span class="chip">${esc(p.light)}</span>
@@ -699,7 +699,7 @@ function openPlantDetail(id){
   const p=getPlant(id);
   if(!p) return;
   selectedPlantId=id;
-  document.getElementById("plantDetailCode").textContent=p.id+" · "+(p.englishName||"");
+  document.getElementById("plantDetailCode").textContent=[p.id,p.englishName,p.sizeLabel?`ขนาด${p.sizeLabel}`:"",p.potSize?`กระถาง ${p.potSize}`:""].filter(Boolean).join(" · ");
   document.getElementById("plantDetailName").textContent=p.thaiName;
   document.getElementById("plantDetailScientific").textContent=p.scientificName||"-";
   document.getElementById("plantDetailCategory").textContent=p.category||"-";
