@@ -7,6 +7,32 @@ const STORAGE = {
 
 // gardenStyles is defined in data/garden-styles-data.js, loaded via a <script> tag before this file.
 
+// localStorage.setItem() throws once the browser's per-origin quota (often
+// as low as 5MB on mobile Safari) is full — very reachable once this app
+// has accumulated enough base64-encoded photos across styles/plants/
+// portfolio. Every save* function used to call localStorage.setItem()
+// directly BEFORE awaiting the actual Firestore save, so a quota error
+// there threw synchronously and the cloud save was never even attempted —
+// no alert, nothing queued for retry, dialog already closed looking
+// successful. The photo only "vanished" later once a sync refetched the
+// cloud copy that, correctly, never had it. Routing every local cache
+// write through this helper means a full local cache can never block the
+// real (cloud) save from being attempted.
+let localStorageQuotaWarned = false;
+function safeSetLocal(key, valueObj){
+  try{
+    localStorage.setItem(key, JSON.stringify(valueObj));
+    return true;
+  }catch(err){
+    console.error(`localStorage.setItem failed for ${key} (quota likely full):`,err);
+    if(!localStorageQuotaWarned){
+      localStorageQuotaWarned = true;
+      alert("⚠️ พื้นที่จัดเก็บข้อมูลสำรองในเครื่องนี้เต็ม\n\nข้อมูลจะยังพยายามบันทึกขึ้นคลาวด์ตามปกติ แต่จะไม่มีสำเนาสำรองในเครื่องจนกว่าจะมีพื้นที่ว่าง (ลองปิดแท็บอื่นๆ หรือล้างข้อมูลเบราว์เซอร์บางส่วนแล้วโหลดหน้านี้ใหม่)");
+    }
+    return false;
+  }
+}
+
 let plants = [];
 let selectedPlantId = "";
 
@@ -24,11 +50,11 @@ function rebuildPlantsList(){
 }
 
 async function savePlantOverrides(id){
-  localStorage.setItem(STORAGE.plantOverrides, JSON.stringify(plantOverrides));
+  safeSetLocal(STORAGE.plantOverrides, plantOverrides);
   if(id) await saveDoc("plantOverrides",id,plantOverrides[id],"ข้อมูลต้นไม้");
 }
 async function saveCustomPlant(plant){
-  localStorage.setItem(STORAGE.customPlants, JSON.stringify(customPlants));
+  safeSetLocal(STORAGE.customPlants, customPlants);
   await saveDoc("customPlants",plant.id,plant,"ต้นไม้ที่เพิ่มเอง");
 }
 // ---- Garden portfolio (real completed projects, shown to build trust
@@ -36,7 +62,7 @@ async function saveCustomPlant(plant){
 // actual jobs done for actual customers, not reusable style presets). ----
 let portfolioItems = load(STORAGE.gardenPortfolio, []);
 async function savePortfolioItem(item){
-  localStorage.setItem(STORAGE.gardenPortfolio, JSON.stringify(portfolioItems));
+  safeSetLocal(STORAGE.gardenPortfolio, portfolioItems);
   await saveDoc("gardenPortfolio",item.id,item,"ผลงานจัดสวน");
 }
 async function deletePortfolioItem(id){
@@ -45,7 +71,7 @@ async function deletePortfolioItem(id){
   failedSaves.delete(saveDocKey("gardenPortfolio",id));
   persistFailedSaves();
   renderPortfolio();
-  localStorage.setItem(STORAGE.gardenPortfolio, JSON.stringify(portfolioItems));
+  safeSetLocal(STORAGE.gardenPortfolio, portfolioItems);
   document.getElementById("portfolioEditDialog").close();
   await cloudSave(()=>fbDelete("gardenPortfolio",id),"การลบผลงานจัดสวน");
 }
@@ -56,7 +82,7 @@ async function deleteCustomPlant(id){
   persistFailedSaves();
   rebuildPlantsList();
   resetPlantPaging();
-  localStorage.setItem(STORAGE.customPlants, JSON.stringify(customPlants));
+  safeSetLocal(STORAGE.customPlants, customPlants);
   document.getElementById("plantAddDialog").close();
   await cloudSave(()=>fbDelete("customPlants",id),"การลบต้นไม้ที่เพิ่มเอง");
 }
@@ -65,7 +91,7 @@ function getPlant(id){
   return p ? {...p, ...plantOverrides[id]} : null;
 }
 async function saveStyleOverrides(id){
-  localStorage.setItem(STORAGE.styleOverrides, JSON.stringify(styleOverrides));
+  safeSetLocal(STORAGE.styleOverrides, styleOverrides);
   if(id) await saveDoc("styleOverrides",id,styleOverrides[id],"ข้อมูลแบบสวน");
 }
 function getStyle(id){
@@ -934,7 +960,7 @@ function loadFailedSaves(){
   }catch{ return new Map(); }
 }
 function persistFailedSaves(){
-  localStorage.setItem(FAILED_SAVES_KEY, JSON.stringify([...failedSaves.values()]));
+  safeSetLocal(FAILED_SAVES_KEY, [...failedSaves.values()]);
 }
 let failedSaves = loadFailedSaves();
 function saveDocKey(collection,id){ return `${collection}:${id}`; }
@@ -1001,10 +1027,10 @@ async function initFromFirestore(){
       else if(collection==="customPlants") customPlants=customPlants.some(p=>p.id===id)?customPlants.map(p=>p.id===id?obj:p):[...customPlants,obj];
       else if(collection==="gardenPortfolio") portfolioItems=portfolioItems.some(p=>p.id===id)?portfolioItems.map(p=>p.id===id?obj:p):[...portfolioItems,obj];
     });
-    localStorage.setItem(STORAGE.plantOverrides,JSON.stringify(plantOverrides));
-    localStorage.setItem(STORAGE.styleOverrides,JSON.stringify(styleOverrides));
-    localStorage.setItem(STORAGE.customPlants,JSON.stringify(customPlants));
-    localStorage.setItem(STORAGE.gardenPortfolio,JSON.stringify(portfolioItems));
+    safeSetLocal(STORAGE.plantOverrides,plantOverrides);
+    safeSetLocal(STORAGE.styleOverrides,styleOverrides);
+    safeSetLocal(STORAGE.customPlants,customPlants);
+    safeSetLocal(STORAGE.gardenPortfolio,portfolioItems);
     renderAll();
     rebuildPlantsList();
     if(plants.length) renderPlants();
