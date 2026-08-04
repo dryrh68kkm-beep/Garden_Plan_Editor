@@ -43,6 +43,7 @@ async function deletePortfolioItem(id){
   if(!confirm("ลบผลงานจัดสวนรายการนี้หรือไม่?")) return;
   portfolioItems=portfolioItems.filter(x=>x.id!==id);
   failedSaves.delete(saveDocKey("gardenPortfolio",id));
+  persistFailedSaves();
   renderPortfolio();
   localStorage.setItem(STORAGE.gardenPortfolio, JSON.stringify(portfolioItems));
   document.getElementById("portfolioEditDialog").close();
@@ -52,6 +53,7 @@ async function deleteCustomPlant(id){
   if(!confirm("ลบต้นไม้ที่เพิ่มเองรายการนี้หรือไม่?")) return;
   customPlants=customPlants.filter(p=>p.id!==id);
   failedSaves.delete(saveDocKey("customPlants",id));
+  persistFailedSaves();
   rebuildPlantsList();
   resetPlantPaging();
   localStorage.setItem(STORAGE.customPlants, JSON.stringify(customPlants));
@@ -125,8 +127,9 @@ document.querySelectorAll(".close-dialog").forEach(b=>b.addEventListener("click"
 
 document.getElementById("resetAllBtn").onclick=()=>{
   if(confirm("ต้องการล้างข้อมูลแบบสวน ต้นไม้ที่เพิ่มเอง และรูปภาพที่แนบทั้งหมดหรือไม่?")){
-    plantOverrides={};styleOverrides={};customPlants=[];portfolioItems=[];
+    plantOverrides={};styleOverrides={};customPlants=[];portfolioItems=[];failedSaves=new Map();
     Object.values(STORAGE).forEach(k=>localStorage.removeItem(k));
+    localStorage.removeItem(FAILED_SAVES_KEY);
     rebuildPlantsList();
     resetPlantPaging();
     renderAll();
@@ -915,19 +918,39 @@ async function cloudSave(fn,label){
 // warning. Now a failed save is queued here, re-merged back into the local
 // data on every sync (so it keeps showing up), and retried automatically —
 // the admin doesn't have to notice the alert or manually redo anything.
-let failedSaves = new Map();
+// Persisted to localStorage (not just kept in memory) because a Map that
+// only lives in a JS variable is gone the instant the tab reloads or gets
+// discarded (very easy to trigger on mobile Safari) — which silently
+// defeated the whole point of this queue: on the very next load,
+// initFromFirestore() would fetch the cloud copy that still lacks the
+// item (it genuinely never saved) with nothing left to re-merge it back
+// from, reproducing the exact "added it, then it vanished" bug this queue
+// exists to prevent.
+const FAILED_SAVES_KEY = "garden_failed_saves_v1";
+function loadFailedSaves(){
+  try{
+    const arr = JSON.parse(localStorage.getItem(FAILED_SAVES_KEY)) || [];
+    return new Map(arr.map(e=>[saveDocKey(e.collection,e.id),e]));
+  }catch{ return new Map(); }
+}
+function persistFailedSaves(){
+  localStorage.setItem(FAILED_SAVES_KEY, JSON.stringify([...failedSaves.values()]));
+}
+let failedSaves = loadFailedSaves();
 function saveDocKey(collection,id){ return `${collection}:${id}`; }
 async function saveDoc(collection,id,obj,label){
   pendingCloudSaves++;
   try{
     await fbSet(collection,id,obj);
     failedSaves.delete(saveDocKey(collection,id));
+    persistFailedSaves();
     setCloudStatus(true);
     return true;
   }catch(err){
     console.error("Firestore save failed, will keep retrying in the background:",err);
     setCloudStatus(false);
     failedSaves.set(saveDocKey(collection,id),{collection,id,obj,label});
+    persistFailedSaves();
     alert(`⚠️ บันทึก${label||"ข้อมูล"}ขึ้นคลาวด์ไม่สำเร็จ\n\nสาเหตุ: ${err.message||err}\n\nข้อมูลยังอยู่ในเครื่องนี้ ระบบจะลองบันทึกขึ้นคลาวด์ให้อัตโนมัติอีกครั้งเมื่อสัญญาณดีขึ้น ไม่ต้องกดบันทึกซ้ำ`);
     return false;
   }finally{
@@ -940,6 +963,7 @@ async function retryFailedSaves(){
     try{
       await fbSet(collection,id,obj);
       failedSaves.delete(saveDocKey(collection,id));
+      persistFailedSaves();
       setCloudStatus(true);
     }catch(err){
       console.error("Retry save still failing, will try again on the next sync:",err);
