@@ -83,6 +83,18 @@ function esc(s=""){ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&l
 const MAINTENANCE_LABELS={"ต่ำ":"🟢 ง่าย","กลาง":"🟡 ปานกลาง","สูง":"🔴 ยาก","ง่าย":"🟢 ง่าย","ปานกลาง":"🟡 ปานกลาง","ยาก":"🔴 ยาก"};
 function maintenanceLabel(m){ return MAINTENANCE_LABELS[m]||m||"-"; }
 function styleName(id){ return gardenStyles.find(s=>s.id===id)?.name || "-"; }
+// Firestore rejects any document over 1,048,576 bytes. A gallery of several
+// photos (each ~250-330KB once base64-encoded) can quietly cross that line —
+// catch it here, before the round-trip to the cloud, with a clear Thai
+// message telling the admin to remove a photo, instead of a cryptic failure
+// after "saving...".
+const FIRESTORE_DOC_BYTE_LIMIT=1048576;
+function checkDocSizeOrWarn(obj,label){
+  const bytes=new Blob([JSON.stringify(obj)]).size;
+  if(bytes<=FIRESTORE_DOC_BYTE_LIMIT-20000) return true;
+  alert(`⚠️ รูปภาพของ${label||"รายการนี้"}มีขนาดรวมใหญ่เกินไป (${(bytes/1024/1024).toFixed(2)}MB จากสูงสุด 1MB)\n\nกรุณาลบรูปออกบางรูปแล้วลองบันทึกใหม่อีกครั้ง`);
+  return false;
+}
 
 document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>showPage(btn.dataset.page)));
 function showPage(name){
@@ -277,6 +289,7 @@ document.getElementById("styleEditForm").addEventListener("submit",async e=>{
     images:styleEditImages.slice(),
     plantIds:styleEditPlantIds.slice()
   };
+  if(!checkDocSizeOrWarn(override,"แบบสวนนี้")) return;
   styleOverrides[id]=override;
   renderStyles();
   const btn=e.target.querySelector("button.btn-primary");
@@ -495,9 +508,9 @@ document.getElementById("plantEditForm").addEventListener("submit",async e=>{
     salePrice:Number(document.getElementById("plantEditPrice").value)||0,
     bestSeller:document.getElementById("plantEditBestSeller").checked,
     auspicious:document.getElementById("plantEditAuspicious").value.trim(),
-    images:plantEditImages.slice(),
-    image:plantEditImages[0]||""
+    images:plantEditImages.slice()
   };
+  if(!checkDocSizeOrWarn(override,"ต้นไม้นี้")) return;
   plantOverrides[id]=override;
   renderPlants();
   const btn=e.target.querySelector("button.btn-primary");
@@ -613,9 +626,9 @@ document.getElementById("plantAddForm").addEventListener("submit",async e=>{
     salePrice:Number(document.getElementById("plantAddPrice").value)||0,
     bestSeller:document.getElementById("plantAddBestSeller").checked,
     auspicious:document.getElementById("plantAddAuspicious").value.trim(),
-    images:plantAddImages.slice(),
-    image:plantAddImages[0]||""
+    images:plantAddImages.slice()
   };
+  if(!checkDocSizeOrWarn(plant,"ต้นไม้นี้")) return;
   customPlants=existingId
     ? customPlants.map(p=>p.id===id?plant:p)
     : [...customPlants, plant];
