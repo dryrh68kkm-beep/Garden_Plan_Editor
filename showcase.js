@@ -87,7 +87,28 @@ function showPage(name){
     next.classList.remove("sc-page-enter","sc-page-enter-active");
   },SC_PAGE_TRANSITION_MS);
 }
-document.querySelectorAll(".close-dialog").forEach(b=>b.addEventListener("click",()=>b.closest("dialog").close()));
+// The plant lightbox slides in/out (see openScPlantLightbox / closeScPlantLightboxAnimated);
+// every other dialog just closes instantly as before.
+document.querySelectorAll(".close-dialog").forEach(b=>b.addEventListener("click",()=>{
+  const dlg=b.closest("dialog");
+  if(dlg.id==="scPlantLightbox") closeScPlantLightboxAnimated();
+  else dlg.close();
+}));
+document.getElementById("scPlantLightbox").addEventListener("cancel",e=>{
+  e.preventDefault();
+  closeScPlantLightboxAnimated();
+});
+function closeScPlantLightboxAnimated(){
+  const dlg=document.getElementById("scPlantLightbox");
+  if(!dlg.open) return;
+  dlg.classList.remove("sc-modal-enter","sc-modal-enter-active");
+  void dlg.offsetWidth;
+  dlg.classList.add("sc-modal-exit-active");
+  setTimeout(()=>{
+    dlg.classList.remove("sc-modal-exit-active");
+    dlg.close();
+  },SC_PAGE_TRANSITION_MS);
+}
 
 // Swipe right (like a mobile "back" gesture) on a content page returns to
 // the showcase home page. Skipped while a dialog (lightbox/detail) is open
@@ -384,8 +405,23 @@ function openScPlantLightbox(id){
   } else {
     auspiciousSection.style.display="none";
   }
-  document.getElementById("scPlantLightbox").showModal();
-  requestAnimationFrame(()=>{ document.getElementById("scPlantLightboxCarousel").scrollLeft=0; });
+  const dlg=document.getElementById("scPlantLightbox");
+  dlg.classList.remove("sc-modal-exit-active");
+  dlg.classList.add("sc-modal-enter");
+  dlg.showModal();
+  document.getElementById("scPlantLightboxCarousel").scrollLeft=0;
+  // Force layout with the entering transform applied first, then flip to
+  // the resting position on the next frame so the transition actually
+  // animates instead of jumping straight to the end state.
+  void dlg.offsetWidth;
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      dlg.classList.add("sc-modal-enter-active");
+    });
+  });
+  setTimeout(()=>{
+    dlg.classList.remove("sc-modal-enter","sc-modal-enter-active");
+  },SC_PAGE_TRANSITION_MS);
 }
 document.getElementById("scPlantSearch").addEventListener("input",resetScPlantPaging);
 document.getElementById("scPlantCategoryFilter").addEventListener("change",resetScPlantPaging);
