@@ -47,10 +47,34 @@ function plantImages(p){
   return [];
 }
 
+// Every page change slides the outgoing page out to the right and brings
+// the incoming page in from the left — the same direction as the
+// swipe-right-to-go-back gesture, so navigating (by tap or swipe) feels
+// like one consistent "back" motion instead of an instant cut.
 function showPage(name){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById(`${name}Page`).classList.add("active");
+  const next=document.getElementById(`${name}Page`);
+  const current=document.querySelector(".page.active");
+  if(!current||current===next){
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+    next.classList.add("active");
+    window.scrollTo(0,0);
+    return;
+  }
+  // Both pages carry .active during the transition so each still resolves
+  // its own display value normally (e.g. the mobile home page's grid
+  // layout override) — the transition classes only add position/transform.
+  current.classList.add("sc-page-exit");
+  next.classList.add("active","sc-page-enter");
+  void next.offsetWidth;
+  requestAnimationFrame(()=>{
+    current.classList.add("sc-page-exit-active");
+    next.classList.add("sc-page-enter-active");
+  });
   window.scrollTo(0,0);
+  setTimeout(()=>{
+    current.classList.remove("active","sc-page-exit","sc-page-exit-active");
+    next.classList.remove("sc-page-enter","sc-page-enter-active");
+  },340);
 }
 document.querySelectorAll(".close-dialog").forEach(b=>b.addEventListener("click",()=>b.closest("dialog").close()));
 
