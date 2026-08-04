@@ -651,25 +651,37 @@ function resetPlantPaging(){
   plantVisibleCount=PLANT_PAGE_SIZE;
   renderPlants();
 }
-function renderPlants(){
-  const q=(document.getElementById("plantSearch")?.value||"").toLowerCase();
-  const category=document.getElementById("plantCategoryFilter")?.value||"";
-  const light=document.getElementById("plantLightFilter")?.value||"";
-  const rows=mergedPlants().filter(p=>{
-    const hay=[p.id,p.thaiName,p.englishName,p.scientificName,p.category,p.light].join(" ").toLowerCase();
-    return hay.includes(q)&&(!category||p.category===category)&&(!light||p.light===light);
-  }).sort((a,b)=>(b.bestSeller?1:0)-(a.bestSeller?1:0));
-  const visibleRows=rows.slice(0,plantVisibleCount);
-  document.getElementById("plantCount").textContent=`แสดง ${visibleRows.length} จาก ${rows.length} รายการ (ทั้งหมด ${plants.length})`;
-  document.getElementById("plantList").innerHTML=visibleRows.length?visibleRows.map(p=>{
-    const cover=plantImages(p)[0];
-    return `
-    <article class="plant-card">
+// The catalog is 50 species × 6 size/grade variants each (300 records) —
+// showing one full card per record meant scrolling past the same name 6
+// times in a row with nothing but a size tag to tell them apart. Grouping
+// by speciesId puts all size variants of the same plant into one card with
+// a size picker instead; a record with no speciesId (an admin-added custom
+// plant) just becomes its own single-variant group.
+const PLANT_SIZE_ORDER=["S","M","L","XL","STD","PRE"];
+function plantGroupKey(p){ return String(p.speciesId||p.id); }
+function groupPlantsBySpecies(rows){
+  const groups=new Map();
+  const order=[];
+  for(const p of rows){
+    const key=plantGroupKey(p);
+    if(!groups.has(key)){ groups.set(key,[]); order.push(key); }
+    groups.get(key).push(p);
+  }
+  order.forEach(key=>groups.get(key).sort((a,b)=>PLANT_SIZE_ORDER.indexOf(a.sizeCode)-PLANT_SIZE_ORDER.indexOf(b.sizeCode)));
+  return order.map(key=>groups.get(key));
+}
+let plantGroupsByKey=new Map();
+function renderPlantCardHtml(variants,selectedId){
+  const p=variants.find(v=>v.id===selectedId)||variants[0];
+  const cover=plantImages(p)[0];
+  return `
+    <article class="plant-card" data-group-key="${esc(plantGroupKey(p))}">
       <div class="plant-thumb">${cover?`<img src="${esc(cover)}" alt="${esc(p.thaiName)}" loading="lazy" />`:"🌱"}${p.bestSeller?'<span class="best-seller-badge">🔥 ขายดี</span>':""}</div>
       <div class="plant-code">${esc(p.id)} · ${esc(p.category)}${p.custom?' · <span class="chip">เพิ่มเอง</span>':""}</div>
-      <h3>${esc(p.thaiName)}${p.sizeLabel?` <span class="plant-size-tag">ขนาด${esc(p.sizeLabel)}</span>`:""}</h3>
-      <div>${esc(p.englishName||"-")}${p.potSize?` · กระถาง ${esc(p.potSize)}`:""}</div>
+      <h3>${esc(p.thaiName)}</h3>
+      <div>${esc(p.englishName||"-")}</div>
       <div class="plant-scientific">${esc(p.scientificName||"")}</div>
+      ${variants.length>1?`<div class="plant-size-picker">${variants.map(v=>`<button type="button" class="plant-size-chip${v.id===p.id?" active":""}" data-plant-id="${esc(v.id)}">${esc(v.sizeLabel||v.sizeCode||"?")}</button>`).join("")}</div>`:(p.potSize?`<div class="meta">กระถาง ${esc(p.potSize)}</div>`:"")}
       <div class="chips">
         <span class="chip">${esc(p.light)}</span>
         <span class="chip">น้ำ ${esc(p.water)}</span>
@@ -684,11 +696,35 @@ function renderPlants(){
         <button class="small-btn" onclick="openPlantEdit('${p.id}')">แก้ไข</button>
       </div>
     </article>`;
-  }).join(""):'<div class="empty">ไม่พบต้นไม้ที่ค้นหา</div>';
+}
+document.getElementById("plantList").addEventListener("click",e=>{
+  const chip=e.target.closest(".plant-size-chip");
+  if(!chip) return;
+  const card=chip.closest(".plant-card");
+  const variants=plantGroupsByKey.get(card.dataset.groupKey);
+  if(!variants) return;
+  card.outerHTML=renderPlantCardHtml(variants,chip.dataset.plantId);
+});
+function renderPlants(){
+  const q=(document.getElementById("plantSearch")?.value||"").toLowerCase();
+  const category=document.getElementById("plantCategoryFilter")?.value||"";
+  const light=document.getElementById("plantLightFilter")?.value||"";
+  const rows=mergedPlants().filter(p=>{
+    const hay=[p.id,p.thaiName,p.englishName,p.scientificName,p.category,p.light].join(" ").toLowerCase();
+    return hay.includes(q)&&(!category||p.category===category)&&(!light||p.light===light);
+  });
+  const groups=groupPlantsBySpecies(rows)
+    .sort((a,b)=>(b.some(p=>p.bestSeller)?1:0)-(a.some(p=>p.bestSeller)?1:0));
+  plantGroupsByKey=new Map(groups.map(g=>[plantGroupKey(g[0]),g]));
+  const visibleGroups=groups.slice(0,plantVisibleCount);
+  document.getElementById("plantCount").textContent=`แสดง ${visibleGroups.length} จาก ${groups.length} ชนิด (${rows.length} รายการ จากทั้งหมด ${plants.length})`;
+  document.getElementById("plantList").innerHTML=visibleGroups.length
+    ?visibleGroups.map(g=>renderPlantCardHtml(g,g[0].id)).join("")
+    :'<div class="empty">ไม่พบต้นไม้ที่ค้นหา</div>';
   const loadMoreBtn=document.getElementById("loadMorePlantsBtn");
-  const remaining=rows.length-visibleRows.length;
+  const remaining=groups.length-visibleGroups.length;
   if(remaining>0){
-    loadMoreBtn.textContent=`โหลดเพิ่ม (เหลืออีก ${remaining} รายการ)`;
+    loadMoreBtn.textContent=`โหลดเพิ่ม (เหลืออีก ${remaining} ชนิด)`;
     loadMoreBtn.style.display="inline-flex";
   } else {
     loadMoreBtn.style.display="none";

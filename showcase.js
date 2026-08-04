@@ -444,6 +444,43 @@ function resetScPlantPaging(){
   scPlantVisibleCount=PLANT_PAGE_SIZE;
   renderScPlantGallery();
 }
+// Same species/size grouping as the admin plant grid (see app.js) — the
+// catalog is 50 species × 6 size/grade variants, so without grouping a
+// visitor scrolling the gallery would see the same plant name repeated up
+// to 6 times with nothing but a tiny size tag to tell them apart.
+const PLANT_SIZE_ORDER=["S","M","L","XL","STD","PRE"];
+function plantGroupKey(p){ return String(p.speciesId||p.id); }
+function groupPlantsBySpecies(rows){
+  const groups=new Map();
+  const order=[];
+  for(const p of rows){
+    const key=plantGroupKey(p);
+    if(!groups.has(key)){ groups.set(key,[]); order.push(key); }
+    groups.get(key).push(p);
+  }
+  order.forEach(key=>groups.get(key).sort((a,b)=>PLANT_SIZE_ORDER.indexOf(a.sizeCode)-PLANT_SIZE_ORDER.indexOf(b.sizeCode)));
+  return order.map(key=>groups.get(key));
+}
+let scPlantGroupsByKey=new Map();
+function renderScPlantTileHtml(variants,selectedId){
+  const p=variants.find(v=>v.id===selectedId)||variants[0];
+  return `
+    <article class="showcase-plant-tile" data-group-key="${esc(plantGroupKey(p))}" onclick="openScPlantLightbox('${esc(p.id)}')">
+      <div class="showcase-plant-photo"><img src="${esc(plantImages(p)[0])}" alt="${esc(p.thaiName)}" loading="lazy" />${p.bestSeller?'<span class="best-seller-badge">🔥 ขายดี</span>':""}</div>
+      <div class="showcase-plant-info">
+        <div class="showcase-plant-caption">${esc(p.thaiName)}</div>
+        ${variants.length>1?`<div class="plant-size-picker">${variants.map(v=>`<button type="button" class="plant-size-chip${v.id===p.id?" active":""}" data-plant-id="${esc(v.id)}" onclick="event.stopPropagation();scSwitchPlantVariant(this)">${esc(v.sizeLabel||v.sizeCode||"?")}</button>`).join("")}</div>`:""}
+        ${p.salePrice?`<div class="showcase-plant-price-tag">🏷️ ${money(p.salePrice)}${p.unit?` / ${esc(p.unit)}`:""}</div>`:""}
+      </div>
+      <a class="showcase-order-btn" href="${esc(lineOrderUrl(p))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 สั่งซื้อผ่าน LINE</a>
+    </article>`;
+}
+function scSwitchPlantVariant(btn){
+  const tile=btn.closest(".showcase-plant-tile");
+  const variants=scPlantGroupsByKey.get(tile.dataset.groupKey);
+  if(!variants) return;
+  tile.outerHTML=renderScPlantTileHtml(variants,btn.dataset.plantId);
+}
 function renderScPlantGallery(){
   const q=(document.getElementById("scPlantSearch").value||"").toLowerCase();
   const category=document.getElementById("scPlantCategoryFilter").value||"";
@@ -451,25 +488,21 @@ function renderScPlantGallery(){
   const rows=allPlants.filter(p=>!!plantImages(p).length
     &&[p.thaiName,p.englishName,p.scientificName].join(" ").toLowerCase().includes(q)
     &&(!category||p.category===category)
-    &&(!bestSellerOnly||p.bestSeller))
-    .sort((a,b)=>(b.bestSeller?1:0)-(a.bestSeller?1:0));
-  const visibleRows=rows.slice(0,scPlantVisibleCount);
-  document.getElementById("scPlantCount").textContent=rows.length
-    ? `แสดง ${visibleRows.length} จาก ${rows.length} รายการ`
+    &&(!bestSellerOnly||p.bestSeller));
+  const groups=groupPlantsBySpecies(rows)
+    .sort((a,b)=>(b.some(p=>p.bestSeller)?1:0)-(a.some(p=>p.bestSeller)?1:0));
+  scPlantGroupsByKey=new Map(groups.map(g=>[plantGroupKey(g[0]),g]));
+  const visibleGroups=groups.slice(0,scPlantVisibleCount);
+  document.getElementById("scPlantCount").textContent=groups.length
+    ? `แสดง ${visibleGroups.length} จาก ${groups.length} ชนิด`
     : "ยังไม่มีรูปต้นไม้ในผลงาน";
-  document.getElementById("scPlantList").innerHTML=visibleRows.length?visibleRows.map(p=>`
-    <article class="showcase-plant-tile" onclick="openScPlantLightbox('${p.id}')">
-      <div class="showcase-plant-photo"><img src="${esc(plantImages(p)[0])}" alt="${esc(p.thaiName)}" loading="lazy" />${p.bestSeller?'<span class="best-seller-badge">🔥 ขายดี</span>':""}</div>
-      <div class="showcase-plant-info">
-        <div class="showcase-plant-caption">${esc(p.thaiName)}${p.sizeLabel?` <span class="plant-size-tag">ขนาด${esc(p.sizeLabel)}</span>`:""}</div>
-        ${p.salePrice?`<div class="showcase-plant-price-tag">🏷️ ${money(p.salePrice)}${p.unit?` / ${esc(p.unit)}`:""}</div>`:""}
-      </div>
-      <a class="showcase-order-btn" href="${esc(lineOrderUrl(p))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 สั่งซื้อผ่าน LINE</a>
-    </article>`).join(""):'<div class="empty">ยังไม่มีรูปต้นไม้ในผลงาน</div>';
+  document.getElementById("scPlantList").innerHTML=visibleGroups.length
+    ?visibleGroups.map(g=>renderScPlantTileHtml(g,g[0].id)).join("")
+    :'<div class="empty">ยังไม่มีรูปต้นไม้ในผลงาน</div>';
   const loadMoreBtn=document.getElementById("scLoadMorePlantsBtn");
-  const remaining=rows.length-visibleRows.length;
+  const remaining=groups.length-visibleGroups.length;
   if(remaining>0){
-    loadMoreBtn.textContent=`โหลดเพิ่ม (เหลืออีก ${remaining} รายการ)`;
+    loadMoreBtn.textContent=`โหลดเพิ่ม (เหลืออีก ${remaining} ชนิด)`;
     loadMoreBtn.style.display="inline-flex";
   } else {
     loadMoreBtn.style.display="none";
