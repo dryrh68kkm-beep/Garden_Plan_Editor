@@ -1,0 +1,22 @@
+{
+  "databaseName": "Plant Care and Beliefs",
+  "version": "1.0",
+  "records": 300,
+  "sourcePlantFile": "plants.json",
+  "maintenanceLevels": [
+    {
+      "score": 1,
+      "label": "ดูแลง่าย"
+    },
+    {
+      "score": 2,
+      "label": "ดูแลปานกลาง"
+    },
+    {
+      "score": 3,
+      "label": "ต้องดูแลมาก"
+    }
+  ],
+  "beliefPolicy": "ข้อมูลความเชื่อต้องมีแหล่งอ้างอิงก่อนเปลี่ยน sourceStatus เป็น verified",
+  "generatedAt": "2026-08-04"
+}
