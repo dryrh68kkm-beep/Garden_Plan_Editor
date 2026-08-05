@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 520" role="img">
+<rect width="1400" height="520" rx="36" fill="#173F2B"/>
+
+    <g transform="translate(20,70) scale(1.0)">
+      <path d="M240 210 C205 205 180 185 180 155 C180 125 203 105 232 102
+               C241 62 272 38 310 38 C349 38 380 64 388 102
+               C420 103 444 125 444 156 C444 188 419 210 385 212
+               C364 233 339 243 310 243 C280 243 255 233 240 210 Z"
+            fill="#2F6B3B"/>
+      <path d="M210 184 C194 171 186 152 191 134 C197 111 217 97 239 98
+               C249 73 271 58 296 58 C321 58 343 74 352 98
+               C372 99 390 112 396 131 C404 155 393 178 375 190
+               C341 207 256 207 210 184 Z"
+            fill="#7DAA68" opacity=".9"/>
+      <circle cx="244" cy="137" r="35" fill="#173F2B" opacity=".28"/>
+      <circle cx="314" cy="104" r="42" fill="#173F2B" opacity=".18"/>
+      <circle cx="377" cy="145" r="32" fill="#173F2B" opacity=".25"/>
+      <path d="M291 214 C301 194 310 173 314 151
+               C318 174 327 195 340 216
+               L355 286 L269 286 Z" fill="#7A4B2A"/>
+      <path d="M313 153 C300 172 286 184 270 194" fill="none" stroke="#7A4B2A" stroke-width="12" stroke-linecap="round"/>
+      <path d="M316 158 C330 177 343 188 360 198" fill="none" stroke="#7A4B2A" stroke-width="12" stroke-linecap="round"/>
+      <path d="M310 286 L310 319" stroke="#C8A85B" stroke-width="10" stroke-linecap="round"/>
+      <path d="M230 318 H390" stroke="#C8A85B" stroke-width="7" stroke-linecap="round"/>
+    </g>
+    
+<text x="515" y="245" font-family="Noto Sans Thai, sans-serif" font-size="118" font-weight="700" fill="#FFFFFF">รินลดา</text>
+<text x="520" y="330" font-family="Noto Sans Thai, sans-serif" font-size="62" font-weight="600" fill="#C8A85B">พันธุ์ไม้</text>
+<path d="M520 364 H1190" stroke="#C8A85B" stroke-width="6" stroke-linecap="round"/>
+<text x="520" y="420" font-family="Arial, sans-serif" font-size="36" font-weight="700" letter-spacing="8" fill="#FFFFFF">RINLADA PLANT NURSERY</text>
+</svg>
