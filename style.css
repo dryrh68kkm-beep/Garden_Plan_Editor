@@ -14,7 +14,9 @@ button,input,select,textarea{font:inherit}.topbar{background:#10291d;color:#fff;
 .style-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
 .page-head,.filters{display:flex;align-items:center;justify-content:space-between;gap:14px}.page-head{margin-bottom:18px}.page-head h2{margin:4px 0}
 .input{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;color:var(--text)}
-.filters{margin-bottom:16px}.filters .input{max-width:50%}.meta{color:var(--muted);font-size:14px;line-height:1.7}.actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.small-btn{border:0;padding:8px 10px;border-radius:9px;background:#eef3ef;cursor:pointer}.small-btn.danger{color:var(--danger);background:#fff0ee}
+.filters{margin-bottom:16px}.filters .input{max-width:50%}.filters .search-wrap{max-width:50%}.meta{color:var(--muted);font-size:14px;line-height:1.7}.actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.small-btn{border:0;padding:8px 10px;border-radius:9px;background:#eef3ef;cursor:pointer}.small-btn.danger{color:var(--danger);background:#fff0ee}
+.search-wrap{position:relative;width:100%}.search-wrap .input{width:100%;padding-right:38px}.search-clear-btn{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:26px;height:26px;border:0;border-radius:50%;background:#e7ede8;color:var(--muted);font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}.search-clear-btn:hover{background:#dbe4dc;color:var(--text)}
+input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
 .style-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.style-card{overflow:hidden}.style-cover{height:140px;background:linear-gradient(135deg,#dfe9dc,#9ab799);background-size:cover;background-position:center;display:flex;align-items:flex-end;padding:18px;font-size:42px}.style-body{padding:18px}.style-body h3{margin:0 0 6px}.style-body p{color:var(--muted);min-height:48px}.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{background:#eef5ef;color:#315d43;border-radius:999px;padding:6px 9px;font-size:12px}
 .empty{padding:40px;text-align:center;color:var(--muted)}
 .modal{border:0;border-radius:22px;padding:0;width:min(620px,calc(100% - 24px));box-shadow:0 30px 90px rgba(0,0,0,.25)}.modal::backdrop{background:rgba(8,18,12,.55)}
@@ -32,7 +34,7 @@ button,input,select,textarea{font:inherit}.topbar{background:#10291d;color:#fff;
    scrolling the card grid to find its "แก้ไข" button. */
 .quick-edit-bar{margin-bottom:14px}
 .quick-edit-bar .input{background:#fbfdfb}.modal-actions{justify-content:flex-end;margin-top:18px}.icon-btn{border:0;background:#eef3ef;border-radius:50%;width:38px;height:38px;font-size:24px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:800px){.style-grid{grid-template-columns:1fr 1fr}.topbar{align-items:flex-start}.filters{align-items:stretch;flex-direction:column}.filters .input{max-width:none}}
+@media(max-width:800px){.style-grid{grid-template-columns:1fr 1fr}.topbar{align-items:flex-start}.filters{align-items:stretch;flex-direction:column}.filters .input{max-width:none}.filters .search-wrap{max-width:none}}
 @media(max-width:560px){.style-grid,.two-col{grid-template-columns:1fr}.topbar{padding:18px 16px}.topbar .btn{font-size:12px}.container{padding-top:16px}.page-head{align-items:flex-start}.page-head .btn{white-space:nowrap}}
 @media print{.topbar,.tabs,.page-head .btn,.actions,.topbar-actions{display:none!important}.container{max-width:none;padding:0}}
 

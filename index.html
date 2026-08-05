@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="assets/brand/favicon-192.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="assets/brand/favicon-512.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="assets/brand/favicon-180.png" />
-  <link rel="stylesheet" href="style.css?v=202608050044" />
+  <link rel="stylesheet" href="style.css?v=202608051418" />
 </head>
 <body>
   <header class="topbar">
@@ -58,7 +58,7 @@
         </div>
       </div>
       <div class="filters">
-        <input id="styleSearch" class="input" type="search" placeholder="ค้นหาชื่อแบบสวน หมวด หรือคำอธิบาย" />
+        <div class="search-wrap"><input id="styleSearch" class="input" type="search" placeholder="ค้นหาชื่อแบบสวน หมวด หรือคำอธิบาย" autocomplete="off" /><button type="button" class="search-clear-btn" data-clear="styleSearch" aria-label="ล้างคำค้นหา" style="display:none">×</button></div>
         <select id="styleCategoryFilter" class="input">
           <option value="">ทุกหมวด</option>
           <option>Modern</option>
@@ -93,7 +93,7 @@
       </div>
 
       <div class="filters plant-filters">
-        <input id="plantSearch" class="input" type="search" placeholder="ค้นหาชื่อไทย อังกฤษ วิทยาศาสตร์ หรือรหัสต้นไม้" />
+        <div class="search-wrap"><input id="plantSearch" class="input" type="search" placeholder="ค้นหาชื่อไทย อังกฤษ วิทยาศาสตร์ หรือรหัสต้นไม้" autocomplete="off" /><button type="button" class="search-clear-btn" data-clear="plantSearch" aria-label="ล้างคำค้นหา" style="display:none">×</button></div>
         <select id="plantCategoryFilter" class="input"><option value="">ทุกประเภท</option></select>
         <select id="plantLightFilter" class="input">
           <option value="">ทุกสภาพแสง</option>
@@ -433,6 +433,6 @@
   <script src="data/garden-styles-data.js?v=202608041620"></script>
   <script src="local-store.js?v=202608041637"></script>
   <script src="firebase-client.js?v=202608040537"></script>
-  <script src="app.js?v=202608050619"></script>
+  <script src="app.js?v=202608051418"></script>
 </body>
 </html>

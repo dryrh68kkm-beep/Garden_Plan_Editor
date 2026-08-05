@@ -405,6 +405,23 @@ function openScStyleDetail(id){
 document.getElementById("scStyleSearch").addEventListener("input",renderScStyles);
 document.getElementById("scStyleCategoryFilter").addEventListener("change",renderScStyles);
 
+function wireSearchClear(inputId){
+  const input=document.getElementById(inputId);
+  const btn=document.querySelector(`.search-clear-btn[data-clear="${inputId}"]`);
+  if(!input||!btn) return;
+  const sync=()=>{ btn.style.display=input.value?"flex":"none"; };
+  input.addEventListener("input",sync);
+  btn.addEventListener("click",()=>{
+    input.value="";
+    input.dispatchEvent(new Event("input"));
+    input.focus();
+    sync();
+  });
+  sync();
+}
+wireSearchClear("scStyleSearch");
+wireSearchClear("scPlantSearch");
+
 // ---- Garden portfolio (real completed projects) ----
 function renderScPortfolio(){
   const list=document.getElementById("scPortfolioList");

@@ -284,6 +284,23 @@ let selectedStyleId="";
 document.getElementById("styleSearch").addEventListener("input",renderStyles);
 document.getElementById("styleCategoryFilter").addEventListener("change",renderStyles);
 
+function wireSearchClear(inputId){
+  const input=document.getElementById(inputId);
+  const btn=document.querySelector(`.search-clear-btn[data-clear="${inputId}"]`);
+  if(!input||!btn) return;
+  const sync=()=>{ btn.style.display=input.value?"flex":"none"; };
+  input.addEventListener("input",sync);
+  btn.addEventListener("click",()=>{
+    input.value="";
+    input.dispatchEvent(new Event("input"));
+    input.focus();
+    sync();
+  });
+  sync();
+}
+wireSearchClear("styleSearch");
+wireSearchClear("plantSearch");
+
 function renderStyleDetailGallery(images,icon,heroId,thumbsId){
   const hero=document.getElementById(heroId);
   const thumbs=document.getElementById(thumbsId);
