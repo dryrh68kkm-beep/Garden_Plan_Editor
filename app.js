@@ -198,6 +198,13 @@ function esc(s=""){ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&l
 const MAINTENANCE_LABELS={"ต่ำ":"🟢 ง่าย","กลาง":"🟡 ปานกลาง","สูง":"🔴 ยาก","ง่าย":"🟢 ง่าย","ปานกลาง":"🟡 ปานกลาง","ยาก":"🔴 ยาก"};
 function maintenanceLabel(m){ return MAINTENANCE_LABELS[m]||m||"-"; }
 function styleName(id){ return gardenStyles.find(s=>s.id===id)?.name || "-"; }
+// Admins can now type an exact size (cm or m) per plant record instead of
+// being stuck with the catalog's fixed preset labels (เล็ก/กลาง/ใหญ่/...) —
+// falls back to that preset only until the admin has entered their own.
+function plantSizeLabel(p){
+  if(p.customSizeValue) return `${p.customSizeValue} ${p.customSizeUnit==="m"?"ม.":"ซม."}`;
+  return p.sizeLabel||p.sizeCode||"";
+}
 // Firestore rejects any document over 1,048,576 bytes. A gallery of several
 // photos (each ~250-330KB once base64-encoded) can quietly cross that line —
 // catch it here, before the round-trip to the cloud, with a clear Thai
@@ -638,7 +645,7 @@ function fillPlantQuickEdit(){
   const select=document.getElementById("plantQuickEdit");
   const rows=plants.slice().sort((a,b)=>a.thaiName.localeCompare(b.thaiName,"th"));
   select.innerHTML='<option value="">✏️ แก้ไขด่วน: เลือกต้นไม้ที่ต้องการแก้ไข...</option>'
-    +rows.map(p=>`<option value="${esc(p.id)}">${esc(p.id)} · ${esc(p.thaiName)}${p.sizeLabel?` (ขนาด${esc(p.sizeLabel)})`:""}${p.englishName?` — ${esc(p.englishName)}`:""}</option>`).join("");
+    +rows.map(p=>`<option value="${esc(p.id)}">${esc(p.id)} · ${esc(p.thaiName)} (ขนาด${esc(plantSizeLabel(p))})${p.englishName?` — ${esc(p.englishName)}`:""}</option>`).join("");
 }
 document.getElementById("plantQuickEdit").addEventListener("change",e=>{
   const id=e.target.value;
@@ -682,7 +689,7 @@ function renderPlantCardHtml(variants,selectedId){
       <h3>${esc(p.thaiName)}</h3>
       <div>${esc(p.englishName||"-")}</div>
       <div class="plant-scientific">${esc(p.scientificName||"")}</div>
-      ${variants.length>1?`<div class="plant-size-picker">${variants.map(v=>`<button type="button" class="plant-size-chip${v.id===p.id?" active":""}" data-plant-id="${esc(v.id)}">${esc(v.sizeLabel||v.sizeCode||"?")}</button>`).join("")}</div>`:(p.potSize?`<div class="meta">กระถาง ${esc(p.potSize)}</div>`:"")}
+      ${variants.length>1?`<div class="plant-size-picker">${variants.map(v=>`<button type="button" class="plant-size-chip${v.id===p.id?" active":""}" data-plant-id="${esc(v.id)}">${esc(plantSizeLabel(v)||"?")}</button>`).join("")}</div>`:(plantSizeLabel(p)?`<div class="meta">ขนาด ${esc(plantSizeLabel(p))}</div>`:"")}
       <div class="chips">
         <span class="chip">${esc(p.light)}</span>
         <span class="chip">น้ำ ${esc(p.water)}</span>
@@ -737,7 +744,7 @@ function openPlantDetail(id){
   const p=getPlant(id);
   if(!p) return;
   selectedPlantId=id;
-  document.getElementById("plantDetailCode").textContent=[p.id,p.englishName,p.sizeLabel?`ขนาด${p.sizeLabel}`:"",p.potSize?`กระถาง ${p.potSize}`:""].filter(Boolean).join(" · ");
+  document.getElementById("plantDetailCode").textContent=[p.id,p.englishName,plantSizeLabel(p)?`ขนาด${plantSizeLabel(p)}`:"",p.potSize?`กระถาง ${p.potSize}`:""].filter(Boolean).join(" · ");
   document.getElementById("plantDetailName").textContent=p.thaiName+(p.isFocalPlant?" 🌳 ไม้ประธาน":"");
   document.getElementById("plantDetailScientific").textContent=p.scientificName||"-";
   document.getElementById("plantDetailCategory").textContent=p.category||"-";
@@ -847,6 +854,8 @@ function openPlantEdit(id){
   if(p.custom){ openCustomPlantEdit(id); return; }
   document.getElementById("plantEditId").value=id;
   document.getElementById("plantEditTitle").textContent=`แก้ไข: ${p.thaiName}`;
+  document.getElementById("plantEditSizeValue").value=p.customSizeValue||"";
+  document.getElementById("plantEditSizeUnit").value=p.customSizeUnit||"cm";
   document.getElementById("plantEditCost").value=p.costPrice||0;
   document.getElementById("plantEditPrice").value=p.salePrice||0;
   document.getElementById("plantEditBestSeller").checked=!!p.bestSeller;
@@ -874,6 +883,8 @@ document.getElementById("plantEditForm").addEventListener("submit",async e=>{
   e.preventDefault();
   const id=document.getElementById("plantEditId").value;
   const override={
+    customSizeValue:Number(document.getElementById("plantEditSizeValue").value)||0,
+    customSizeUnit:document.getElementById("plantEditSizeUnit").value,
     costPrice:Number(document.getElementById("plantEditCost").value)||0,
     salePrice:Number(document.getElementById("plantEditPrice").value)||0,
     bestSeller:document.getElementById("plantEditBestSeller").checked,
@@ -921,6 +932,8 @@ function openCustomPlantAdd(){
   document.getElementById("plantAddLight").value="";
   document.getElementById("plantAddWater").value="";
   document.getElementById("plantAddMaintenance").value="";
+  document.getElementById("plantAddSizeValue").value="";
+  document.getElementById("plantAddSizeUnit").value="cm";
   document.getElementById("plantAddUnit").value="ต้น";
   document.getElementById("plantAddCost").value=0;
   document.getElementById("plantAddPrice").value=0;
@@ -946,6 +959,8 @@ function openCustomPlantEdit(id){
   document.getElementById("plantAddLight").value=p.light||"";
   document.getElementById("plantAddWater").value=p.water||"";
   document.getElementById("plantAddMaintenance").value=p.maintenance||"";
+  document.getElementById("plantAddSizeValue").value=p.customSizeValue||"";
+  document.getElementById("plantAddSizeUnit").value=p.customSizeUnit||"cm";
   document.getElementById("plantAddUnit").value=p.unit||"ต้น";
   document.getElementById("plantAddCost").value=p.costPrice||0;
   document.getElementById("plantAddPrice").value=p.salePrice||0;
@@ -991,6 +1006,8 @@ document.getElementById("plantAddForm").addEventListener("submit",async e=>{
     light:document.getElementById("plantAddLight").value,
     water:document.getElementById("plantAddWater").value,
     maintenance:document.getElementById("plantAddMaintenance").value,
+    customSizeValue:Number(document.getElementById("plantAddSizeValue").value)||0,
+    customSizeUnit:document.getElementById("plantAddSizeUnit").value,
     unit:document.getElementById("plantAddUnit").value.trim()||"ต้น",
     costPrice:Number(document.getElementById("plantAddCost").value)||0,
     salePrice:Number(document.getElementById("plantAddPrice").value)||0,

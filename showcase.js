@@ -20,6 +20,12 @@ function lineOrderUrl(p){
 // (still used by the static 300-item catalog) to the same colored-dot label.
 const MAINTENANCE_LABELS={"ต่ำ":"🟢 ง่าย","กลาง":"🟡 ปานกลาง","สูง":"🔴 ยาก","ง่าย":"🟢 ง่าย","ปานกลาง":"🟡 ปานกลาง","ยาก":"🔴 ยาก"};
 function maintenanceLabel(m){ return MAINTENANCE_LABELS[m]||m||"-"; }
+// Mirrors app.js — admins can type an exact size (cm/m) per plant record
+// instead of the catalog's fixed preset labels (เล็ก/กลาง/ใหญ่/...).
+function plantSizeLabel(p){
+  if(p.customSizeValue) return `${p.customSizeValue} ${p.customSizeUnit==="m"?"ม.":"ซม."}`;
+  return p.sizeLabel||p.sizeCode||"";
+}
 
 // data/garden-styles-data.js and data/plants.json use a different field
 // schema than this app was built against (window.GARDEN_STYLES instead of
@@ -470,7 +476,7 @@ function renderScPlantTileHtml(variants,selectedId){
       <div class="showcase-plant-photo"><img src="${esc(plantImages(p)[0])}" alt="${esc(p.thaiName)}" loading="lazy" />${p.bestSeller?'<span class="best-seller-badge">🔥 ขายดี</span>':""}${p.isFocalPlant?'<span class="focal-plant-badge">🌳 ไม้ประธาน</span>':""}</div>
       <div class="showcase-plant-info">
         <div class="showcase-plant-caption">${esc(p.thaiName)}</div>
-        ${variants.length>1?`<div class="plant-size-picker">${variants.map(v=>`<button type="button" class="plant-size-chip${v.id===p.id?" active":""}" data-plant-id="${esc(v.id)}" onclick="event.stopPropagation();scSwitchPlantVariant(this)">${esc(v.sizeLabel||v.sizeCode||"?")}</button>`).join("")}</div>`:""}
+        ${variants.length>1?`<div class="plant-size-picker">${variants.map(v=>`<button type="button" class="plant-size-chip${v.id===p.id?" active":""}" data-plant-id="${esc(v.id)}" onclick="event.stopPropagation();scSwitchPlantVariant(this)">${esc(plantSizeLabel(v)||"?")}</button>`).join("")}</div>`:""}
         ${p.salePrice?`<div class="showcase-plant-price-tag">🏷️ ${money(p.salePrice)}${p.unit?` / ${esc(p.unit)}`:""}</div>`:""}
       </div>
       <a class="showcase-order-btn" href="${esc(lineOrderUrl(p))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 สั่งซื้อผ่าน LINE</a>
@@ -539,7 +545,7 @@ function openScPlantLightbox(id){
   const p=plantById.get(id);
   const images=p?plantImages(p):[];
   if(!p||!images.length) return;
-  document.getElementById("scPlantLightboxName").textContent=[p.thaiName,p.sizeLabel?`ขนาด${p.sizeLabel}`:"",p.englishName].filter(Boolean).join(" · ");
+  document.getElementById("scPlantLightboxName").textContent=[p.thaiName,plantSizeLabel(p)?`ขนาด${plantSizeLabel(p)}`:"",p.englishName].filter(Boolean).join(" · ");
   renderScPlantLightboxGallery(images);
   const priceTag=document.getElementById("scPlantLightboxPriceTag");
   if(p.salePrice){
