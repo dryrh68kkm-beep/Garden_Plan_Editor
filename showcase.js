@@ -87,7 +87,8 @@ function adaptPlant(p){
     unit:p.unit||"ต้น",
     costPrice:0,
     salePrice:Number(p.price)||0,
-    bestSeller:false
+    bestSeller:false,
+    isFocalPlant:false
   };
 }
 
@@ -466,7 +467,7 @@ function renderScPlantTileHtml(variants,selectedId){
   const p=variants.find(v=>v.id===selectedId)||variants[0];
   return `
     <article class="showcase-plant-tile" data-group-key="${esc(plantGroupKey(p))}" onclick="openScPlantLightbox('${esc(p.id)}')">
-      <div class="showcase-plant-photo"><img src="${esc(plantImages(p)[0])}" alt="${esc(p.thaiName)}" loading="lazy" />${p.bestSeller?'<span class="best-seller-badge">🔥 ขายดี</span>':""}</div>
+      <div class="showcase-plant-photo"><img src="${esc(plantImages(p)[0])}" alt="${esc(p.thaiName)}" loading="lazy" />${p.bestSeller?'<span class="best-seller-badge">🔥 ขายดี</span>':""}${p.isFocalPlant?'<span class="focal-plant-badge">🌳 ไม้ประธาน</span>':""}</div>
       <div class="showcase-plant-info">
         <div class="showcase-plant-caption">${esc(p.thaiName)}</div>
         ${variants.length>1?`<div class="plant-size-picker">${variants.map(v=>`<button type="button" class="plant-size-chip${v.id===p.id?" active":""}" data-plant-id="${esc(v.id)}" onclick="event.stopPropagation();scSwitchPlantVariant(this)">${esc(v.sizeLabel||v.sizeCode||"?")}</button>`).join("")}</div>`:""}
@@ -485,10 +486,12 @@ function renderScPlantGallery(){
   const q=(document.getElementById("scPlantSearch").value||"").toLowerCase();
   const category=document.getElementById("scPlantCategoryFilter").value||"";
   const bestSellerOnly=document.getElementById("scPlantBestSellerFilter").checked;
+  const focalOnly=document.getElementById("scPlantFocalFilter").checked;
   const rows=allPlants.filter(p=>!!plantImages(p).length
     &&[p.thaiName,p.englishName,p.scientificName].join(" ").toLowerCase().includes(q)
     &&(!category||p.category===category)
-    &&(!bestSellerOnly||p.bestSeller));
+    &&(!bestSellerOnly||p.bestSeller)
+    &&(!focalOnly||p.isFocalPlant));
   const groups=groupPlantsBySpecies(rows)
     .sort((a,b)=>(b.some(p=>p.bestSeller)?1:0)-(a.some(p=>p.bestSeller)?1:0));
   scPlantGroupsByKey=new Map(groups.map(g=>[plantGroupKey(g[0]),g]));
@@ -549,6 +552,9 @@ function openScPlantLightbox(id){
   const lightboxBestSeller=document.getElementById("scPlantLightboxBestSeller");
   lightboxBestSeller.textContent="🔥 สินค้าขายดี";
   lightboxBestSeller.style.display=p.bestSeller?"inline-flex":"none";
+  const lightboxFocal=document.getElementById("scPlantLightboxFocal");
+  lightboxFocal.textContent="🌳 ไม้ประธาน";
+  lightboxFocal.style.display=p.isFocalPlant?"inline-flex":"none";
   document.getElementById("scPlantLightboxOrderBtn").href=lineOrderUrl(p);
   document.getElementById("scPlantLightboxLight").textContent=p.light||"-";
   document.getElementById("scPlantLightboxWater").textContent=p.water||"-";
@@ -590,6 +596,7 @@ function openScPlantLightbox(id){
 document.getElementById("scPlantSearch").addEventListener("input",resetScPlantPaging);
 document.getElementById("scPlantCategoryFilter").addEventListener("change",resetScPlantPaging);
 document.getElementById("scPlantBestSellerFilter").addEventListener("change",resetScPlantPaging);
+document.getElementById("scPlantFocalFilter").addEventListener("change",resetScPlantPaging);
 document.getElementById("scLoadMorePlantsBtn").addEventListener("click",()=>{
   scPlantVisibleCount+=PLANT_PAGE_SIZE;
   renderScPlantGallery();
