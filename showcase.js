@@ -632,6 +632,7 @@ loadCareBeliefs();
 // office from any device, not just the browser that saved them. Falls back
 // to whatever the local cache already had (or nothing) if the cloud is
 // unreachable — the showcase must still render either way.
+let lastFetchSignature=null;
 async function initFromFirestore(){
   try{
     const [remoteStyleOverrides,remotePlantOverrides,remoteCustomPlants,remotePortfolio]=await Promise.all([
@@ -640,6 +641,14 @@ async function initFromFirestore(){
       fbList("customPlants"),
       fbList("gardenPortfolio")
     ]);
+    // Every poll tick re-downloads the full collections (including embedded
+    // photo base64), but re-rendering — and so re-decoding every embedded
+    // image — is the expensive part on mobile. Skip it entirely when the
+    // fetched data is byte-for-byte the same as last time, which is true on
+    // almost every tick since nothing changed in the back office.
+    const signature=JSON.stringify([remoteStyleOverrides,remotePlantOverrides,remoteCustomPlants,remotePortfolio]);
+    if(signature===lastFetchSignature) return;
+    lastFetchSignature=signature;
     styleOverrides={};
     remoteStyleOverrides.forEach(s=>{const {id,...rest}=s;styleOverrides[id]=rest;});
     plantOverrides={};
