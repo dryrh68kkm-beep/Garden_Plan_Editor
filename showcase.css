@@ -213,17 +213,17 @@
 /* Rinlada primary brand logo — absolutely centered on the nav bar itself
    (not just the middle grid column) so it stays dead-center regardless of
    the menu/bell icon sizes on either side, and sized up for more presence. */
-.sc-nav-brand{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;gap:10px;min-width:0}
-.sc-nav-brand img{width:60px;height:60px;object-fit:contain;border-radius:14px;background:#fffaf0;box-shadow:0 8px 22px rgba(0,0,0,.18)}
-.sc-nav-brand span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-nav-brand{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;gap:12px;min-width:0}
+.sc-nav-brand img{width:80px;height:80px;object-fit:contain;border-radius:18px;background:#fffaf0;box-shadow:0 10px 26px rgba(0,0,0,.22)}
+.sc-nav-brand span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.86rem}
 .sc-brand-badge{display:inline-flex;align-items:center;gap:7px}
 .sc-brand-badge img{width:25px;height:25px;object-fit:contain;border-radius:7px;background:#fffaf0}
 @media(max-width:640px){
   .sc-home-nav{grid-template-columns:42px minmax(0,1fr) 42px}
-  .sc-nav-brand{gap:7px;font-size:.58rem;letter-spacing:.09em}
-  .sc-nav-brand img{width:48px;height:48px;border-radius:11px}
+  .sc-nav-brand{gap:8px;font-size:.62rem;letter-spacing:.09em}
+  .sc-nav-brand img{width:62px;height:62px;border-radius:14px}
 }
-@media(max-width:380px){.sc-nav-brand span{display:none}.sc-nav-brand img{width:52px;height:52px}}
+@media(max-width:380px){.sc-nav-brand span{display:none}.sc-nav-brand img{width:58px;height:58px}}
 
 
 .brand-center{text-align:center;padding-top:16px;padding-bottom:10px}
