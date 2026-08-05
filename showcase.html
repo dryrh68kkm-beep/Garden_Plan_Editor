@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css?v=202608050044" />
-  <link rel="stylesheet" href="showcase.css?v=202608050044" />
+  <link rel="stylesheet" href="showcase.css?v=202608050446" />
 </head>
 <body>
   <section id="showcaseHomePage" class="page active sc-home">
@@ -90,7 +90,7 @@
     <section id="showcasePlantsPage" class="page sc-content-page">
       <div class="sc-page-toolbar"><button type="button" class="sc-back-link" onclick="showPage('showcaseHome')">← กลับหน้าแรก</button><span class="sc-page-badge sc-brand-badge"><img src="assets/rinlada-logo-main.webp" alt="" />Plant Library</span></div>
       <div class="page-head sc-page-head"><div><p class="eyebrow">PLANT GALLERY</p><h2>พรรณไม้ของเรา</h2><p class="sc-page-intro">ค้นหาและเลือกชมต้นไม้สำหรับใช้ในงานจัดสวน</p></div></div>
-      <div class="filters sc-filter-panel sc-plant-filter"><label class="sc-search-box" for="scPlantSearch"><svg viewBox="0 0 24 24" width="20" height="20"><path d="m21 21-4.35-4.35M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="currentColor" stroke-width="2"/></svg><input id="scPlantSearch" class="input" type="search" placeholder="ค้นหาชื่อต้นไม้" autocomplete="off" /></label><select id="scPlantCategoryFilter" class="input sc-select"><option value="">ทุกประเภท</option></select><label class="sc-toggle-chip"><input id="scPlantBestSellerFilter" type="checkbox" /> 🔥 เฉพาะสินค้าขายดี</label><label class="sc-toggle-chip"><input id="scPlantFocalFilter" type="checkbox" /> 🌳 เฉพาะไม้ประธาน</label></div>
+      <div class="filters sc-filter-panel sc-plant-filter"><label class="sc-search-box" for="scPlantSearch"><svg viewBox="0 0 24 24" width="20" height="20"><path d="m21 21-4.35-4.35M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="currentColor" stroke-width="2"/></svg><input id="scPlantSearch" class="input" type="search" placeholder="ค้นหาชื่อต้นไม้" autocomplete="off" /></label><select id="scPlantCategoryFilter" class="input sc-select"><option value="">ทุกประเภท</option></select><select id="scPlantSpecialFilter" class="input sc-select"><option value="">ทุกต้นไม้</option><option value="bestSeller">🔥 เฉพาะสินค้าขายดี</option><option value="focal">🌳 เฉพาะไม้ประธาน</option></select></div>
       <div id="scPlantCount" class="meta sc-count"></div><div id="scPlantList" class="showcase-plant-grid"></div><div class="plant-load-more"><button id="scLoadMorePlantsBtn" class="btn btn-secondary sc-load-more" style="display:none">โหลดเพิ่ม</button></div>
     </section>
   </main>
@@ -102,6 +102,6 @@
   <script src="data/garden-styles-data.js?v=202608041620"></script>
   <script src="local-store.js?v=202608041637"></script>
   <script src="firebase-client.js?v=202608040537"></script>
-  <script src="showcase.js?v=202608050044"></script>
+  <script src="showcase.js?v=202608050446"></script>
 </body>
 </html>

@@ -485,13 +485,12 @@ function scSwitchPlantVariant(btn){
 function renderScPlantGallery(){
   const q=(document.getElementById("scPlantSearch").value||"").toLowerCase();
   const category=document.getElementById("scPlantCategoryFilter").value||"";
-  const bestSellerOnly=document.getElementById("scPlantBestSellerFilter").checked;
-  const focalOnly=document.getElementById("scPlantFocalFilter").checked;
+  const special=document.getElementById("scPlantSpecialFilter").value;
   const rows=allPlants.filter(p=>!!plantImages(p).length
     &&[p.thaiName,p.englishName,p.scientificName].join(" ").toLowerCase().includes(q)
     &&(!category||p.category===category)
-    &&(!bestSellerOnly||p.bestSeller)
-    &&(!focalOnly||p.isFocalPlant));
+    &&(special!=="bestSeller"||p.bestSeller)
+    &&(special!=="focal"||p.isFocalPlant));
   const groups=groupPlantsBySpecies(rows)
     .sort((a,b)=>(b.some(p=>p.bestSeller)?1:0)-(a.some(p=>p.bestSeller)?1:0));
   scPlantGroupsByKey=new Map(groups.map(g=>[plantGroupKey(g[0]),g]));
@@ -595,8 +594,7 @@ function openScPlantLightbox(id){
 }
 document.getElementById("scPlantSearch").addEventListener("input",resetScPlantPaging);
 document.getElementById("scPlantCategoryFilter").addEventListener("change",resetScPlantPaging);
-document.getElementById("scPlantBestSellerFilter").addEventListener("change",resetScPlantPaging);
-document.getElementById("scPlantFocalFilter").addEventListener("change",resetScPlantPaging);
+document.getElementById("scPlantSpecialFilter").addEventListener("change",resetScPlantPaging);
 document.getElementById("scLoadMorePlantsBtn").addEventListener("click",()=>{
   scPlantVisibleCount+=PLANT_PAGE_SIZE;
   renderScPlantGallery();
