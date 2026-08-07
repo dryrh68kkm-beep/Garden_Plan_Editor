@@ -188,6 +188,13 @@ function plantImages(p){
   if(p.image) return [p.image];
   return [];
 }
+// Card-grid cover: prefer the small companion thumbnail (see
+// resizeImageWithThumb) so the list view doesn't have to download/decode
+// the full-size photo for every card; falls back to the full image for
+// plants saved before thumbnails existed.
+function plantCoverThumb(p){
+  return (p.thumbs&&p.thumbs[0])||plantImages(p)[0];
+}
 
 function uid(prefix){ return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,7)}`; }
 function money(v){ return new Intl.NumberFormat("th-TH",{style:"currency",currency:"THB",maximumFractionDigits:0}).format(Number(v)||0); }
@@ -455,7 +462,7 @@ function linkedPlantsHtml(plantIds,onClickFn){
   return plantIds.map(id=>{
     const p=getPlant(id);
     if(!p) return "";
-    const cover=plantImages(p)[0];
+    const cover=plantCoverThumb(p);
     return `<div class="linked-plant-tile" onclick="${onClickFn}('${p.id}')">
       <div class="linked-plant-thumb">${cover?`<img src="${esc(cover)}" alt="${esc(p.thaiName)}" loading="lazy"/>`:"🌱"}</div>
       <div class="linked-plant-name">${esc(p.thaiName)}</div>
@@ -698,7 +705,7 @@ function groupPlantsBySpecies(rows){
 let plantGroupsByKey=new Map();
 function renderPlantCardHtml(variants,selectedId){
   const p=variants.find(v=>v.id===selectedId)||variants[0];
-  const cover=plantImages(p)[0];
+  const cover=plantCoverThumb(p);
   return `
     <article class="plant-card" data-group-key="${esc(plantGroupKey(p))}">
       <div class="plant-thumb">${cover?`<img src="${esc(cover)}" alt="${esc(p.thaiName)}" loading="lazy" />`:"🌱"}${p.bestSeller?'<span class="best-seller-badge">🔥 ขายดี</span>':""}${p.isFocalPlant?'<span class="focal-plant-badge">🌳 ไม้ประธาน</span>':""}</div>
@@ -812,6 +819,7 @@ document.getElementById("loadMorePlantsBtn").addEventListener("click",()=>{
 });
 
 let plantEditImages=[];
+let plantEditThumbs=[];
 function renderPlantEditGallery(){
   document.getElementById("plantEditGallery").innerHTML=plantEditImages.map((src,i)=>`
     <div class="style-edit-gallery-item">
@@ -821,9 +829,40 @@ function renderPlantEditGallery(){
 }
 function removePlantEditImage(idx){
   plantEditImages.splice(idx,1);
+  plantEditThumbs.splice(idx,1);
   renderPlantEditGallery();
 }
-function resizeImageToDataURL(file,targetDim=800,maxBytes=250*1024){
+function renderSquareVariant(img,side,sx,sy,targetDim,maxBytes){
+  const canvas=document.createElement("canvas");
+  canvas.width=targetDim;
+  canvas.height=targetDim;
+  const ctx=canvas.getContext("2d");
+  ctx.imageSmoothingEnabled=true;
+  ctx.imageSmoothingQuality="high";
+  ctx.drawImage(img,sx,sy,side,side,0,0,targetDim,targetDim);
+  // Safari has historically not supported WebP canvas export: per spec,
+  // an unsupported requested type silently falls back to PNG — which
+  // ignores the quality parameter entirely, so our size-reduction loop
+  // would do nothing and ship a multi-MB lossless PNG instead of a
+  // ~250KB photo. That matches exactly what was reported (uploads that
+  // work fine for text but hang/fail once a photo is attached). Detect
+  // the fallback by checking the returned data URL's actual mime type,
+  // and use JPEG instead — quality-adjustable and reliable everywhere.
+  const mime=canvas.toDataURL("image/webp",0.92).startsWith("data:image/webp") ? "image/webp" : "image/jpeg";
+  let quality=0.92;
+  let dataUrl=canvas.toDataURL(mime,quality);
+  // Back off quality in small steps until the encoded size fits the budget
+  // (base64 ~= 4/3 of raw bytes), but don't go below a floor that turns visibly soft.
+  while(dataUrl.length*0.75>maxBytes && quality>0.55){
+    quality-=0.05;
+    dataUrl=canvas.toDataURL(mime,quality);
+  }
+  return dataUrl;
+}
+// variants: [{targetDim,maxBytes}, ...] — resolves to an array of data URLs in
+// the same order, all cropped/scaled from a single decode of the source file
+// so adding a second (e.g. thumbnail) size doesn't cost a second file read.
+function resizeImageVariants(file,variants){
   return new Promise((resolve,reject)=>{
     const reader=new FileReader();
     reader.onerror=()=>reject(reader.error);
@@ -831,39 +870,26 @@ function resizeImageToDataURL(file,targetDim=800,maxBytes=250*1024){
       const img=new Image();
       img.onerror=()=>reject(new Error("โหลดรูปภาพไม่สำเร็จ"));
       img.onload=()=>{
-        // Crop to a centered square, then scale to the target cover size.
+        // Crop to a centered square, then scale to each requested size.
         const side=Math.min(img.width,img.height);
         const sx=(img.width-side)/2, sy=(img.height-side)/2;
-        const canvas=document.createElement("canvas");
-        canvas.width=targetDim;
-        canvas.height=targetDim;
-        const ctx=canvas.getContext("2d");
-        ctx.imageSmoothingEnabled=true;
-        ctx.imageSmoothingQuality="high";
-        ctx.drawImage(img,sx,sy,side,side,0,0,targetDim,targetDim);
-        // Safari has historically not supported WebP canvas export: per spec,
-        // an unsupported requested type silently falls back to PNG — which
-        // ignores the quality parameter entirely, so our size-reduction loop
-        // would do nothing and ship a multi-MB lossless PNG instead of a
-        // ~250KB photo. That matches exactly what was reported (uploads that
-        // work fine for text but hang/fail once a photo is attached). Detect
-        // the fallback by checking the returned data URL's actual mime type,
-        // and use JPEG instead — quality-adjustable and reliable everywhere.
-        const mime=canvas.toDataURL("image/webp",0.92).startsWith("data:image/webp") ? "image/webp" : "image/jpeg";
-        let quality=0.92;
-        let dataUrl=canvas.toDataURL(mime,quality);
-        // Back off quality in small steps until the encoded size fits the budget
-        // (base64 ~= 4/3 of raw bytes), but don't go below a floor that turns visibly soft.
-        while(dataUrl.length*0.75>maxBytes && quality>0.55){
-          quality-=0.05;
-          dataUrl=canvas.toDataURL(mime,quality);
-        }
-        resolve(dataUrl);
+        resolve(variants.map(({targetDim,maxBytes})=>renderSquareVariant(img,side,sx,sy,targetDim,maxBytes)));
       };
       img.src=reader.result;
     };
     reader.readAsDataURL(file);
   });
+}
+function resizeImageToDataURL(file,targetDim=800,maxBytes=250*1024){
+  return resizeImageVariants(file,[{targetDim,maxBytes}]).then(r=>r[0]);
+}
+// Plant photos are shown at gallery-tile size almost everywhere (admin card
+// grid, showcase plant grid, linked-plant chips) and only need full
+// resolution in the one-at-a-time lightbox/detail view. Producing a small
+// companion thumbnail at upload time means those list views can skip
+// downloading/decoding the full ~250KB photo for every tile.
+function resizeImageWithThumb(file){
+  return resizeImageVariants(file,[{targetDim:800,maxBytes:250*1024},{targetDim:280,maxBytes:45*1024}]);
 }
 function openPlantEdit(id){
   const p=getPlant(id);
@@ -880,6 +906,7 @@ function openPlantEdit(id){
   document.getElementById("plantEditAuspicious").value=p.auspicious||"";
   document.getElementById("plantEditImage").value="";
   plantEditImages=plantImages(p).slice();
+  plantEditThumbs=(p.thumbs||[]).slice();
   renderPlantEditGallery();
   document.getElementById("plantEditDialog").showModal();
 }
@@ -888,7 +915,9 @@ document.getElementById("plantEditImage").addEventListener("change",async e=>{
   if(!files.length) return;
   try{
     for(const file of files){
-      plantEditImages.push(await resizeImageToDataURL(file));
+      const [full,thumb]=await resizeImageWithThumb(file);
+      plantEditImages.push(full);
+      plantEditThumbs.push(thumb);
     }
     renderPlantEditGallery();
   }catch{
@@ -907,7 +936,8 @@ document.getElementById("plantEditForm").addEventListener("submit",async e=>{
     bestSeller:document.getElementById("plantEditBestSeller").checked,
     isFocalPlant:document.getElementById("plantEditFocal").checked,
     auspicious:document.getElementById("plantEditAuspicious").value.trim(),
-    images:plantEditImages.slice()
+    images:plantEditImages.slice(),
+    thumbs:plantEditThumbs.slice()
   };
   if(!checkDocSizeOrWarn(override,"ต้นไม้นี้")) return;
   plantOverrides[id]=override;
@@ -923,6 +953,7 @@ document.getElementById("editPlantBtn").addEventListener("click",()=>{
 
 // ---- Custom plants (added by the admin, not part of the 300-item catalog) ----
 let plantAddImages=[];
+let plantAddThumbs=[];
 function renderPlantAddGallery(){
   document.getElementById("plantAddGallery").innerHTML=plantAddImages.map((src,i)=>`
     <div class="style-edit-gallery-item">
@@ -932,6 +963,7 @@ function renderPlantAddGallery(){
 }
 function removePlantAddImage(idx){
   plantAddImages.splice(idx,1);
+  plantAddThumbs.splice(idx,1);
   renderPlantAddGallery();
 }
 function fillPlantAddCategoryOptions(){
@@ -959,6 +991,7 @@ function openCustomPlantAdd(){
   document.getElementById("plantAddFocal").checked=false;
   document.getElementById("plantAddImage").value="";
   plantAddImages=[];
+  plantAddThumbs=[];
   renderPlantAddGallery();
   document.getElementById("plantAddDeleteBtn").style.display="none";
   document.getElementById("plantAddDialog").showModal();
@@ -986,6 +1019,7 @@ function openCustomPlantEdit(id){
   document.getElementById("plantAddFocal").checked=!!p.isFocalPlant;
   document.getElementById("plantAddImage").value="";
   plantAddImages=plantImages(p).slice();
+  plantAddThumbs=(p.thumbs||[]).slice();
   renderPlantAddGallery();
   document.getElementById("plantAddDeleteBtn").style.display="inline-flex";
   document.getElementById("plantAddDialog").showModal();
@@ -996,7 +1030,9 @@ document.getElementById("plantAddImage").addEventListener("change",async e=>{
   if(!files.length) return;
   try{
     for(const file of files){
-      plantAddImages.push(await resizeImageToDataURL(file));
+      const [full,thumb]=await resizeImageWithThumb(file);
+      plantAddImages.push(full);
+      plantAddThumbs.push(thumb);
     }
     renderPlantAddGallery();
   }catch{
@@ -1031,7 +1067,8 @@ document.getElementById("plantAddForm").addEventListener("submit",async e=>{
     bestSeller:document.getElementById("plantAddBestSeller").checked,
     isFocalPlant:document.getElementById("plantAddFocal").checked,
     auspicious:document.getElementById("plantAddAuspicious").value.trim(),
-    images:plantAddImages.slice()
+    images:plantAddImages.slice(),
+    thumbs:plantAddThumbs.slice()
   };
   if(!checkDocSizeOrWarn(plant,"ต้นไม้นี้")) return;
   customPlants=existingId

@@ -143,6 +143,14 @@ function plantImages(p){
   if(p.image) return [p.image];
   return [];
 }
+// Tile-grid cover: prefer the small companion thumbnail the admin generates
+// alongside each full photo (see resizeImageWithThumb in app.js) so the
+// gallery grid doesn't have to download/decode the full-size image for
+// every tile — only the lightbox needs full resolution. Falls back to the
+// full image for plants saved before thumbnails existed.
+function plantCoverThumb(p){
+  return (p.thumbs&&p.thumbs[0])||plantImages(p)[0];
+}
 
 // Every page change slides the outgoing page out to the right and brings
 // the incoming page in from the left — the same direction as the
@@ -374,7 +382,7 @@ function scLinkedPlantsHtml(plantIds){
   return plantIds.map(id=>{
     const p=plantById.get(id);
     if(!p) return "";
-    const cover=plantImages(p)[0];
+    const cover=plantCoverThumb(p);
     return `<div class="linked-plant-tile" onclick="openScPlantLightbox('${p.id}')">
       <div class="linked-plant-thumb">${cover?`<img src="${esc(cover)}" alt="${esc(p.thaiName)}" loading="lazy"/>`:"🌱"}</div>
       <div class="linked-plant-name">${esc(p.thaiName)}</div>
@@ -490,7 +498,7 @@ function renderScPlantTileHtml(variants,selectedId){
   const p=variants.find(v=>v.id===selectedId)||variants[0];
   return `
     <article class="showcase-plant-tile" data-group-key="${esc(plantGroupKey(p))}" onclick="openScPlantLightbox('${esc(p.id)}')">
-      <div class="showcase-plant-photo"><img src="${esc(plantImages(p)[0])}" alt="${esc(p.thaiName)}" loading="lazy" />${p.bestSeller?'<span class="best-seller-badge">🔥 ขายดี</span>':""}${p.isFocalPlant?'<span class="focal-plant-badge">🌳 ไม้ประธาน</span>':""}</div>
+      <div class="showcase-plant-photo"><img src="${esc(plantCoverThumb(p))}" alt="${esc(p.thaiName)}" loading="lazy" />${p.bestSeller?'<span class="best-seller-badge">🔥 ขายดี</span>':""}${p.isFocalPlant?'<span class="focal-plant-badge">🌳 ไม้ประธาน</span>':""}</div>
       <div class="showcase-plant-info">
         <div class="showcase-plant-caption">${esc(p.thaiName)}</div>
         ${variants.length>1?`<div class="plant-size-picker">${variants.map(v=>`<button type="button" class="plant-size-chip${v.id===p.id?" active":""}" data-plant-id="${esc(v.id)}" onclick="event.stopPropagation();scSwitchPlantVariant(this)">${esc(plantSizeLabel(v)||"?")}</button>`).join("")}</div>`:""}
