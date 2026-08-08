@@ -153,3 +153,35 @@ async function fbDelete(col,id){
   const res=await fbFetch(`${FB_BASE}/${col}/${encodeURIComponent(id)}`,{method:"DELETE",headers:await fbHeaders()});
   return res.ok;
 }
+// Exact-match lookup by a single field (Firestore structured query), e.g.
+// finding a doc some OTHER system already created by name rather than by
+// our own doc id — returns the matching doc's id, or null if none exists.
+async function fbFindByField(col,field,value){
+  const res=await fbFetch(`${FB_BASE}:runQuery`,{
+    method:"POST",headers:await fbHeaders(),
+    body:JSON.stringify({structuredQuery:{
+      from:[{collectionId:col}],
+      where:{fieldFilter:{field:{fieldPath:field},op:"EQUAL",value:fbToValue(value)}},
+      limit:1
+    }})
+  });
+  const rows=await res.json();
+  if(!Array.isArray(rows)) throw new Error(rows?.error?.message||"ค้นหาข้อมูลไม่สำเร็จ");
+  const doc=rows.find(r=>r.document)?.document;
+  return doc ? doc.name.split("/").pop() : null;
+}
+// PATCH limited to only the given field names via updateMask, so fields set
+// by some OTHER writer on this same document (e.g. stock/category from the
+// LINE bot's own admin-chat commands) are left untouched instead of being
+// wiped by a full-document overwrite like fbSet does.
+async function fbPatchFields(col,id,fields){
+  const mask=Object.keys(fields).map(k=>`updateMask.fieldPaths=${encodeURIComponent(k)}`).join("&");
+  const body={fields:{}};
+  for(const k in fields) body.fields[k]=fbToValue(fields[k]);
+  const res=await fbFetch(`${FB_BASE}/${col}/${encodeURIComponent(id)}?${mask}`,{
+    method:"PATCH",headers:await fbHeaders(),body:JSON.stringify(body)
+  });
+  const data=await res.json();
+  if(data.error) throw new Error(data.error.message);
+  return data;
+}

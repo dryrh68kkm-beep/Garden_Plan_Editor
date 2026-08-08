@@ -129,6 +129,37 @@ async function saveCustomPlant(plant){
   safeSetLocal(STORAGE.customPlants, customPlants);
   await saveDoc("customPlants",plant.id,plant,"ต้นไม้ที่เพิ่มเอง");
 }
+// The Rinlada LINE bot (repo Rinlada-AI-V3-) reads live prices for its own
+// order flow from the SAME Firestore project this app already writes to
+// (rinlada-plant-stock), but a separate `plants` collection the bot queries
+// by exact `name` match (see worker/src/order.ts's findProductByName). The
+// bot's static knowledge sync uses the Thai name as `name`, so we mirror
+// that here rather than English/scientific name, or the bot's exact-match
+// lookup would silently never find this plant.
+//
+// That collection is also written to directly by admins issuing stock
+// commands to the bot itself (findProductByName's own docs, auto-generated
+// ids like "p1785683997356") — so a plant that already exists there under
+// a different doc id than ours must be UPDATED in place, never re-created
+// under our own id, or the collection ends up with two docs sharing the
+// same name and the bot's `limit:1` query returns whichever one it feels
+// like, i.e. customers could get a stale/wrong price at random. Look the
+// doc up by name first; only fall back to creating a new one (keyed by our
+// own plant id, so re-saves update instead of piling up duplicates) when no
+// existing doc for that name is found. The update path uses fbPatchFields
+// (not fbSet) so it only touches name/price, leaving any stock/category/
+// bestseller fields the bot itself manages untouched.
+async function syncPlantPriceToBot(id,thaiName,salePrice){
+  if(!thaiName) return;
+  const fields={name:thaiName,price:Number(salePrice)||0};
+  try{
+    const existingId=await fbFindByField("plants","name",thaiName);
+    if(existingId) await fbPatchFields("plants",existingId,fields);
+    else await saveDoc("plants",id,fields,"ราคาต้นไม้ (ซิงก์ไปบอท LINE)");
+  }catch(err){
+    console.error("Sync plant price to LINE bot failed:",err);
+  }
+}
 // ---- Garden portfolio (real completed projects, shown to build trust
 // alongside the 50 style templates — a separate collection since these are
 // actual jobs done for actual customers, not reusable style presets). ----
@@ -945,6 +976,8 @@ document.getElementById("plantEditForm").addEventListener("submit",async e=>{
   document.getElementById("plantEditDialog").close();
   // Background save — see the comment on the portfolio form's submit handler.
   savePlantOverrides(id);
+  const merged=getPlant(id);
+  syncPlantPriceToBot(id,merged?.thaiName,override.salePrice);
 });
 document.getElementById("editPlantBtn").addEventListener("click",()=>{
   document.getElementById("plantDetailDialog").close();
@@ -1079,6 +1112,7 @@ document.getElementById("plantAddForm").addEventListener("submit",async e=>{
   document.getElementById("plantAddDialog").close();
   // Background save — see the comment on the portfolio form's submit handler.
   saveCustomPlant(plant);
+  syncPlantPriceToBot(plant.id,plant.thaiName,plant.salePrice);
 });
 
 function renderAll(){renderStyles();renderPortfolio();}
