@@ -585,6 +585,9 @@ function openScPlantLightbox(id){
   const lightboxFocal=document.getElementById("scPlantLightboxFocal");
   lightboxFocal.textContent="🌳 ไม้ประธาน";
   lightboxFocal.style.display=p.isFocalPlant?"inline-flex":"none";
+  // Both badges anchor to the same corner now — when best-seller is also
+  // showing, nudge focal down below it instead of the two overlapping.
+  lightboxFocal.classList.toggle("badge-stacked",!!p.bestSeller);
   document.getElementById("scPlantLightboxOrderBtn").href=lineOrderUrl(p);
   document.getElementById("scPlantLightboxLight").textContent=p.light||"-";
   document.getElementById("scPlantLightboxWater").textContent=p.water||"-";
