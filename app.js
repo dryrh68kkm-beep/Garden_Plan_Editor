@@ -147,11 +147,19 @@ async function saveCustomPlant(plant){
 // doc up by name first; only fall back to creating a new one (keyed by our
 // own plant id, so re-saves update instead of piling up duplicates) when no
 // existing doc for that name is found. The update path uses fbPatchFields
-// (not fbSet) so it only touches name/price, leaving any stock/category/
-// bestseller fields the bot itself manages untouched.
-async function syncPlantPriceToBot(id,thaiName,salePrice){
+// (not fbSet) so it only touches the fields we actually send, leaving any
+// stock/category/bestseller fields the bot itself manages untouched.
+//
+// sizeLabel/potSize are optional — the bot's own docs (page said to fall
+// back to whatever value is already there when these are omitted), and not
+// every plant has both: custom ("เพิ่มเอง") plants have no potSize at all
+// (that's a catalog-only field), and a plant with no custom size entered
+// falls back through plantSizeLabel() to the catalog's preset label.
+async function syncPlantPriceToBot(id,thaiName,salePrice,sizeLabel,potSize){
   if(!thaiName) return;
   const fields={name:thaiName,price:Number(salePrice)||0};
+  if(sizeLabel) fields.sizeLabel=sizeLabel;
+  if(potSize) fields.potSize=potSize;
   try{
     const existingId=await fbFindByField("plants","name",thaiName);
     if(existingId) await fbPatchFields("plants",existingId,fields);
@@ -977,7 +985,7 @@ document.getElementById("plantEditForm").addEventListener("submit",async e=>{
   // Background save — see the comment on the portfolio form's submit handler.
   savePlantOverrides(id);
   const merged=getPlant(id);
-  syncPlantPriceToBot(id,merged?.thaiName,override.salePrice);
+  syncPlantPriceToBot(id,merged?.thaiName,override.salePrice,merged&&plantSizeLabel(merged),merged?.potSize);
 });
 document.getElementById("editPlantBtn").addEventListener("click",()=>{
   document.getElementById("plantDetailDialog").close();
@@ -1112,7 +1120,7 @@ document.getElementById("plantAddForm").addEventListener("submit",async e=>{
   document.getElementById("plantAddDialog").close();
   // Background save — see the comment on the portfolio form's submit handler.
   saveCustomPlant(plant);
-  syncPlantPriceToBot(plant.id,plant.thaiName,plant.salePrice);
+  syncPlantPriceToBot(plant.id,plant.thaiName,plant.salePrice,plantSizeLabel(plant),plant.potSize);
 });
 
 function renderAll(){renderStyles();renderPortfolio();}
