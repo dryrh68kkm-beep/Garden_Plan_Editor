@@ -367,3 +367,42 @@
     height:46px;
   }
 }
+
+
+/* Detailed planting plan in garden-style dialogs */
+.style-linked-plants{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.sc-plant-plan-tile{
+  display:grid;
+  grid-template-columns:74px minmax(0,1fr);
+  gap:11px;
+  align-items:center;
+  min-width:0;
+  padding:9px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#f7faf8;
+  cursor:pointer;
+}
+.sc-plant-plan-tile .linked-plant-thumb{
+  width:74px;
+  height:74px;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  border-radius:11px;
+  background:#e7eee9;
+  font-size:1.7rem;
+}
+.sc-plant-plan-tile .linked-plant-thumb img{width:100%;height:100%;object-fit:cover}
+.sc-plant-plan-copy{min-width:0}
+.sc-plant-plan-use{margin-top:4px;color:var(--muted);font-size:.73rem;line-height:1.4}
+.sc-plant-plan-amount{margin-top:5px;color:var(--green-2);font-size:.72rem;font-weight:700;line-height:1.4}
+@media(max-width:640px){
+  .style-linked-plants{grid-template-columns:1fr}
+  .sc-plant-plan-tile{grid-template-columns:64px minmax(0,1fr)}
+  .sc-plant-plan-tile .linked-plant-thumb{width:64px;height:64px}
+}
