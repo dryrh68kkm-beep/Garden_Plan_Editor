@@ -278,3 +278,38 @@
   .sc-content-page{padding-bottom:118px}.showcase-plant-info{padding:11px 12px}.showcase-plant-price-row{align-items:flex-start;flex-direction:column}.showcase-plant-price-row>span{text-align:left}
   .showcase-order-btn{margin:0 12px 12px;padding:10px;font-size:.78rem}.showcase-plant-caption{font-size:.95rem}
 }
+
+
+/* Compact mobile conversion CTA and Garden Collection rhythm */
+@media(max-width:640px){
+  .sc-mobile-line{
+    left:auto;
+    right:14px;
+    bottom:calc(14px + env(safe-area-inset-bottom));
+    width:auto;
+    max-width:calc(100% - 28px);
+    min-height:42px;
+    padding:10px 14px;
+    border-radius:999px;
+    font-size:.78rem;
+    line-height:1.2;
+    box-shadow:0 8px 22px rgba(5,72,37,.24);
+  }
+  .sc-content-page{padding-bottom:88px}
+  .sc-page-toolbar{align-items:flex-start}
+  .sc-page-badge{padding:5px 9px;font-size:.64rem}
+  .sc-brand-badge img{width:21px;height:21px}
+  .sc-page-head{margin:20px 0 15px}
+  .sc-page-head h2{
+    max-width:100%;
+    font-size:clamp(1.7rem,8vw,2rem);
+    line-height:1.16;
+    letter-spacing:-.025em;
+    text-wrap:balance;
+  }
+  .sc-page-intro{margin-top:7px;font-size:.9rem;line-height:1.6}
+  .sc-filter-panel{gap:8px;padding:8px;border-radius:16px}
+  .sc-search-box .input{padding:11px 0!important}
+  .sc-select{min-height:44px}
+  .sc-count{padding:12px 3px}
+}
