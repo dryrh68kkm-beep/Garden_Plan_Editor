@@ -9,7 +9,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -18,7 +18,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P002",
@@ -30,7 +33,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -39,7 +42,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P003",
@@ -51,7 +57,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -60,7 +66,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "preorder",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P004",
@@ -72,7 +83,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -81,7 +92,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P005",
@@ -93,7 +107,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -102,7 +116,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P006",
@@ -114,7 +133,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -123,7 +142,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P007",
@@ -135,7 +157,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -144,19 +166,24 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "preorder",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P008",
     "speciesId": "SP008",
-    "nameTh": "ลีลาวดี",
-    "nameEn": "Frangipani",
+    "nameTh": "ลีลาวดีขาว",
+    "nameEn": "White Frangipani",
     "scientificName": "Plumeria obtusa L.",
     "categoryId": "CAT01",
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -165,7 +192,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "preorder",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P009",
@@ -177,7 +209,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -186,7 +218,13 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "market-benchmark",
+      "garden-style"
+    ]
   },
   {
     "id": "P010",
@@ -198,7 +236,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -207,7 +245,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P011",
@@ -219,7 +260,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -228,7 +269,13 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "market-benchmark",
+      "garden-style"
+    ]
   },
   {
     "id": "P012",
@@ -240,7 +287,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -249,7 +296,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P013",
@@ -261,7 +311,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -270,7 +320,13 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "market-benchmark",
+      "garden-style"
+    ]
   },
   {
     "id": "P014",
@@ -282,7 +338,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -291,7 +347,13 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "market-benchmark",
+      "garden-style"
+    ]
   },
   {
     "id": "P015",
@@ -303,7 +365,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -312,7 +374,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P016",
@@ -324,7 +391,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -333,7 +400,13 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "market-benchmark",
+      "garden-style"
+    ]
   },
   {
     "id": "P017",
@@ -345,7 +418,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -354,7 +427,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P018",
@@ -366,7 +444,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -375,7 +453,13 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "market-benchmark",
+      "garden-style"
+    ]
   },
   {
     "id": "P019",
@@ -387,7 +471,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -396,7 +480,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P020",
@@ -408,7 +497,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -417,7 +506,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "preorder",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P021",
@@ -429,7 +523,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -438,7 +532,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P022",
@@ -450,7 +549,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -459,7 +558,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P023",
@@ -471,7 +575,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -480,7 +584,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P024",
@@ -492,7 +601,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -501,7 +610,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P025",
@@ -513,7 +627,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -522,7 +636,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P026",
@@ -534,7 +653,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -543,7 +662,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P027",
@@ -555,7 +679,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -564,19 +688,25 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "market-benchmark",
+      "garden-style"
+    ]
   },
   {
     "id": "P028",
     "speciesId": "SP028",
-    "nameTh": "สนเลื้อย",
+    "nameTh": "สนเลื้อยชายทะเล",
     "nameEn": "Shore Juniper",
     "scientificName": "Juniperus conferta Parl.",
     "categoryId": "CAT05",
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -585,7 +715,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "preorder",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P029",
@@ -597,7 +732,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -606,7 +741,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "preorder",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P030",
@@ -618,7 +758,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -627,7 +767,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P031",
@@ -639,7 +782,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -648,7 +791,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P032",
@@ -660,7 +806,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -669,19 +815,24 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "preorder",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P033",
     "speciesId": "SP033",
-    "nameTh": "เฟื่องฟ้า",
-    "nameEn": "Bougainvillea",
+    "nameTh": "เฟื่องฟ้าใบมัน",
+    "nameEn": "Paperflower",
     "scientificName": "Bougainvillea glabra Choisy",
     "categoryId": "CAT06",
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -690,7 +841,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "preorder",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P034",
@@ -702,7 +858,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -711,7 +867,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "preorder",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P035",
@@ -723,7 +884,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -732,7 +893,13 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "market-benchmark",
+      "garden-style"
+    ]
   },
   {
     "id": "P036",
@@ -744,7 +911,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -753,7 +920,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P037",
@@ -765,7 +937,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -774,7 +946,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P038",
@@ -786,7 +963,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -795,7 +972,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P039",
@@ -807,7 +989,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -816,7 +998,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "preorder",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P040",
@@ -828,7 +1015,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -837,7 +1024,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P041",
@@ -849,7 +1041,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -858,7 +1050,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P042",
@@ -870,7 +1065,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "aquatic",
@@ -879,7 +1074,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P043",
@@ -891,7 +1091,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "aquatic",
@@ -900,7 +1100,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "preorder",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P044",
@@ -912,7 +1117,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "aquatic",
@@ -921,7 +1126,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P045",
@@ -933,7 +1143,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -942,7 +1152,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P046",
@@ -954,7 +1169,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -963,7 +1178,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P047",
@@ -975,7 +1193,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -984,7 +1202,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P048",
@@ -996,7 +1217,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1005,7 +1226,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P049",
@@ -1017,7 +1241,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1026,7 +1250,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P050",
@@ -1038,7 +1265,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1047,7 +1274,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "preorder",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P051",
@@ -1059,7 +1291,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1068,7 +1300,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P052",
@@ -1080,7 +1315,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1089,7 +1324,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P053",
@@ -1101,7 +1339,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "partialSun",
     "water": "high",
@@ -1110,7 +1348,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P054",
@@ -1122,7 +1363,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1131,7 +1372,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P055",
@@ -1143,7 +1387,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1152,7 +1396,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P056",
@@ -1164,7 +1411,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -1173,7 +1420,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P057",
@@ -1185,7 +1435,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "high",
@@ -1194,7 +1444,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P058",
@@ -1206,7 +1459,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "low",
@@ -1215,7 +1468,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P059",
@@ -1227,7 +1483,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "high",
@@ -1236,7 +1492,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P060",
@@ -1248,7 +1507,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1257,7 +1516,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P061",
@@ -1269,7 +1531,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1278,7 +1540,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P062",
@@ -1290,7 +1555,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1299,7 +1564,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P063",
@@ -1311,7 +1579,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1320,7 +1588,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P064",
@@ -1332,7 +1603,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1341,7 +1612,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P065",
@@ -1353,7 +1627,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1362,7 +1636,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P066",
@@ -1374,7 +1651,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1383,7 +1660,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P067",
@@ -1395,7 +1675,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1404,7 +1684,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P068",
@@ -1416,7 +1699,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1425,7 +1708,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P069",
@@ -1437,7 +1723,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1446,7 +1732,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "market-benchmark"
+    ]
   },
   {
     "id": "P070",
@@ -1458,7 +1749,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1467,7 +1758,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P071",
@@ -1479,7 +1773,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1488,7 +1782,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P072",
@@ -1500,7 +1797,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1509,7 +1806,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P073",
@@ -1521,7 +1821,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1530,7 +1830,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P074",
@@ -1542,7 +1845,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1551,7 +1854,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P075",
@@ -1563,7 +1869,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1572,7 +1878,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P076",
@@ -1584,7 +1893,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1593,7 +1902,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P077",
@@ -1605,7 +1917,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1614,7 +1926,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "market-benchmark"
+    ]
   },
   {
     "id": "P078",
@@ -1626,7 +1943,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1635,7 +1952,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P079",
@@ -1647,7 +1967,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1656,7 +1976,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P080",
@@ -1668,7 +1991,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1677,7 +2000,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P081",
@@ -1689,7 +2015,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1698,7 +2024,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P082",
@@ -1710,7 +2039,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1719,7 +2048,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P083",
@@ -1731,7 +2063,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1740,7 +2072,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "market-benchmark"
+    ]
   },
   {
     "id": "P084",
@@ -1752,7 +2089,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1761,7 +2098,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "market-benchmark"
+    ]
   },
   {
     "id": "P085",
@@ -1773,7 +2115,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1782,7 +2124,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P086",
@@ -1794,7 +2139,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1803,7 +2148,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "market-benchmark"
+    ]
   },
   {
     "id": "P087",
@@ -1815,7 +2165,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1824,7 +2174,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P088",
@@ -1836,7 +2189,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1845,7 +2198,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P089",
@@ -1857,7 +2213,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1866,7 +2222,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P090",
@@ -1878,7 +2237,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1887,7 +2246,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P091",
@@ -1899,7 +2261,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1908,7 +2270,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P092",
@@ -1920,7 +2285,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1929,7 +2294,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P093",
@@ -1941,7 +2309,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1950,7 +2318,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "market-benchmark"
+    ]
   },
   {
     "id": "P094",
@@ -1962,7 +2335,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1971,7 +2344,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P095",
@@ -1983,7 +2359,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -1992,7 +2368,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P096",
@@ -2004,7 +2385,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2013,19 +2394,22 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P097",
     "speciesId": "SP097",
-    "nameTh": "ลีลาวดี",
-    "nameEn": "Frangipani",
+    "nameTh": "ลีลาวดีแดง",
+    "nameEn": "Red Frangipani",
     "scientificName": "Plumeria rubra L.",
     "categoryId": "CAT06",
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2034,7 +2418,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "preorder",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P098",
@@ -2046,7 +2435,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2055,7 +2444,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P099",
@@ -2067,7 +2459,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2076,7 +2468,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P100",
@@ -2088,7 +2483,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2097,7 +2492,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P101",
@@ -2109,7 +2507,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2118,7 +2516,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P102",
@@ -2130,7 +2531,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2139,7 +2540,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P103",
@@ -2151,7 +2555,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2160,7 +2564,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "market-benchmark"
+    ]
   },
   {
     "id": "P104",
@@ -2172,7 +2581,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2181,7 +2590,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P105",
@@ -2193,7 +2605,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2202,7 +2614,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P106",
@@ -2214,7 +2629,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2223,7 +2638,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P107",
@@ -2235,7 +2653,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2244,7 +2662,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P108",
@@ -2256,7 +2677,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2265,7 +2686,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P109",
@@ -2277,7 +2701,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2286,7 +2710,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P110",
@@ -2298,7 +2725,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2307,7 +2734,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P111",
@@ -2319,7 +2749,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2328,19 +2758,22 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P112",
     "speciesId": "SP112",
-    "nameTh": "สนเลื้อย",
+    "nameTh": "สนเลื้อยญี่ปุ่น",
     "nameEn": "Japanese Garden Juniper",
     "scientificName": "Juniperus procumbens (Endl.) Miq.",
     "categoryId": "CAT05",
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2349,7 +2782,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "preorder",
+    "sourceTags": [
+      "garden-style"
+    ]
   },
   {
     "id": "P113",
@@ -2361,7 +2799,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2370,7 +2808,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P114",
@@ -2382,7 +2823,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2391,7 +2832,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P115",
@@ -2403,7 +2847,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -2412,7 +2856,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P116",
@@ -2424,7 +2871,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -2433,7 +2880,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P117",
@@ -2445,7 +2895,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -2454,7 +2904,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P118",
@@ -2466,7 +2919,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -2475,7 +2928,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P119",
@@ -2487,7 +2943,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -2496,7 +2952,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P120",
@@ -2508,7 +2967,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -2517,7 +2976,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "market-benchmark"
+    ]
   },
   {
     "id": "P121",
@@ -2529,7 +2993,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -2538,7 +3002,12 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": true,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "core",
+    "sourceTags": [
+      "market-benchmark"
+    ]
   },
   {
     "id": "P122",
@@ -2550,7 +3019,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -2559,7 +3028,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P123",
@@ -2571,7 +3043,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -2580,7 +3052,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P124",
@@ -2592,7 +3067,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "brightShade",
     "water": "medium",
@@ -2601,7 +3076,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P125",
@@ -2613,7 +3091,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2622,7 +3100,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P126",
@@ -2634,7 +3115,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2643,7 +3124,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P127",
@@ -2655,7 +3139,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2664,7 +3148,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P128",
@@ -2676,7 +3163,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2685,7 +3172,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P129",
@@ -2697,7 +3187,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2706,7 +3196,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P130",
@@ -2718,7 +3211,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2727,7 +3220,10 @@
     "landscapeRole": "ใช้จัดสวนตามหมวด",
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   },
   {
     "id": "P131",
@@ -2739,7 +3235,7 @@
     "sizeCode": "S",
     "sizeLabel": "เล็ก",
     "potSize": "6–8 นิ้ว",
-    "price": 120,
+    "price": 0,
     "unit": "ต้น",
     "light": "fullSun",
     "water": "medium",
@@ -2749,6 +3245,9 @@
     "thailandSuitability": "เหมาะกับประเทศไทยหรือเหมาะแบบมีเงื่อนไข",
     "auspicious": "เชื่อว่าเป็นไม้มงคล ช่วยเสริมความเจริญรุ่งเรือง ความมีชื่อเสียง และนำสิ่งดีงามเข้าสู่บ้าน",
     "image": "",
-    "active": true
+    "active": false,
+    "priceNote": "สอบถามราคาตามขนาด",
+    "catalogStatus": "archive",
+    "sourceTags": []
   }
 ]
