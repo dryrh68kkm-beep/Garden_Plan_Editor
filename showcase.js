@@ -62,8 +62,9 @@ function adaptStyle(s){
     mood:Array.isArray(s.palette)?s.palette.join(", "):(s.palette||""),
     aiPrompt:s.aiPrompt||buildStyleAiPrompt(s),
     icon:"🌿",
+    plantPlan:Array.isArray(s.plantPalette)?s.plantPalette:[],
     plantIds:Array.isArray(s.plantPalette)?s.plantPalette.map(p=>p.plantId).filter(Boolean):[],
-    image:s.image||""
+    image:(window.GARDEN_STYLE_IMAGES&&window.GARDEN_STYLE_IMAGES[s.id])||s.image||""
   };
 }
 if(!Array.isArray(window.GARDEN_STYLES)) console.error("window.GARDEN_STYLES missing or invalid — check data/garden-styles-data.js");
@@ -377,15 +378,19 @@ function renderScGallery(images,icon,heroId,thumbsId){
   };
   hero.scrollLeft=0;
 }
-function scLinkedPlantsHtml(plantIds){
+function scLinkedPlantsHtml(plantIds,plantPlan){
   if(!plantIds||!plantIds.length) return '<div class="meta">ยังไม่ได้ระบุต้นไม้สำหรับสวนนี้</div>';
+  const planById=new Map((plantPlan||[]).map(item=>[item.plantId,item]));
   return plantIds.map(id=>{
     const p=plantById.get(id);
     if(!p) return "";
+    const plan=planById.get(id)||{};
     const cover=plantCoverThumb(p);
-    return `<div class="linked-plant-tile" onclick="openScPlantLightbox('${p.id}')">
+    const usage=[plan.role,plan.position].filter(Boolean).map(esc).join(" · ");
+    const amount=[plan.recommendedQty?`จำนวน ${esc(plan.recommendedQty)}`:"",plan.spacing?`ระยะปลูก ${esc(plan.spacing)}`:""].filter(Boolean).join(" · ");
+    return `<div class="linked-plant-tile sc-plant-plan-tile" onclick="openScPlantLightbox('${p.id}')">
       <div class="linked-plant-thumb">${cover?`<img src="${esc(cover)}" alt="${esc(p.thaiName)}" loading="lazy"/>`:"🌱"}</div>
-      <div class="linked-plant-name">${esc(p.thaiName)}</div>
+      <div class="sc-plant-plan-copy"><div class="linked-plant-name">${esc(p.thaiName)}</div>${usage?`<div class="sc-plant-plan-use">${usage}</div>`:""}${amount?`<div class="sc-plant-plan-amount">${amount}</div>`:""}</div>
     </div>`;
   }).join("");
 }
@@ -400,7 +405,7 @@ function openScStyleDetail(id){
   document.getElementById("scStyleDetailMaintenance").textContent=s.maintenance;
   document.getElementById("scStyleDetailDifficulty").textContent=s.difficulty;
   document.getElementById("scStyleDetailSuitable").textContent=(s.suitableFor||[]).join(", ");
-  document.getElementById("scStyleDetailLinkedPlants").innerHTML=scLinkedPlantsHtml(s.plantIds);
+  document.getElementById("scStyleDetailLinkedPlants").innerHTML=scLinkedPlantsHtml(s.plantIds,s.plantPlan);
   document.getElementById("scStyleDetailPlants").innerHTML=(s.plants||[]).map(x=>`<span class="chip">${esc(x)}</span>`).join("");
   document.getElementById("scStyleDetailMaterials").innerHTML=(s.materials||[]).map(x=>`<span class="chip">${esc(x)}</span>`).join("");
   document.getElementById("scStyleDetailMood").textContent=s.mood;
