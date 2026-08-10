@@ -406,3 +406,15 @@
   .sc-plant-plan-tile{grid-template-columns:64px minmax(0,1fr)}
   .sc-plant-plan-tile .linked-plant-thumb{width:64px;height:64px}
 }
+
+
+.sc-pricing-note{
+  margin:-8px 0 20px;
+  padding:12px 14px;
+  border:1px solid rgba(174,120,36,.2);
+  border-radius:12px;
+  background:#fff8e8;
+  color:#75551f;
+  font-size:.75rem;
+  line-height:1.6;
+}
