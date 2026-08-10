@@ -36,7 +36,7 @@ window.GARDEN_STYLES = [
     "plantCount": 12,
     "plantPalette": [
       {
-        "plantId": "P152",
+        "plantId": "P026",
         "speciesId": "SP026",
         "nameTh": "สนฉัตร",
         "nameEn": "Norfolk Island Pine",
@@ -57,7 +57,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ทรงตั้ง/ประติมากรรม ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P134",
+        "plantId": "P023",
         "speciesId": "SP023",
         "nameTh": "จั๋ง",
         "nameEn": "Lady Palm",
@@ -78,7 +78,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นปาล์มสร้างบรรยากาศ ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P104",
+        "plantId": "P018",
         "speciesId": "SP018",
         "nameTh": "ลิ้นมังกร",
         "nameEn": "Snake Plant",
@@ -99,7 +99,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ใบสร้างมวล ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P218",
+        "plantId": "P037",
         "speciesId": "SP037",
         "nameTh": "หนวดปลาดุกแคระ",
         "nameEn": "Dwarf Mondo Grass",
@@ -120,7 +120,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้คลุมดิน ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P158",
+        "plantId": "P027",
         "speciesId": "SP027",
         "nameTh": "สนใบพาย",
         "nameEn": "Buddhist Pine",
@@ -183,7 +183,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้พุ่มโครงสร้าง ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P062",
+        "plantId": "P011",
         "speciesId": "SP011",
         "nameTh": "พุดศุภโชค",
         "nameEn": "Cape Jasmine",
@@ -204,7 +204,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้พุ่มโครงสร้าง ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P098",
+        "plantId": "P017",
         "speciesId": "SP017",
         "nameTh": "กวักมรกต",
         "nameEn": "ZZ Plant",
@@ -225,7 +225,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ใบสร้างมวล ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P146",
+        "plantId": "P025",
         "speciesId": "SP025",
         "nameTh": "ปาล์มขวด",
         "nameEn": "Bottle Palm",
@@ -246,7 +246,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นปาล์มสร้างบรรยากาศ ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P206",
+        "plantId": "P035",
         "speciesId": "SP035",
         "nameTh": "เฟิร์นข้าหลวง",
         "nameEn": "Bird's Nest Fern",
@@ -267,7 +267,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ร่มและเพิ่มความชื้น ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P224",
+        "plantId": "P038",
         "speciesId": "SP038",
         "nameTh": "หญ้าน้ำพุ",
         "nameEn": "Fountain Grass",
@@ -332,7 +332,7 @@ window.GARDEN_STYLES = [
     "plantCount": 12,
     "plantPalette": [
       {
-        "plantId": "P122",
+        "plantId": "P021",
         "speciesId": "SP021",
         "nameTh": "ปาล์มหางกระรอก",
         "nameEn": "Foxtail Palm",
@@ -374,7 +374,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ใบสร้างมวล ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P128",
+        "plantId": "P022",
         "speciesId": "SP022",
         "nameTh": "หมากเหลือง",
         "nameEn": "Areca Palm",
@@ -395,7 +395,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นปาล์มสร้างบรรยากาศ ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P206",
+        "plantId": "P035",
         "speciesId": "SP035",
         "nameTh": "เฟิร์นข้าหลวง",
         "nameEn": "Bird's Nest Fern",
@@ -416,7 +416,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ร่มและเพิ่มความชื้น ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P140",
+        "plantId": "P024",
         "speciesId": "SP024",
         "nameTh": "ปาล์มจีบ",
         "nameEn": "Ruffled Fan Palm",
@@ -437,7 +437,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นปาล์มสร้างบรรยากาศ ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P110",
+        "plantId": "P019",
         "speciesId": "SP019",
         "nameTh": "หมากผู้หมากเมีย",
         "nameEn": "Ti Plant",
@@ -458,7 +458,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ใบสร้างมวล ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P092",
+        "plantId": "P016",
         "speciesId": "SP016",
         "nameTh": "มอนสเตอรา",
         "nameEn": "Swiss Cheese Plant",
@@ -479,7 +479,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ใบสร้างมวล ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P212",
+        "plantId": "P036",
         "speciesId": "SP036",
         "nameTh": "เฟิร์นบอสตัน",
         "nameEn": "Boston Fern",
@@ -521,7 +521,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ประธาน ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P134",
+        "plantId": "P023",
         "speciesId": "SP023",
         "nameTh": "จั๋ง",
         "nameEn": "Lady Palm",
@@ -563,7 +563,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้พุ่มโครงสร้าง ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P062",
+        "plantId": "P011",
         "speciesId": "SP011",
         "nameTh": "พุดศุภโชค",
         "nameEn": "Cape Jasmine",
@@ -628,7 +628,7 @@ window.GARDEN_STYLES = [
     "plantCount": 12,
     "plantPalette": [
       {
-        "plantId": "P158",
+        "plantId": "P027",
         "speciesId": "SP027",
         "nameTh": "สนใบพาย",
         "nameEn": "Buddhist Pine",
@@ -670,7 +670,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้พุ่มโครงสร้าง ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P236",
+        "plantId": "P040",
         "speciesId": "SP040",
         "nameTh": "ไผ่เลี้ยง",
         "nameEn": "Hedge Bamboo",
@@ -691,7 +691,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นแนวบังสายตา ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P206",
+        "plantId": "P035",
         "speciesId": "SP035",
         "nameTh": "เฟิร์นข้าหลวง",
         "nameEn": "Bird's Nest Fern",
@@ -712,9 +712,9 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ร่มและเพิ่มความชื้น ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P164",
+        "plantId": "P028",
         "speciesId": "SP028",
-        "nameTh": "สนเลื้อย",
+        "nameTh": "สนเลื้อยชายทะเล",
         "nameEn": "Shore Juniper",
         "scientificName": "Juniperus conferta Parl.",
         "categoryId": "CAT05",
@@ -733,7 +733,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ทรงตั้ง/ประติมากรรม ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P218",
+        "plantId": "P037",
         "speciesId": "SP037",
         "nameTh": "หนวดปลาดุกแคระ",
         "nameEn": "Dwarf Mondo Grass",
@@ -754,7 +754,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้คลุมดิน ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P062",
+        "plantId": "P011",
         "speciesId": "SP011",
         "nameTh": "พุดศุภโชค",
         "nameEn": "Cape Jasmine",
@@ -775,7 +775,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้พุ่มโครงสร้าง ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P134",
+        "plantId": "P023",
         "speciesId": "SP023",
         "nameTh": "จั๋ง",
         "nameEn": "Lady Palm",
@@ -796,7 +796,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นปาล์มสร้างบรรยากาศ ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P248",
+        "plantId": "P042",
         "speciesId": "SP042",
         "nameTh": "บัวหลวง",
         "nameEn": "Sacred Lotus",
@@ -817,7 +817,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้น้ำ/ริมน้ำ ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P104",
+        "plantId": "P018",
         "speciesId": "SP018",
         "nameTh": "ลิ้นมังกร",
         "nameEn": "Snake Plant",
@@ -859,7 +859,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ใบสร้างมวล ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P224",
+        "plantId": "P038",
         "speciesId": "SP038",
         "nameTh": "หญ้าน้ำพุ",
         "nameEn": "Fountain Grass",
@@ -924,7 +924,7 @@ window.GARDEN_STYLES = [
     "plantCount": 12,
     "plantPalette": [
       {
-        "plantId": "P200",
+        "plantId": "P034",
         "speciesId": "SP034",
         "nameTh": "กุหลาบ",
         "nameEn": "Rose",
@@ -945,7 +945,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ดอกสร้างสีสัน ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P170",
+        "plantId": "P029",
         "speciesId": "SP029",
         "nameTh": "แองเจโลเนีย",
         "nameEn": "Summer Snapdragon",
@@ -966,7 +966,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ดอกสร้างสีสัน ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P188",
+        "plantId": "P032",
         "speciesId": "SP032",
         "nameTh": "คอสมอส",
         "nameEn": "Cosmos",
@@ -987,7 +987,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ดอกสร้างสีสัน ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P266",
+        "plantId": "P045",
         "speciesId": "SP045",
         "nameTh": "โรสแมรี",
         "nameEn": "Rosemary",
@@ -1008,7 +1008,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นสมุนไพรและไม้กินได้ ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P062",
+        "plantId": "P011",
         "speciesId": "SP011",
         "nameTh": "พุดศุภโชค",
         "nameEn": "Cape Jasmine",
@@ -1050,7 +1050,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้พุ่มโครงสร้าง ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P074",
+        "plantId": "P013",
         "speciesId": "SP013",
         "nameTh": "ชาฮกเกี้ยน",
         "nameEn": "Fukien Tea",
@@ -1071,7 +1071,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้พุ่มโครงสร้าง ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P224",
+        "plantId": "P038",
         "speciesId": "SP038",
         "nameTh": "หญ้าน้ำพุ",
         "nameEn": "Fountain Grass",
@@ -1092,7 +1092,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้คลุมดิน ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P134",
+        "plantId": "P023",
         "speciesId": "SP023",
         "nameTh": "จั๋ง",
         "nameEn": "Lady Palm",
@@ -1113,7 +1113,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นปาล์มสร้างบรรยากาศ ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P104",
+        "plantId": "P018",
         "speciesId": "SP018",
         "nameTh": "ลิ้นมังกร",
         "nameEn": "Snake Plant",
@@ -1155,7 +1155,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ใบสร้างมวล ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P218",
+        "plantId": "P037",
         "speciesId": "SP037",
         "nameTh": "หนวดปลาดุกแคระ",
         "nameEn": "Dwarf Mondo Grass",
@@ -1220,7 +1220,7 @@ window.GARDEN_STYLES = [
     "plantCount": 12,
     "plantPalette": [
       {
-        "plantId": "P296",
+        "plantId": "P050",
         "speciesId": "SP050",
         "nameTh": "มะกอกยุโรป",
         "nameEn": "Olive",
@@ -1241,7 +1241,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ประธาน ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P266",
+        "plantId": "P045",
         "speciesId": "SP045",
         "nameTh": "โรสแมรี",
         "nameEn": "Rosemary",
@@ -1262,10 +1262,10 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นสมุนไพรและไม้กินได้ ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P194",
+        "plantId": "P033",
         "speciesId": "SP033",
-        "nameTh": "เฟื่องฟ้า",
-        "nameEn": "Bougainvillea",
+        "nameTh": "เฟื่องฟ้าใบมัน",
+        "nameEn": "Paperflower",
         "scientificName": "Bougainvillea glabra Choisy",
         "categoryId": "CAT06",
         "role": "ไม้ดอกสร้างสีสัน",
@@ -1283,7 +1283,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ดอกสร้างสีสัน ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P152",
+        "plantId": "P026",
         "speciesId": "SP026",
         "nameTh": "สนฉัตร",
         "nameEn": "Norfolk Island Pine",
@@ -1304,7 +1304,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ทรงตั้ง/ประติมากรรม ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P104",
+        "plantId": "P018",
         "speciesId": "SP018",
         "nameTh": "ลิ้นมังกร",
         "nameEn": "Snake Plant",
@@ -1325,7 +1325,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ใบสร้างมวล ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P146",
+        "plantId": "P025",
         "speciesId": "SP025",
         "nameTh": "ปาล์มขวด",
         "nameEn": "Bottle Palm",
@@ -1367,7 +1367,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้พุ่มโครงสร้าง ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P062",
+        "plantId": "P011",
         "speciesId": "SP011",
         "nameTh": "พุดศุภโชค",
         "nameEn": "Cape Jasmine",
@@ -1388,7 +1388,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้พุ่มโครงสร้าง ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P134",
+        "plantId": "P023",
         "speciesId": "SP023",
         "nameTh": "จั๋ง",
         "nameEn": "Lady Palm",
@@ -1430,7 +1430,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ใบสร้างมวล ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P218",
+        "plantId": "P037",
         "speciesId": "SP037",
         "nameTh": "หนวดปลาดุกแคระ",
         "nameEn": "Dwarf Mondo Grass",
@@ -1451,7 +1451,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้คลุมดิน ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P206",
+        "plantId": "P035",
         "speciesId": "SP035",
         "nameTh": "เฟิร์นข้าหลวง",
         "nameEn": "Bird's Nest Fern",
@@ -1514,7 +1514,7 @@ window.GARDEN_STYLES = [
     "plantCount": 10,
     "plantPalette": [
       {
-        "plantId": "P104",
+        "plantId": "P018",
         "speciesId": "SP018",
         "nameTh": "ลิ้นมังกร",
         "nameEn": "Snake Plant",
@@ -1535,7 +1535,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ใบสร้างมวล ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P146",
+        "plantId": "P025",
         "speciesId": "SP025",
         "nameTh": "ปาล์มขวด",
         "nameEn": "Bottle Palm",
@@ -1556,7 +1556,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นปาล์มสร้างบรรยากาศ ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P224",
+        "plantId": "P038",
         "speciesId": "SP038",
         "nameTh": "หญ้าน้ำพุ",
         "nameEn": "Fountain Grass",
@@ -1598,7 +1598,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้พุ่มโครงสร้าง ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P062",
+        "plantId": "P011",
         "speciesId": "SP011",
         "nameTh": "พุดศุภโชค",
         "nameEn": "Cape Jasmine",
@@ -1619,7 +1619,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้พุ่มโครงสร้าง ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P134",
+        "plantId": "P023",
         "speciesId": "SP023",
         "nameTh": "จั๋ง",
         "nameEn": "Lady Palm",
@@ -1661,7 +1661,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ใบสร้างมวล ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P218",
+        "plantId": "P037",
         "speciesId": "SP037",
         "nameTh": "หนวดปลาดุกแคระ",
         "nameEn": "Dwarf Mondo Grass",
@@ -1682,7 +1682,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้คลุมดิน ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P206",
+        "plantId": "P035",
         "speciesId": "SP035",
         "nameTh": "เฟิร์นข้าหลวง",
         "nameEn": "Bird's Nest Fern",
@@ -1703,7 +1703,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ร่มและเพิ่มความชื้น ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P098",
+        "plantId": "P017",
         "speciesId": "SP017",
         "nameTh": "กวักมรกต",
         "nameEn": "ZZ Plant",
@@ -1810,7 +1810,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ประธาน ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P206",
+        "plantId": "P035",
         "speciesId": "SP035",
         "nameTh": "เฟิร์นข้าหลวง",
         "nameEn": "Bird's Nest Fern",
@@ -1852,7 +1852,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้พุ่มโครงสร้าง ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P236",
+        "plantId": "P040",
         "speciesId": "SP040",
         "nameTh": "ไผ่เลี้ยง",
         "nameEn": "Hedge Bamboo",
@@ -1873,7 +1873,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นแนวบังสายตา ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P224",
+        "plantId": "P038",
         "speciesId": "SP038",
         "nameTh": "หญ้าน้ำพุ",
         "nameEn": "Fountain Grass",
@@ -1894,7 +1894,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้คลุมดิน ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P230",
+        "plantId": "P039",
         "speciesId": "SP039",
         "nameTh": "ถั่วบราซิล",
         "nameEn": "Perennial Peanut",
@@ -1915,7 +1915,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้คลุมดิน ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P260",
+        "plantId": "P044",
         "speciesId": "SP044",
         "nameTh": "กกอียิปต์",
         "nameEn": "Papyrus",
@@ -1936,7 +1936,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้น้ำ/ริมน้ำ ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P062",
+        "plantId": "P011",
         "speciesId": "SP011",
         "nameTh": "พุดศุภโชค",
         "nameEn": "Cape Jasmine",
@@ -1957,7 +1957,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้พุ่มโครงสร้าง ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P134",
+        "plantId": "P023",
         "speciesId": "SP023",
         "nameTh": "จั๋ง",
         "nameEn": "Lady Palm",
@@ -1978,7 +1978,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นปาล์มสร้างบรรยากาศ ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P104",
+        "plantId": "P018",
         "speciesId": "SP018",
         "nameTh": "ลิ้นมังกร",
         "nameEn": "Snake Plant",
@@ -2064,7 +2064,7 @@ window.GARDEN_STYLES = [
     "plantCount": 12,
     "plantPalette": [
       {
-        "plantId": "P248",
+        "plantId": "P042",
         "speciesId": "SP042",
         "nameTh": "บัวหลวง",
         "nameEn": "Sacred Lotus",
@@ -2085,7 +2085,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้น้ำ/ริมน้ำ ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P260",
+        "plantId": "P044",
         "speciesId": "SP044",
         "nameTh": "กกอียิปต์",
         "nameEn": "Papyrus",
@@ -2106,7 +2106,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้น้ำ/ริมน้ำ ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P212",
+        "plantId": "P036",
         "speciesId": "SP036",
         "nameTh": "เฟิร์นบอสตัน",
         "nameEn": "Boston Fern",
@@ -2127,7 +2127,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ร่มและเพิ่มความชื้น ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P254",
+        "plantId": "P043",
         "speciesId": "SP043",
         "nameTh": "บัวสาย",
         "nameEn": "Tropical Water Lily",
@@ -2148,7 +2148,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้น้ำ/ริมน้ำ ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P206",
+        "plantId": "P035",
         "speciesId": "SP035",
         "nameTh": "เฟิร์นข้าหลวง",
         "nameEn": "Bird's Nest Fern",
@@ -2169,7 +2169,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ร่มและเพิ่มความชื้น ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P134",
+        "plantId": "P023",
         "speciesId": "SP023",
         "nameTh": "จั๋ง",
         "nameEn": "Lady Palm",
@@ -2190,7 +2190,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นปาล์มสร้างบรรยากาศ ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P140",
+        "plantId": "P024",
         "speciesId": "SP024",
         "nameTh": "ปาล์มจีบ",
         "nameEn": "Ruffled Fan Palm",
@@ -2232,7 +2232,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้พุ่มโครงสร้าง ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P236",
+        "plantId": "P040",
         "speciesId": "SP040",
         "nameTh": "ไผ่เลี้ยง",
         "nameEn": "Hedge Bamboo",
@@ -2253,7 +2253,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นแนวบังสายตา ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P062",
+        "plantId": "P011",
         "speciesId": "SP011",
         "nameTh": "พุดศุภโชค",
         "nameEn": "Cape Jasmine",
@@ -2274,7 +2274,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้พุ่มโครงสร้าง ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P104",
+        "plantId": "P018",
         "speciesId": "SP018",
         "nameTh": "ลิ้นมังกร",
         "nameEn": "Snake Plant",
@@ -2381,7 +2381,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ประธาน ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P134",
+        "plantId": "P023",
         "speciesId": "SP023",
         "nameTh": "จั๋ง",
         "nameEn": "Lady Palm",
@@ -2402,7 +2402,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นปาล์มสร้างบรรยากาศ ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P062",
+        "plantId": "P011",
         "speciesId": "SP011",
         "nameTh": "พุดศุภโชค",
         "nameEn": "Cape Jasmine",
@@ -2444,7 +2444,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ประธาน ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P122",
+        "plantId": "P021",
         "speciesId": "SP021",
         "nameTh": "ปาล์มหางกระรอก",
         "nameEn": "Foxtail Palm",
@@ -2465,7 +2465,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นปาล์มสร้างบรรยากาศ ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P128",
+        "plantId": "P022",
         "speciesId": "SP022",
         "nameTh": "หมากเหลือง",
         "nameEn": "Areca Palm",
@@ -2507,7 +2507,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้พุ่มโครงสร้าง ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P080",
+        "plantId": "P014",
         "speciesId": "SP014",
         "nameTh": "ไทรเกาหลี",
         "nameEn": "Korean Banyan",
@@ -2549,7 +2549,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ใบสร้างมวล ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P104",
+        "plantId": "P018",
         "speciesId": "SP018",
         "nameTh": "ลิ้นมังกร",
         "nameEn": "Snake Plant",
@@ -2570,7 +2570,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ใบสร้างมวล ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P218",
+        "plantId": "P037",
         "speciesId": "SP037",
         "nameTh": "หนวดปลาดุกแคระ",
         "nameEn": "Dwarf Mondo Grass",
@@ -2591,7 +2591,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้คลุมดิน ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P206",
+        "plantId": "P035",
         "speciesId": "SP035",
         "nameTh": "เฟิร์นข้าหลวง",
         "nameEn": "Bird's Nest Fern",
@@ -2656,7 +2656,7 @@ window.GARDEN_STYLES = [
     "plantCount": 12,
     "plantPalette": [
       {
-        "plantId": "P134",
+        "plantId": "P023",
         "speciesId": "SP023",
         "nameTh": "จั๋ง",
         "nameEn": "Lady Palm",
@@ -2698,7 +2698,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ใบสร้างมวล ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P104",
+        "plantId": "P018",
         "speciesId": "SP018",
         "nameTh": "ลิ้นมังกร",
         "nameEn": "Snake Plant",
@@ -2719,7 +2719,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ใบสร้างมวล ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P098",
+        "plantId": "P017",
         "speciesId": "SP017",
         "nameTh": "กวักมรกต",
         "nameEn": "ZZ Plant",
@@ -2740,7 +2740,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ใบสร้างมวล ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P116",
+        "plantId": "P020",
         "speciesId": "SP020",
         "nameTh": "เดหลี",
         "nameEn": "Peace Lily",
@@ -2761,7 +2761,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ใบสร้างมวล ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P206",
+        "plantId": "P035",
         "speciesId": "SP035",
         "nameTh": "เฟิร์นข้าหลวง",
         "nameEn": "Bird's Nest Fern",
@@ -2782,7 +2782,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ร่มและเพิ่มความชื้น ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P212",
+        "plantId": "P036",
         "speciesId": "SP036",
         "nameTh": "เฟิร์นบอสตัน",
         "nameEn": "Boston Fern",
@@ -2803,7 +2803,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ร่มและเพิ่มความชื้น ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P110",
+        "plantId": "P019",
         "speciesId": "SP019",
         "nameTh": "หมากผู้หมากเมีย",
         "nameEn": "Ti Plant",
@@ -2824,7 +2824,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้ใบสร้างมวล ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P266",
+        "plantId": "P045",
         "speciesId": "SP045",
         "nameTh": "โรสแมรี",
         "nameEn": "Rosemary",
@@ -2866,7 +2866,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้พุ่มโครงสร้าง ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P062",
+        "plantId": "P011",
         "speciesId": "SP011",
         "nameTh": "พุดศุภโชค",
         "nameEn": "Cape Jasmine",
@@ -2887,7 +2887,7 @@ window.GARDEN_STYLES = [
         "designNote": "ใช้เป็นไม้พุ่มโครงสร้าง ควรเว้นระยะตามขนาดโตเต็มวัยและตรวจสภาพแสงจริงก่อนปลูก"
       },
       {
-        "plantId": "P218",
+        "plantId": "P037",
         "speciesId": "SP037",
         "nameTh": "หนวดปลาดุกแคระ",
         "nameEn": "Dwarf Mondo Grass",
