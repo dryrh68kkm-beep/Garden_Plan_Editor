@@ -246,7 +246,7 @@ document.addEventListener("click",e=>{
   if(!e.target.closest("#scMenuDropdown")&&!e.target.closest("#scMenuBtn")) closeScMenu();
 });
 
-// ---- Plant data (all 300, merged with back-office overrides) ----
+// ---- Curated active plant data, merged with back-office overrides ----
 // Loaded once up front so garden-style detail pages can show linked real
 // plants even before the visitor opens the plant gallery tab.
 let rawPlants=[];
@@ -298,7 +298,7 @@ async function loadAllPlants(){
     if(!response.ok) throw new Error(`HTTP ${response.status}`);
     const data=await response.json();
     if(!Array.isArray(data)) throw new Error("รูปแบบฐานข้อมูลไม่ถูกต้อง");
-    rawPlants=data.map(adaptPlant);
+    rawPlants=data.filter(p=>p.active!==false).map(adaptPlant);
     rebuildAllPlants();
     fillScPlantCategoryFilter();
     renderScPlantGallery();
