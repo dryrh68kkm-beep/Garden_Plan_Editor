@@ -31,7 +31,7 @@ window.GARDEN_STYLES = [
       "ครีม"
     ],
     "maintenance": "กลาง",
-    "budgetPerSqm": "1,200–2,800",
+    "budgetPerSqm": "2,500–5,500",
     "image": "",
     "plantCount": 12,
     "plantPalette": [
@@ -293,7 +293,18 @@ window.GARDEN_STYLES = [
       "drainage": "เตรียมดินโปร่งและระบบระบายน้ำให้เหมาะกับฤดูฝนของประเทศไทย",
       "quantityBasis": "จำนวนที่แนะนำเป็นช่วงเริ่มต้นสำหรับพื้นที่ประมาณ 40–80 ตร.ม. ต้องปรับตามแบบจริง",
       "safety": "หลีกเลี่ยงพืชมีหนามหรือยางระคายเคืองใกล้ทางเดินและพื้นที่เด็ก"
-    }
+    },
+    "minimumProjectBudget": 60000,
+    "budgetNote": "งานปลูกและฮาร์ดสเคประดับกลาง ราคาเป็นช่วงประเมินเบื้องต้นสำหรับกรุงเทพฯ–นนทบุรี ต้องสำรวจพื้นที่ วัสดุ ขนาดต้นไม้ การขนส่ง และงานระบบก่อนเสนอราคาจริง",
+    "designFeePercent": "5–10% ของงบประมาณงาน",
+    "priceUpdatedAt": "2026-08-11",
+    "priceSources": [
+      "https://www.gardenart2003.com/index.php?action=page&id=992922&mo=59",
+      "https://tantawanlandscape.com/archives/2861",
+      "https://www.baanlaesuan.com/118129/home-maintenance/gardening-2/",
+      "https://xn--82cypb8b1au6cc.tomtee.com/บริการของเรา/",
+      "https://www.maannamdesign.com/15337164/fish-pond-and-waterfall"
+    ]
   },
   {
     "id": "GS006",
@@ -327,7 +338,7 @@ window.GARDEN_STYLES = [
       "ครีม"
     ],
     "maintenance": "กลาง",
-    "budgetPerSqm": "1,200–2,800",
+    "budgetPerSqm": "2,800–6,500",
     "image": "",
     "plantCount": 12,
     "plantPalette": [
@@ -589,7 +600,18 @@ window.GARDEN_STYLES = [
       "drainage": "เตรียมดินโปร่งและระบบระบายน้ำให้เหมาะกับฤดูฝนของประเทศไทย",
       "quantityBasis": "จำนวนที่แนะนำเป็นช่วงเริ่มต้นสำหรับพื้นที่ประมาณ 40–80 ตร.ม. ต้องปรับตามแบบจริง",
       "safety": "หลีกเลี่ยงพืชมีหนามหรือยางระคายเคืองใกล้ทางเดินและพื้นที่เด็ก"
-    }
+    },
+    "minimumProjectBudget": 80000,
+    "budgetNote": "ไม้หลายชั้น ระบบระบายน้ำ และงานสร้างบรรยากาศรีสอร์ต ราคาเป็นช่วงประเมินเบื้องต้นสำหรับกรุงเทพฯ–นนทบุรี ต้องสำรวจพื้นที่ วัสดุ ขนาดต้นไม้ การขนส่ง และงานระบบก่อนเสนอราคาจริง",
+    "designFeePercent": "5–10% ของงบประมาณงาน",
+    "priceUpdatedAt": "2026-08-11",
+    "priceSources": [
+      "https://www.gardenart2003.com/index.php?action=page&id=992922&mo=59",
+      "https://tantawanlandscape.com/archives/2861",
+      "https://www.baanlaesuan.com/118129/home-maintenance/gardening-2/",
+      "https://xn--82cypb8b1au6cc.tomtee.com/บริการของเรา/",
+      "https://www.maannamdesign.com/15337164/fish-pond-and-waterfall"
+    ]
   },
   {
     "id": "GS011",
@@ -623,7 +645,7 @@ window.GARDEN_STYLES = [
       "ครีม"
     ],
     "maintenance": "กลาง",
-    "budgetPerSqm": "1,200–2,800",
+    "budgetPerSqm": "3,500–8,000",
     "image": "",
     "plantCount": 12,
     "plantPalette": [
@@ -885,7 +907,18 @@ window.GARDEN_STYLES = [
       "drainage": "เตรียมดินโปร่งและระบบระบายน้ำให้เหมาะกับฤดูฝนของประเทศไทย",
       "quantityBasis": "จำนวนที่แนะนำเป็นช่วงเริ่มต้นสำหรับพื้นที่ประมาณ 40–80 ตร.ม. ต้องปรับตามแบบจริง",
       "safety": "หลีกเลี่ยงพืชมีหนามหรือยางระคายเคืองใกล้ทางเดินและพื้นที่เด็ก"
-    }
+    },
+    "minimumProjectBudget": 100000,
+    "budgetNote": "งานหิน กรวด ไม้ตัดแต่ง และรายละเอียดเฉพาะทาง ราคาเป็นช่วงประเมินเบื้องต้นสำหรับกรุงเทพฯ–นนทบุรี ต้องสำรวจพื้นที่ วัสดุ ขนาดต้นไม้ การขนส่ง และงานระบบก่อนเสนอราคาจริง",
+    "designFeePercent": "5–10% ของงบประมาณงาน",
+    "priceUpdatedAt": "2026-08-11",
+    "priceSources": [
+      "https://www.gardenart2003.com/index.php?action=page&id=992922&mo=59",
+      "https://tantawanlandscape.com/archives/2861",
+      "https://www.baanlaesuan.com/118129/home-maintenance/gardening-2/",
+      "https://xn--82cypb8b1au6cc.tomtee.com/บริการของเรา/",
+      "https://www.maannamdesign.com/15337164/fish-pond-and-waterfall"
+    ]
   },
   {
     "id": "GS016",
@@ -919,7 +952,7 @@ window.GARDEN_STYLES = [
       "ครีม"
     ],
     "maintenance": "กลาง",
-    "budgetPerSqm": "1,200–2,800",
+    "budgetPerSqm": "3,000–7,000",
     "image": "",
     "plantCount": 12,
     "plantPalette": [
@@ -1181,7 +1214,18 @@ window.GARDEN_STYLES = [
       "drainage": "เตรียมดินโปร่งและระบบระบายน้ำให้เหมาะกับฤดูฝนของประเทศไทย",
       "quantityBasis": "จำนวนที่แนะนำเป็นช่วงเริ่มต้นสำหรับพื้นที่ประมาณ 40–80 ตร.ม. ต้องปรับตามแบบจริง",
       "safety": "หลีกเลี่ยงพืชมีหนามหรือยางระคายเคืองใกล้ทางเดินและพื้นที่เด็ก"
-    }
+    },
+    "minimumProjectBudget": 80000,
+    "budgetNote": "แปลงฟอร์มัล ขอบแปลง ทางเดิน และไม้ดอกตามฤดูกาล ราคาเป็นช่วงประเมินเบื้องต้นสำหรับกรุงเทพฯ–นนทบุรี ต้องสำรวจพื้นที่ วัสดุ ขนาดต้นไม้ การขนส่ง และงานระบบก่อนเสนอราคาจริง",
+    "designFeePercent": "5–10% ของงบประมาณงาน",
+    "priceUpdatedAt": "2026-08-11",
+    "priceSources": [
+      "https://www.gardenart2003.com/index.php?action=page&id=992922&mo=59",
+      "https://tantawanlandscape.com/archives/2861",
+      "https://www.baanlaesuan.com/118129/home-maintenance/gardening-2/",
+      "https://xn--82cypb8b1au6cc.tomtee.com/บริการของเรา/",
+      "https://www.maannamdesign.com/15337164/fish-pond-and-waterfall"
+    ]
   },
   {
     "id": "GS021",
@@ -1215,7 +1259,7 @@ window.GARDEN_STYLES = [
       "ครีม"
     ],
     "maintenance": "กลาง",
-    "budgetPerSqm": "1,200–2,800",
+    "budgetPerSqm": "3,500–8,000",
     "image": "",
     "plantCount": 12,
     "plantPalette": [
@@ -1477,7 +1521,18 @@ window.GARDEN_STYLES = [
       "drainage": "เตรียมดินโปร่งและระบบระบายน้ำให้เหมาะกับฤดูฝนของประเทศไทย",
       "quantityBasis": "จำนวนที่แนะนำเป็นช่วงเริ่มต้นสำหรับพื้นที่ประมาณ 40–80 ตร.ม. ต้องปรับตามแบบจริง",
       "safety": "หลีกเลี่ยงพืชมีหนามหรือยางระคายเคืองใกล้ทางเดินและพื้นที่เด็ก"
-    }
+    },
+    "minimumProjectBudget": 100000,
+    "budgetNote": "งานปูน/หิน กระถาง และไม้ฟอร์มพิเศษ ราคาเป็นช่วงประเมินเบื้องต้นสำหรับกรุงเทพฯ–นนทบุรี ต้องสำรวจพื้นที่ วัสดุ ขนาดต้นไม้ การขนส่ง และงานระบบก่อนเสนอราคาจริง",
+    "designFeePercent": "5–10% ของงบประมาณงาน",
+    "priceUpdatedAt": "2026-08-11",
+    "priceSources": [
+      "https://www.gardenart2003.com/index.php?action=page&id=992922&mo=59",
+      "https://tantawanlandscape.com/archives/2861",
+      "https://www.baanlaesuan.com/118129/home-maintenance/gardening-2/",
+      "https://xn--82cypb8b1au6cc.tomtee.com/บริการของเรา/",
+      "https://www.maannamdesign.com/15337164/fish-pond-and-waterfall"
+    ]
   },
   {
     "id": "GS026",
@@ -1509,7 +1564,7 @@ window.GARDEN_STYLES = [
       "ครีม"
     ],
     "maintenance": "กลาง",
-    "budgetPerSqm": "1,200–2,800",
+    "budgetPerSqm": "2,200–5,000",
     "image": "",
     "plantCount": 10,
     "plantPalette": [
@@ -1729,7 +1784,18 @@ window.GARDEN_STYLES = [
       "drainage": "เตรียมดินโปร่งและระบบระบายน้ำให้เหมาะกับฤดูฝนของประเทศไทย",
       "quantityBasis": "จำนวนที่แนะนำเป็นช่วงเริ่มต้นสำหรับพื้นที่ประมาณ 40–80 ตร.ม. ต้องปรับตามแบบจริง",
       "safety": "หลีกเลี่ยงพืชมีหนามหรือยางระคายเคืองใกล้ทางเดินและพื้นที่เด็ก"
-    }
+    },
+    "minimumProjectBudget": 60000,
+    "budgetNote": "แปลงยก ระบายน้ำสูง หิน และไม้ทนแล้ง ราคาเป็นช่วงประเมินเบื้องต้นสำหรับกรุงเทพฯ–นนทบุรี ต้องสำรวจพื้นที่ วัสดุ ขนาดต้นไม้ การขนส่ง และงานระบบก่อนเสนอราคาจริง",
+    "designFeePercent": "5–10% ของงบประมาณงาน",
+    "priceUpdatedAt": "2026-08-11",
+    "priceSources": [
+      "https://www.gardenart2003.com/index.php?action=page&id=992922&mo=59",
+      "https://tantawanlandscape.com/archives/2861",
+      "https://www.baanlaesuan.com/118129/home-maintenance/gardening-2/",
+      "https://xn--82cypb8b1au6cc.tomtee.com/บริการของเรา/",
+      "https://www.maannamdesign.com/15337164/fish-pond-and-waterfall"
+    ]
   },
   {
     "id": "GS031",
@@ -1763,7 +1829,7 @@ window.GARDEN_STYLES = [
       "ครีม"
     ],
     "maintenance": "กลาง",
-    "budgetPerSqm": "1,200–2,800",
+    "budgetPerSqm": "2,000–5,000",
     "image": "",
     "plantCount": 12,
     "plantPalette": [
@@ -2025,7 +2091,18 @@ window.GARDEN_STYLES = [
       "drainage": "เตรียมดินโปร่งและระบบระบายน้ำให้เหมาะกับฤดูฝนของประเทศไทย",
       "quantityBasis": "จำนวนที่แนะนำเป็นช่วงเริ่มต้นสำหรับพื้นที่ประมาณ 40–80 ตร.ม. ต้องปรับตามแบบจริง",
       "safety": "หลีกเลี่ยงพืชมีหนามหรือยางระคายเคืองใกล้ทางเดินและพื้นที่เด็ก"
-    }
+    },
+    "minimumProjectBudget": 70000,
+    "budgetNote": "ไม้หลายระดับ ปรับดิน ทางเดินซึมน้ำ และระบบระบายน้ำ ราคาเป็นช่วงประเมินเบื้องต้นสำหรับกรุงเทพฯ–นนทบุรี ต้องสำรวจพื้นที่ วัสดุ ขนาดต้นไม้ การขนส่ง และงานระบบก่อนเสนอราคาจริง",
+    "designFeePercent": "5–10% ของงบประมาณงาน",
+    "priceUpdatedAt": "2026-08-11",
+    "priceSources": [
+      "https://www.gardenart2003.com/index.php?action=page&id=992922&mo=59",
+      "https://tantawanlandscape.com/archives/2861",
+      "https://www.baanlaesuan.com/118129/home-maintenance/gardening-2/",
+      "https://xn--82cypb8b1au6cc.tomtee.com/บริการของเรา/",
+      "https://www.maannamdesign.com/15337164/fish-pond-and-waterfall"
+    ]
   },
   {
     "id": "GS036",
@@ -2059,7 +2136,7 @@ window.GARDEN_STYLES = [
       "ครีม"
     ],
     "maintenance": "กลาง",
-    "budgetPerSqm": "1,200–2,800",
+    "budgetPerSqm": "10,000–25,000",
     "image": "",
     "plantCount": 12,
     "plantPalette": [
@@ -2321,7 +2398,18 @@ window.GARDEN_STYLES = [
       "drainage": "เตรียมดินโปร่งและระบบระบายน้ำให้เหมาะกับฤดูฝนของประเทศไทย",
       "quantityBasis": "จำนวนที่แนะนำเป็นช่วงเริ่มต้นสำหรับพื้นที่ประมาณ 40–80 ตร.ม. ต้องปรับตามแบบจริง",
       "safety": "หลีกเลี่ยงพืชมีหนามหรือยางระคายเคืองใกล้ทางเดินและพื้นที่เด็ก"
-    }
+    },
+    "minimumProjectBudget": 180000,
+    "budgetNote": "รวมงานบ่อ ระบบกรอง ระบบน้ำ ไฟ และฮาร์ดสเคปเบื้องต้น ราคาเป็นช่วงประเมินเบื้องต้นสำหรับกรุงเทพฯ–นนทบุรี ต้องสำรวจพื้นที่ วัสดุ ขนาดต้นไม้ การขนส่ง และงานระบบก่อนเสนอราคาจริง",
+    "designFeePercent": "5–10% ของงบประมาณงาน",
+    "priceUpdatedAt": "2026-08-11",
+    "priceSources": [
+      "https://www.gardenart2003.com/index.php?action=page&id=992922&mo=59",
+      "https://tantawanlandscape.com/archives/2861",
+      "https://www.baanlaesuan.com/118129/home-maintenance/gardening-2/",
+      "https://xn--82cypb8b1au6cc.tomtee.com/บริการของเรา/",
+      "https://www.maannamdesign.com/15337164/fish-pond-and-waterfall"
+    ]
   },
   {
     "id": "GS041",
@@ -2355,7 +2443,7 @@ window.GARDEN_STYLES = [
       "ครีม"
     ],
     "maintenance": "กลาง",
-    "budgetPerSqm": "1,200–2,800",
+    "budgetPerSqm": "3,000–7,000",
     "image": "",
     "plantCount": 12,
     "plantPalette": [
@@ -2617,7 +2705,18 @@ window.GARDEN_STYLES = [
       "drainage": "เตรียมดินโปร่งและระบบระบายน้ำให้เหมาะกับฤดูฝนของประเทศไทย",
       "quantityBasis": "จำนวนที่แนะนำเป็นช่วงเริ่มต้นสำหรับพื้นที่ประมาณ 40–80 ตร.ม. ต้องปรับตามแบบจริง",
       "safety": "หลีกเลี่ยงพืชมีหนามหรือยางระคายเคืองใกล้ทางเดินและพื้นที่เด็ก"
-    }
+    },
+    "minimumProjectBudget": 150000,
+    "budgetNote": "พื้นที่เชิงพาณิชย์ งานระบบ ไฟสวน และไม้ขนาดโครงการ ราคาเป็นช่วงประเมินเบื้องต้นสำหรับกรุงเทพฯ–นนทบุรี ต้องสำรวจพื้นที่ วัสดุ ขนาดต้นไม้ การขนส่ง และงานระบบก่อนเสนอราคาจริง",
+    "designFeePercent": "5–10% ของงบประมาณงาน",
+    "priceUpdatedAt": "2026-08-11",
+    "priceSources": [
+      "https://www.gardenart2003.com/index.php?action=page&id=992922&mo=59",
+      "https://tantawanlandscape.com/archives/2861",
+      "https://www.baanlaesuan.com/118129/home-maintenance/gardening-2/",
+      "https://xn--82cypb8b1au6cc.tomtee.com/บริการของเรา/",
+      "https://www.maannamdesign.com/15337164/fish-pond-and-waterfall"
+    ]
   },
   {
     "id": "GS046",
@@ -2651,7 +2750,7 @@ window.GARDEN_STYLES = [
       "ครีม"
     ],
     "maintenance": "กลาง",
-    "budgetPerSqm": "1,200–2,800",
+    "budgetPerSqm": "3,500–8,500",
     "image": "",
     "plantCount": 12,
     "plantPalette": [
@@ -2913,6 +3012,17 @@ window.GARDEN_STYLES = [
       "drainage": "เตรียมดินโปร่งและระบบระบายน้ำให้เหมาะกับฤดูฝนของประเทศไทย",
       "quantityBasis": "จำนวนที่แนะนำเป็นช่วงเริ่มต้นสำหรับพื้นที่ประมาณ 40–80 ตร.ม. ต้องปรับตามแบบจริง",
       "safety": "หลีกเลี่ยงพืชมีหนามหรือยางระคายเคืองใกล้ทางเดินและพื้นที่เด็ก"
-    }
+    },
+    "minimumProjectBudget": 20000,
+    "budgetNote": "พื้นที่เล็ก กระถาง น้ำหนักบรรทุก ระบบระบายน้ำ และงานติดตั้ง ราคาเป็นช่วงประเมินเบื้องต้นสำหรับกรุงเทพฯ–นนทบุรี ต้องสำรวจพื้นที่ วัสดุ ขนาดต้นไม้ การขนส่ง และงานระบบก่อนเสนอราคาจริง",
+    "designFeePercent": "5–10% ของงบประมาณงาน",
+    "priceUpdatedAt": "2026-08-11",
+    "priceSources": [
+      "https://www.gardenart2003.com/index.php?action=page&id=992922&mo=59",
+      "https://tantawanlandscape.com/archives/2861",
+      "https://www.baanlaesuan.com/118129/home-maintenance/gardening-2/",
+      "https://xn--82cypb8b1au6cc.tomtee.com/บริการของเรา/",
+      "https://www.maannamdesign.com/15337164/fish-pond-and-waterfall"
+    ]
   }
 ];
