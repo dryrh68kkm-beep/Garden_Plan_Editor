@@ -42,8 +42,9 @@ function adaptStyle(s){
     mood:Array.isArray(s.palette)?s.palette.join(", "):(s.palette||""),
     aiPrompt:s.aiPrompt||buildStyleAiPrompt(s),
     icon:"🌿",
+    plantPlan:Array.isArray(s.plantPalette)?s.plantPalette:[],
     plantIds:Array.isArray(s.plantPalette)?s.plantPalette.map(p=>p.plantId).filter(Boolean):[],
-    image:s.image||""
+    image:(window.GARDEN_STYLE_IMAGES&&window.GARDEN_STYLE_IMAGES[s.id])||s.image||""
   };
 }
 if(!Array.isArray(window.GARDEN_STYLES)) console.error("window.GARDEN_STYLES missing or invalid — check data/garden-styles-data.js");
