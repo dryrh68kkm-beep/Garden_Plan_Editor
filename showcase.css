@@ -313,3 +313,57 @@
   .sc-select{min-height:44px}
   .sc-count{padding:12px 3px}
 }
+
+
+/* Rinlada brand mark on opened showcase imagery */
+.sc-brand-badge{
+  padding:8px 13px;
+  font-weight:800;
+  box-shadow:0 6px 18px rgba(13,46,35,.09);
+}
+.sc-brand-badge img{
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  box-shadow:0 3px 10px rgba(13,46,35,.16);
+}
+.modal-logo{
+  width:48px;
+  height:48px;
+  flex:0 0 48px;
+  object-fit:contain;
+  padding:3px;
+  border-radius:13px;
+  background:#fffaf0;
+  box-shadow:0 5px 16px rgba(13,46,35,.18);
+}
+.style-detail-hero-slide,
+.showcase-lightbox-slide{position:relative}
+.style-detail-hero-slide::after,
+.showcase-lightbox-slide::after{
+  content:"";
+  position:absolute;
+  z-index:4;
+  top:14px;
+  right:14px;
+  width:58px;
+  height:58px;
+  border:1px solid rgba(255,255,255,.78);
+  border-radius:50%;
+  background:rgba(255,250,240,.94) url("assets/rinlada-logo-main.webp") center/84% no-repeat;
+  box-shadow:0 8px 24px rgba(5,34,24,.25);
+  backdrop-filter:blur(8px);
+  pointer-events:none;
+}
+@media(max-width:640px){
+  .sc-page-badge{padding:6px 10px;font-size:.68rem}
+  .sc-brand-badge img{width:29px;height:29px;border-radius:9px}
+  .modal-logo{width:42px;height:42px;flex-basis:42px}
+  .style-detail-hero-slide::after,
+  .showcase-lightbox-slide::after{
+    top:10px;
+    right:10px;
+    width:46px;
+    height:46px;
+  }
+}
