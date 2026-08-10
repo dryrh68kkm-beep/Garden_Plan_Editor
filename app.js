@@ -111,7 +111,7 @@ let selectedPlantId = "";
 let plantOverrides = {};
 let styleOverrides = {};
 
-// The 300-item catalog from data/plants.json (read-only) plus plants the
+// The curated active catalog from data/plants.json (read-only) plus plants the
 // admin adds themselves, stored fully in Firestore ("customPlants") since
 // there's no server to write back into the static JSON file.
 let basePlants = [];
@@ -682,7 +682,7 @@ async function loadPlantDatabase(){
     if(!response.ok) throw new Error(`HTTP ${response.status}`);
     const data=await response.json();
     if(!Array.isArray(data)) throw new Error("รูปแบบฐานข้อมูลไม่ถูกต้อง");
-    basePlants=data.map(adaptPlant);
+    basePlants=data.filter(p=>p.active!==false).map(adaptPlant);
     rebuildPlantsList();
     resetPlantPaging();
   }catch(error){
