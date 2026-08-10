@@ -53,7 +53,10 @@ function adaptStyle(s){
     name:s.nameTh||s.nameEn||s.id,
     category:s.category||"",
     desc:s.description||"",
-    budget:s.budgetPerSqm?`${s.budgetPerSqm} บาท/ตร.ม.`:"",
+    budget:[s.budgetPerSqm?`${s.budgetPerSqm} บาท/ตร.ม.`:"",s.minimumProjectBudget?`งานเริ่มต้น ${new Intl.NumberFormat("th-TH").format(s.minimumProjectBudget)} บาท`:""].filter(Boolean).join(" · "),
+    budgetNote:s.budgetNote||"",
+    designFeePercent:s.designFeePercent||"",
+    priceUpdatedAt:s.priceUpdatedAt||"",
     maintenance:s.maintenance||"",
     difficulty:MAINTENANCE_TO_DIFFICULTY[s.maintenance]||s.maintenance||"-",
     suitableFor:Array.isArray(s.suitableFor)?s.suitableFor:[],
@@ -402,6 +405,7 @@ function openScStyleDetail(id){
   renderScGallery(styleImages(s),s.icon,"scStyleDetailHero","scStyleDetailThumbs");
   document.getElementById("scStyleDetailDescription").textContent=s.desc;
   document.getElementById("scStyleDetailBudget").textContent=s.budget;
+  document.getElementById("scStyleDetailPricingNote").textContent=[s.budgetNote,s.designFeePercent?`ค่าออกแบบโดยทั่วไป ${s.designFeePercent}`:"",s.priceUpdatedAt?`อัปเดตราคา ${s.priceUpdatedAt}`:""].filter(Boolean).join(" · ");
   document.getElementById("scStyleDetailMaintenance").textContent=s.maintenance;
   document.getElementById("scStyleDetailDifficulty").textContent=s.difficulty;
   document.getElementById("scStyleDetailSuitable").textContent=(s.suitableFor||[]).join(", ");
