@@ -523,3 +523,30 @@ body::-webkit-scrollbar,
     border-radius:0;
   }
 }
+
+
+/* Mobile feature cards: restore clear rounded-card separation */
+@media(max-width:640px){
+  .sc-feature-stack{
+    width:100%;
+    padding-left:14px;
+    padding-right:14px;
+    gap:16px;
+  }
+
+  .sc-feature-card{
+    width:100%;
+    min-height:240px;
+    border:1px solid rgba(13,46,35,.14);
+    border-radius:24px;
+    box-shadow:0 14px 34px rgba(13,46,35,.14);
+  }
+
+  .sc-feature-overlay{
+    background:linear-gradient(
+      180deg,
+      rgba(3,24,17,.08) 8%,
+      rgba(3,24,17,.90) 100%
+    );
+  }
+}
