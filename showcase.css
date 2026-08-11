@@ -647,3 +647,27 @@ body::-webkit-scrollbar,
 @media(max-width:640px){
   .sc-nav-brand{top:calc(50% + 10px)}
 }
+
+
+/* Mobile brand lockup: preserve the supplied landscape artwork and remove
+   the duplicate label so neither the logo nor text overlaps. */
+@media(max-width:640px){
+  .sc-nav-brand{
+    top:calc(50% + 14px);
+    gap:0;
+    overflow:visible;
+  }
+  .sc-nav-brand img{
+    width:96px;
+    height:auto;
+    max-height:none;
+    aspect-ratio:auto;
+    object-fit:contain;
+    border-radius:0;
+    background:transparent;
+  }
+  .sc-nav-brand span{display:none}
+}
+@media(max-width:380px){
+  .sc-nav-brand img{width:88px}
+}
