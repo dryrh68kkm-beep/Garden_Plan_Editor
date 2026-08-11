@@ -2,6 +2,7 @@ const STORAGE = {
   plantOverrides: "garden_plant_overrides_v1",
   styleOverrides: "garden_style_overrides_v1",
   customPlants: "garden_custom_plants_v1",
+  plantShowcaseIndex: "garden_plant_showcase_index_v1",
   gardenPortfolio: "garden_portfolio_v1"
 };
 
@@ -156,6 +157,9 @@ async function ensureCustomPlantThumbnail(plant){
   await saveDoc("customPlants",updated.id,updated,"รูปย่อต้นไม้เดิม");
   return updated;
 }
+async function cachePlantShowcaseIndex(index){
+  await safeSetLocal(STORAGE.plantShowcaseIndex,index);
+}
 async function syncPlantShowcaseIndexes(rows,remoteRows=[]){
   const remoteById=new Map(remoteRows.map(p=>[p.id,p]));
   for(const original of rows){
@@ -168,17 +172,21 @@ async function syncPlantShowcaseIndexes(rows,remoteRows=[]){
         await saveDoc("plantShowcaseIndex",plant.id,index,"ข้อมูลย่อหน้า Showcase");
       }
     }catch(error){
-      console.error("Could not build plant showcase index:",plant?.id||original.id,error);
+      console.error("Could not build plant showcase index:",original.id,error);
     }
   }
   safeSetLocal(STORAGE.customPlants,customPlants);
+  cachePlantShowcaseIndex(customPlants.map(plantShowcaseIndexRecord));
   rebuildPlantsList();
   resetPlantPaging();
 }
 async function saveCustomPlant(plant){
   safeSetLocal(STORAGE.customPlants, customPlants);
   await saveDoc("customPlants",plant.id,plant,"ต้นไม้ที่เพิ่มเอง");
-  await saveDoc("plantShowcaseIndex",plant.id,plantShowcaseIndexRecord(plant),"ข้อมูลย่อหน้า Showcase");
+  const index=plantShowcaseIndexRecord(plant);
+  await saveDoc("plantShowcaseIndex",plant.id,index,"ข้อมูลย่อหน้า Showcase");
+  const cached=await LS.get(STORAGE.plantShowcaseIndex,[]);
+  cachePlantShowcaseIndex(cached.some(p=>p.id===plant.id)?cached.map(p=>p.id===plant.id?{...index,id:plant.id}:p):[...cached,{...index,id:plant.id}]);
 }
 // The Rinlada LINE bot (repo Rinlada-AI-V3-) reads live prices for its own
 // order flow from the SAME Firestore project this app already writes to
@@ -245,6 +253,7 @@ async function deleteCustomPlant(id){
   rebuildPlantsList();
   resetPlantPaging();
   safeSetLocal(STORAGE.customPlants, customPlants);
+  LS.get(STORAGE.plantShowcaseIndex,[]).then(rows=>cachePlantShowcaseIndex(rows.filter(p=>p.id!==id)));
   document.getElementById("plantAddDialog").close();
   await Promise.all([
     cloudSave(()=>fbDelete("customPlants",id),"การลบต้นไม้ที่เพิ่มเอง"),
