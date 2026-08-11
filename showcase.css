@@ -573,3 +573,27 @@ body::-webkit-scrollbar,
   .sc-specimen-info span{font-size:.7rem}
   .sc-new-stock-badge{top:10px;right:10px;font-size:.7rem}
 }
+
+
+/* Polished physical-tree cards with readable species codes */
+.sc-specimen-photo{position:relative}
+.sc-specimen-number{position:absolute;top:10px;left:10px;padding:6px 10px;border-radius:999px;background:rgba(255,250,240,.94);color:var(--green);font-size:.72rem;font-weight:800;box-shadow:0 5px 14px rgba(0,0,0,.16)}
+.sc-specimen-info h4{margin:0;font-size:1.2rem;color:var(--ink)}
+.sc-specimen-info strong{display:inline-flex;width:max-content;padding:5px 9px;border-radius:9px;background:#edf4f0;color:var(--green);font-size:.8rem}
+.sc-specimen-grid:has(> .sc-specimen-card:only-child){grid-template-columns:minmax(0,680px)}
+.sc-specimen-grid:has(> .sc-specimen-card:only-child) .sc-specimen-card{display:grid;grid-template-columns:minmax(260px,46%) minmax(0,1fr)}
+.sc-specimen-grid:has(> .sc-specimen-card:only-child) .sc-specimen-photo{aspect-ratio:4/3}
+.sc-specimen-grid:has(> .sc-specimen-card:only-child) .sc-specimen-info{align-content:center;padding:20px}
+@media(max-width:640px){
+  .sc-plant-group-dialog{width:calc(100% - 14px)}
+  .sc-specimen-grid,
+  .sc-specimen-grid:has(> .sc-specimen-card:only-child){grid-template-columns:1fr;gap:12px}
+  .sc-specimen-card,
+  .sc-specimen-grid:has(> .sc-specimen-card:only-child) .sc-specimen-card{display:grid;grid-template-columns:minmax(125px,42%) minmax(0,1fr)}
+  .sc-specimen-photo,
+  .sc-specimen-grid:has(> .sc-specimen-card:only-child) .sc-specimen-photo{height:100%;min-height:210px;aspect-ratio:auto}
+  .sc-specimen-info,
+  .sc-specimen-grid:has(> .sc-specimen-card:only-child) .sc-specimen-info{align-content:center;padding:13px 12px}
+  .sc-specimen-info h4{font-size:1.08rem}
+  .sc-specimen-info .small-btn{padding:8px 9px;font-size:.72rem}
+}

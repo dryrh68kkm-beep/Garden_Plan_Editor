@@ -1030,8 +1030,10 @@ function fillPlantAddCategoryOptions(){
   const categories=[...new Set(plants.map(p=>p.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"th"));
   document.getElementById("plantAddCategoryOptions").innerHTML=categories.map(x=>`<option value="${esc(x)}"></option>`).join("");
 }
-function makeInventoryCode(){
-  return `TREE-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2,5).toUpperCase()}`;
+function makeInventoryCode(thaiName="ต้นไม้"){
+  const species=String(thaiName).trim().replace(/\s+/g,"-")||"ต้นไม้";
+  const suffix=Date.now().toString(36).slice(-4).toUpperCase()+Math.random().toString(36).slice(2,4).toUpperCase();
+  return `${species}-${suffix}`;
 }
 function openCustomPlantAdd(){
   fillPlantAddCategoryOptions();
@@ -1048,7 +1050,7 @@ function openCustomPlantAdd(){
   document.getElementById("plantAddSizeValue").value="";
   document.getElementById("plantAddSizeUnit").value="cm";
   document.getElementById("plantAddUnit").value="ต้น";
-  document.getElementById("plantAddInventoryCode").value=makeInventoryCode();
+  document.getElementById("plantAddInventoryCode").value="";
   document.getElementById("plantAddStockStatus").value="available";
   document.getElementById("plantAddArrivalDate").value=new Date().toISOString().slice(0,10);
   document.getElementById("plantAddCost").value=0;
@@ -1142,7 +1144,7 @@ document.getElementById("plantAddForm").addEventListener("submit",async e=>{
   const speciesId=document.getElementById("plantAddSpeciesId").value||existing?.speciesId||`custom:${normalizedPlantSpeciesName(thaiName)}`;
   const plant={
     id, custom:true, speciesId,
-    inventoryCode:document.getElementById("plantAddInventoryCode").value.trim()||makeInventoryCode(),
+    inventoryCode:document.getElementById("plantAddInventoryCode").value.trim()||existing?.inventoryCode||makeInventoryCode(thaiName),
     stockStatus:document.getElementById("plantAddStockStatus").value||"available",
     arrivalDate:document.getElementById("plantAddArrivalDate").value||new Date().toISOString().slice(0,10),
     thaiName,
