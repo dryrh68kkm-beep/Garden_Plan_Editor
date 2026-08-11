@@ -550,3 +550,26 @@ body::-webkit-scrollbar,
     );
   }
 }
+
+
+/* Real plant inventory grouped by species */
+.sc-species-card{cursor:pointer}
+.sc-new-stock-badge{position:absolute;top:12px;right:12px;padding:7px 11px;border-radius:999px;background:#fff7df;color:#684710;font-size:.78rem;font-weight:800;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.sc-view-stock-btn{border:0;cursor:pointer;width:calc(100% - 32px)}
+.sc-plant-group-dialog{width:min(980px,calc(100% - 24px))}
+.sc-specimen-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:18px}
+.sc-specimen-card{overflow:hidden;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 10px 26px rgba(16,45,35,.09);cursor:pointer;transition:.2s}
+.sc-specimen-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.sc-specimen-photo{display:grid;place-items:center;width:100%;aspect-ratio:3/4;overflow:hidden;background:#edf2ef;font-size:2rem}
+.sc-specimen-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.sc-specimen-info{display:grid;gap:6px;padding:12px 13px 14px}
+.sc-specimen-info strong{color:var(--green);font-size:.9rem}
+.sc-specimen-info span{min-height:2.8em;color:var(--muted);font-size:.76rem;line-height:1.45}
+.sc-specimen-info b{font-size:1rem}
+.sc-specimen-info .small-btn{justify-self:start}
+@media(max-width:640px){
+  .sc-specimen-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .sc-specimen-info{padding:10px}
+  .sc-specimen-info span{font-size:.7rem}
+  .sc-new-stock-badge{top:10px;right:10px;font-size:.7rem}
+}

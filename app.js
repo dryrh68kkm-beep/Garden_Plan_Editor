@@ -733,7 +733,15 @@ function resetPlantPaging(){
 // a size picker instead; a record with no speciesId (an admin-added custom
 // plant) just becomes its own single-variant group.
 const PLANT_SIZE_ORDER=["S","M","L","XL","STD","PRE"];
-function plantGroupKey(p){ return String(p.speciesId||p.id); }
+function normalizedPlantSpeciesName(name=""){
+  return String(name).trim().toLocaleLowerCase("th-TH").replace(/\s+/g," ");
+}
+function plantGroupKey(p){
+  if(p.speciesId) return String(p.speciesId);
+  if(p.custom&&p.thaiName) return `custom:${normalizedPlantSpeciesName(p.thaiName)}`;
+  return String(p.id);
+}
+function isAvailablePlant(p){ return !p.stockStatus||p.stockStatus==="available"; }
 function groupPlantsBySpecies(rows){
   const groups=new Map();
   const order=[];
@@ -742,21 +750,27 @@ function groupPlantsBySpecies(rows){
     if(!groups.has(key)){ groups.set(key,[]); order.push(key); }
     groups.get(key).push(p);
   }
-  order.forEach(key=>groups.get(key).sort((a,b)=>PLANT_SIZE_ORDER.indexOf(a.sizeCode)-PLANT_SIZE_ORDER.indexOf(b.sizeCode)));
+  order.forEach(key=>groups.get(key).sort((a,b)=>{
+    if(a.custom||b.custom) return String(b.arrivalDate||"").localeCompare(String(a.arrivalDate||""))||String(a.inventoryCode||a.id).localeCompare(String(b.inventoryCode||b.id),"th");
+    return PLANT_SIZE_ORDER.indexOf(a.sizeCode)-PLANT_SIZE_ORDER.indexOf(b.sizeCode);
+  }));
   return order.map(key=>groups.get(key));
 }
 let plantGroupsByKey=new Map();
 function renderPlantCardHtml(variants,selectedId){
   const p=variants.find(v=>v.id===selectedId)||variants[0];
   const cover=plantCoverThumb(p);
+  const realItems=variants.filter(v=>v.custom);
+  const availableCount=realItems.filter(isAvailablePlant).length;
   return `
     <article class="plant-card" data-group-key="${esc(plantGroupKey(p))}">
       <div class="plant-thumb">${cover?`<img src="${esc(cover)}" alt="${esc(p.thaiName)}" loading="lazy" />`:"🌱"}${p.bestSeller?'<span class="best-seller-badge">🔥 ขายดี</span>':""}${p.isFocalPlant?'<span class="focal-plant-badge">🌳 ไม้ประธาน</span>':""}</div>
-      <div class="plant-code">${esc(p.id)} · ${esc(p.category)}${p.custom?' · <span class="chip">เพิ่มเอง</span>':""}</div>
+      <div class="plant-code">${esc(p.inventoryCode||p.id)} · ${esc(p.category)}${realItems.length?` · <span class="chip">สินค้าจริง ${realItems.length} ต้น</span><span class="chip">พร้อมขาย ${availableCount} ต้น</span>`:""}</div>
       <h3>${esc(p.thaiName)}</h3>
       <div>${esc(p.englishName||"-")}</div>
       <div class="plant-scientific">${esc(p.scientificName||"")}</div>
-      ${variants.length>1?`<div class="plant-size-picker">${variants.map(v=>`<button type="button" class="plant-size-chip${v.id===p.id?" active":""}" data-plant-id="${esc(v.id)}">${esc(plantSizeLabel(v)||"?")}</button>`).join("")}</div>`:(plantSizeLabel(p)?`<div class="meta">ขนาด ${esc(plantSizeLabel(p))}</div>`:"")}
+      ${variants.length>1?`<div class="plant-size-picker">${variants.map(v=>`<button type="button" class="plant-size-chip${v.id===p.id?" active":""}" data-plant-id="${esc(v.id)}">${esc(v.custom?(v.inventoryCode||v.id):(plantSizeLabel(v)||"?"))}</button>`).join("")}</div>`:(plantSizeLabel(p)?`<div class="meta">ขนาด ${esc(plantSizeLabel(p))}</div>`:"")}
+      ${p.custom?`<div class="meta">สถานะ ${p.stockStatus==="sold"?"ขายแล้ว":p.stockStatus==="reserved"?"จองแล้ว":"พร้อมขาย"}${p.arrivalDate?` · เข้า ${esc(p.arrivalDate)}`:""}</div>`:""}
       <div class="chips">
         <span class="chip">${esc(p.light)}</span>
         <span class="chip">น้ำ ${esc(p.water)}</span>
@@ -768,7 +782,8 @@ function renderPlantCardHtml(variants,selectedId){
       </div>
       <div class="actions">
         <button class="btn btn-primary" onclick="openPlantDetail('${p.id}')">ดูรายละเอียด</button>
-        <button class="small-btn" onclick="openPlantEdit('${p.id}')">แก้ไข</button>
+        <button class="small-btn" onclick="${p.custom?"openCustomPlantEdit":"openPlantEdit"}('${p.id}')">แก้ไข</button>
+        ${realItems.length?`<button class="small-btn" onclick="openCustomPlantAddForSpecies('${p.id}')">+ เพิ่มต้นจริงพันธุ์นี้</button>`:""}
       </div>
     </article>`;
 }
@@ -1015,9 +1030,13 @@ function fillPlantAddCategoryOptions(){
   const categories=[...new Set(plants.map(p=>p.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"th"));
   document.getElementById("plantAddCategoryOptions").innerHTML=categories.map(x=>`<option value="${esc(x)}"></option>`).join("");
 }
+function makeInventoryCode(){
+  return `TREE-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2,5).toUpperCase()}`;
+}
 function openCustomPlantAdd(){
   fillPlantAddCategoryOptions();
   document.getElementById("plantAddId").value="";
+  document.getElementById("plantAddSpeciesId").value="";
   document.getElementById("plantAddTitle").textContent="เพิ่มต้นไม้ใหม่";
   document.getElementById("plantAddThaiName").value="";
   document.getElementById("plantAddEnglishName").value="";
@@ -1029,6 +1048,9 @@ function openCustomPlantAdd(){
   document.getElementById("plantAddSizeValue").value="";
   document.getElementById("plantAddSizeUnit").value="cm";
   document.getElementById("plantAddUnit").value="ต้น";
+  document.getElementById("plantAddInventoryCode").value=makeInventoryCode();
+  document.getElementById("plantAddStockStatus").value="available";
+  document.getElementById("plantAddArrivalDate").value=new Date().toISOString().slice(0,10);
   document.getElementById("plantAddCost").value=0;
   document.getElementById("plantAddPrice").value=0;
   document.getElementById("plantAddAuspicious").value="";
@@ -1041,11 +1063,29 @@ function openCustomPlantAdd(){
   document.getElementById("plantAddDeleteBtn").style.display="none";
   document.getElementById("plantAddDialog").showModal();
 }
+function openCustomPlantAddForSpecies(id){
+  const source=customPlants.find(x=>x.id===id);
+  if(!source) return;
+  openCustomPlantAdd();
+  document.getElementById("plantAddTitle").textContent=`เพิ่มต้นจริง: ${source.thaiName}`;
+  document.getElementById("plantAddSpeciesId").value=source.speciesId||plantGroupKey(source);
+  document.getElementById("plantAddThaiName").value=source.thaiName||"";
+  document.getElementById("plantAddEnglishName").value=source.englishName||"";
+  document.getElementById("plantAddScientificName").value=source.scientificName||"";
+  document.getElementById("plantAddCategory").value=source.category||"";
+  document.getElementById("plantAddLight").value=source.light||"";
+  document.getElementById("plantAddWater").value=source.water||"";
+  document.getElementById("plantAddMaintenance").value=source.maintenance||"";
+  document.getElementById("plantAddUnit").value=source.unit||"ต้น";
+  document.getElementById("plantAddBestSeller").checked=!!source.bestSeller;
+  document.getElementById("plantAddFocal").checked=!!source.isFocalPlant;
+}
 function openCustomPlantEdit(id){
   const p=customPlants.find(x=>x.id===id);
   if(!p) return;
   fillPlantAddCategoryOptions();
   document.getElementById("plantAddId").value=p.id;
+  document.getElementById("plantAddSpeciesId").value=p.speciesId||plantGroupKey(p);
   document.getElementById("plantAddTitle").textContent=`แก้ไข: ${p.thaiName}`;
   document.getElementById("plantAddThaiName").value=p.thaiName||"";
   document.getElementById("plantAddEnglishName").value=p.englishName||"";
@@ -1057,6 +1097,9 @@ function openCustomPlantEdit(id){
   document.getElementById("plantAddSizeValue").value=p.customSizeValue||"";
   document.getElementById("plantAddSizeUnit").value=p.customSizeUnit||"cm";
   document.getElementById("plantAddUnit").value=p.unit||"ต้น";
+  document.getElementById("plantAddInventoryCode").value=p.inventoryCode||p.id;
+  document.getElementById("plantAddStockStatus").value=p.stockStatus||"available";
+  document.getElementById("plantAddArrivalDate").value=p.arrivalDate||"";
   document.getElementById("plantAddCost").value=p.costPrice||0;
   document.getElementById("plantAddPrice").value=p.salePrice||0;
   document.getElementById("plantAddAuspicious").value=p.auspicious||"";
@@ -1095,8 +1138,13 @@ document.getElementById("plantAddForm").addEventListener("submit",async e=>{
   if(!thaiName){ alert("กรุณาระบุชื่อไทยของต้นไม้"); return; }
   const existingId=document.getElementById("plantAddId").value;
   const id=existingId||uid("plant");
+  const existing=existingId?customPlants.find(p=>p.id===existingId):null;
+  const speciesId=document.getElementById("plantAddSpeciesId").value||existing?.speciesId||`custom:${normalizedPlantSpeciesName(thaiName)}`;
   const plant={
-    id, custom:true,
+    id, custom:true, speciesId,
+    inventoryCode:document.getElementById("plantAddInventoryCode").value.trim()||makeInventoryCode(),
+    stockStatus:document.getElementById("plantAddStockStatus").value||"available",
+    arrivalDate:document.getElementById("plantAddArrivalDate").value||new Date().toISOString().slice(0,10),
     thaiName,
     englishName:document.getElementById("plantAddEnglishName").value.trim(),
     scientificName:document.getElementById("plantAddScientificName").value.trim(),
