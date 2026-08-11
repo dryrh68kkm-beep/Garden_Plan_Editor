@@ -641,3 +641,9 @@ body::-webkit-scrollbar,
     animation:none;
   }
 }
+
+
+/* Keep the complete mobile logo comfortably below the top safe area. */
+@media(max-width:640px){
+  .sc-nav-brand{top:calc(50% + 10px)}
+}
