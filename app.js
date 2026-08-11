@@ -131,7 +131,7 @@ async function savePlantOverrides(id){
   if(id) await saveDoc("plantOverrides",id,plantOverrides[id],"ข้อมูลต้นไม้");
 }
 function plantShowcaseIndexRecord(plant){
-  const {images,thumbs,...meta}=plant;
+  const {id,images,thumbs,...meta}=plant;
   const thumb=(thumbs&&thumbs[0])||"";
   return {...meta,thumbs:thumb?[thumb]:[],images:thumb?[thumb]:[],detailLoaded:false};
 }
@@ -176,7 +176,7 @@ async function syncPlantShowcaseIndexes(rows,remoteRows=[]){
     }
   }
   safeSetLocal(STORAGE.customPlants,customPlants);
-  cachePlantShowcaseIndex(customPlants.map(plantShowcaseIndexRecord));
+  cachePlantShowcaseIndex(customPlants.map(p=>({...plantShowcaseIndexRecord(p),id:p.id})));
   rebuildPlantsList();
   resetPlantPaging();
 }
