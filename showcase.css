@@ -446,3 +446,28 @@
     background-position:center 48%;
   }
 }
+
+
+/* Hide the browser scroll indicator while preserving touch scrolling */
+html,
+body,
+.page,
+.modal{
+  -ms-overflow-style:none;
+  scrollbar-width:none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.page::-webkit-scrollbar,
+.modal::-webkit-scrollbar{
+  width:0;
+  height:0;
+  display:none;
+  background:transparent;
+}
+@media(max-width:640px){
+  html,
+  body{
+    -webkit-overflow-scrolling:touch;
+  }
+}
