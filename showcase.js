@@ -14,7 +14,8 @@ const LINE_OA_ID="@225yhyoy";
 function lineOrderUrl(p){
   const priceText=p.salePrice?` ราคา ${money(p.salePrice)}${p.unit?`/${p.unit}`:""}`:"";
   const sizeText=plantSizeLabel(p)?` ขนาด ${plantSizeLabel(p)}`:"";
-  const codeText=p.inventoryCode?` รหัส ${p.inventoryCode}`:"";
+  const visibleCode=publicInventoryCode(p);
+  const codeText=visibleCode?` รหัส ${visibleCode}`:"";
   const text=`สนใจสอบถาม: ${p.thaiName}${codeText}${sizeText}${priceText}`;
   return `https://line.me/R/oaMessage/${LINE_OA_ID}/?${encodeURIComponent(text)}`;
 }
@@ -515,6 +516,15 @@ function groupPlantsBySpecies(rows){
   return order.map(key=>groups.get(key));
 }
 let scPlantGroupsByKey=new Map();
+let scPublicInventoryCodes=new Map();
+function publicInventoryCode(p){
+  return scPublicInventoryCodes.get(p.id)||p.inventoryCode||"";
+}
+function displayInventoryCode(p,index){
+  const stored=String(p.inventoryCode||p.id||"");
+  if(stored&&!/^(plant_|TREE-)/i.test(stored)) return stored;
+  return `${p.thaiName||"ต้นไม้"}-${String(index+1).padStart(2,"0")}`;
+}
 function renderScPlantTileHtml(variants,selectedId){
   const realItems=variants.filter(p=>p.custom&&isAvailablePlant(p));
   if(realItems.length){
@@ -551,23 +561,26 @@ function scSwitchPlantVariant(btn){
   if(!variants) return;
   tile.outerHTML=renderScPlantTileHtml(variants,btn.dataset.plantId);
 }
-function renderScSpecimenHtml(p){
+function renderScSpecimenHtml(p,index){
   const cover=plantCoverThumb(p);
+  const code=displayInventoryCode(p,index);
   return `<article class="sc-specimen-card" onclick="openScSpecimen('${esc(p.id)}')">
-    <div class="sc-specimen-photo">${cover?`<img src="${esc(cover)}" alt="${esc(p.thaiName)} ${esc(p.inventoryCode||p.id)}" loading="lazy" />`:"🌱"}</div>
+    <div class="sc-specimen-photo">${cover?`<img src="${esc(cover)}" alt="${esc(p.thaiName)} ${esc(code)}" loading="lazy" />`:"🌱"}<span class="sc-specimen-number">ต้นที่ ${index+1}</span></div>
     <div class="sc-specimen-info">
-      <strong>${esc(p.inventoryCode||p.id)}</strong>
+      <h4>${esc(p.thaiName)}</h4>
+      <strong>รหัส ${esc(code)}</strong>
       <span>${[plantSizeLabel(p)?`ขนาด ${plantSizeLabel(p)}`:"",p.arrivalDate?`เข้า ${p.arrivalDate}`:""].filter(Boolean).map(esc).join(" · ")}</span>
       <b>${p.salePrice?money(p.salePrice):"สอบถามราคา"}</b>
-      <button type="button" class="small-btn">ดูต้นนี้ →</button>
+      <button type="button" class="small-btn">ดูรูปและรายละเอียด →</button>
     </div>
   </article>`;
 }
 function openScPlantGroup(key){
   const items=(scPlantGroupsByKey.get(key)||[]).filter(p=>p.custom&&isAvailablePlant(p));
   if(!items.length) return;
+  scPublicInventoryCodes=new Map(items.map((p,index)=>[p.id,displayInventoryCode(p,index)]));
   document.getElementById("scPlantGroupName").textContent=items[0].thaiName;
-  document.getElementById("scPlantGroupCount").textContent=`ต้นไม้จริงพร้อมขาย ${items.length} ต้น · กดดูรูปและรายละเอียดของแต่ละต้น`;
+  document.getElementById("scPlantGroupCount").textContent=`มีต้น${items[0].thaiName}จริงพร้อมขาย ${items.length} ต้น · แต่ละการ์ดคือสินค้าจริงคนละต้น`;
   document.getElementById("scPlantGroupList").innerHTML=items.map(renderScSpecimenHtml).join("");
   document.getElementById("scPlantGroupDialog").showModal();
 }
@@ -636,7 +649,7 @@ function openScPlantLightbox(id){
   const p=plantById.get(id);
   const images=p?plantImages(p):[];
   if(!p||!images.length) return;
-  document.getElementById("scPlantLightboxName").textContent=[p.thaiName,p.inventoryCode?`รหัส ${p.inventoryCode}`:"",plantSizeLabel(p)?`ขนาด${plantSizeLabel(p)}`:"",p.englishName].filter(Boolean).join(" · ");
+  document.getElementById("scPlantLightboxName").textContent=[p.thaiName,publicInventoryCode(p)?`รหัส ${publicInventoryCode(p)}`:"",plantSizeLabel(p)?`ขนาด${plantSizeLabel(p)}`:"",p.englishName].filter(Boolean).join(" · ");
   renderScPlantLightboxGallery(images);
   const priceTag=document.getElementById("scPlantLightboxPriceTag");
   if(p.salePrice){
