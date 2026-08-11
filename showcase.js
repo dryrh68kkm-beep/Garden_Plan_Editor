@@ -2,6 +2,7 @@ const STORAGE = {
   plantOverrides: "garden_plant_overrides_v1",
   styleOverrides: "garden_style_overrides_v1",
   customPlants: "garden_custom_plants_v1",
+  plantShowcaseIndex: "garden_plant_showcase_index_v1",
   gardenPortfolio: "garden_portfolio_v1"
 };
 
@@ -117,11 +118,11 @@ let plantOverrides = {};
 let customPlants = [];
 let portfolioItems = [];
 async function hydrateFromLocalCache(){
-  await LS.migrateFromLocalStorage([STORAGE.styleOverrides, STORAGE.plantOverrides, STORAGE.customPlants, STORAGE.gardenPortfolio]);
+  await LS.migrateFromLocalStorage([STORAGE.styleOverrides, STORAGE.plantOverrides, STORAGE.plantShowcaseIndex, STORAGE.gardenPortfolio]);
   const [sO,pO,cP,pI]=await Promise.all([
     LS.get(STORAGE.styleOverrides,{}),
     LS.get(STORAGE.plantOverrides,{}),
-    LS.get(STORAGE.customPlants,[]),
+    LS.get(STORAGE.plantShowcaseIndex,[]),
     LS.get(STORAGE.gardenPortfolio,[])
   ]);
   styleOverrides=sO;
@@ -645,10 +646,25 @@ function renderScPlantLightboxGallery(images){
   };
   carousel.scrollLeft=0;
 }
-function openScPlantLightbox(id){
-  const p=plantById.get(id);
-  const images=p?plantImages(p):[];
-  if(!p||!images.length) return;
+async function openScPlantLightbox(id){
+  let p=plantById.get(id);
+  if(!p) return;
+  // Public inventory index contains only a small thumbnail. Fetch the full
+  // Firestore document for this one physical tree only after the customer clicks.
+  if(p.custom&&!p.detailLoaded){
+    try{
+      const detail=await fbGet("customPlants",id);
+      if(detail){
+        p={...p,...detail,detailLoaded:true};
+        customPlants=customPlants.map(x=>x.id===id?p:x);
+        rebuildAllPlants();
+      }
+    }catch(error){
+      console.error("Could not load full plant detail, using thumbnail:",error);
+    }
+  }
+  const images=plantImages(p);
+  if(!images.length) return;
   document.getElementById("scPlantLightboxName").textContent=[p.thaiName,publicInventoryCode(p)?`รหัส ${publicInventoryCode(p)}`:"",plantSizeLabel(p)?`ขนาด${plantSizeLabel(p)}`:"",p.englishName].filter(Boolean).join(" · ");
   renderScPlantLightboxGallery(images);
   const priceTag=document.getElementById("scPlantLightboxPriceTag");
@@ -725,17 +741,19 @@ loadCareBeliefs();
 let lastFetchSignature=null;
 async function initFromFirestore(){
   try{
-    const [remoteStyleOverrides,remotePlantOverrides,remoteCustomPlants,remotePortfolio]=await Promise.all([
+    const [remoteStyleOverrides,remotePlantOverrides,remotePlantShowcaseIndex,remotePortfolio]=await Promise.all([
       fbList("styleOverrides"),
       fbList("plantOverrides"),
-      fbList("customPlants"),
+      fbList("plantShowcaseIndex"),
       fbList("gardenPortfolio")
     ]);
-    // Every poll tick re-downloads the full collections (including embedded
-    // photo base64), but re-rendering — and so re-decoding every embedded
-    // image — is the expensive part on mobile. Skip it entirely when the
-    // fetched data is byte-for-byte the same as last time, which is true on
-    // almost every tick since nothing changed in the back office.
+    // Compatibility during rollout: before an admin has opened the back office
+    // once to create the lightweight index, fall back to the old full collection.
+    const remoteCustomPlants=remotePlantShowcaseIndex.length
+      ? remotePlantShowcaseIndex
+      : await fbList("customPlants");
+    // Poll only lightweight metadata and thumbnails. Full galleries are
+    // fetched one physical tree at a time when a customer opens its detail.
     const signature=JSON.stringify([remoteStyleOverrides,remotePlantOverrides,remoteCustomPlants,remotePortfolio]);
     if(signature===lastFetchSignature) return;
     lastFetchSignature=signature;
@@ -752,6 +770,7 @@ async function initFromFirestore(){
     // can't skip the render calls below it the way a raw localStorage write
     // once could.
     LS.set(STORAGE.gardenPortfolio,portfolioItems);
+    LS.set(STORAGE.plantShowcaseIndex,customPlants);
     renderScStyles();
     renderScPortfolio();
     rebuildAllPlants();
@@ -768,7 +787,7 @@ hydrateFromLocalCache().then(initFromFirestore);
 // device (e.g. the back office) shows up here without a manual reload.
 // Skipped while a detail dialog/lightbox is open so a background refresh
 // doesn't yank content out from under someone mid-view.
-const FIRESTORE_POLL_MS=20000;
+const FIRESTORE_POLL_MS=120000;
 setInterval(()=>{
   if(document.querySelector("dialog[open]")) return;
   initFromFirestore();
