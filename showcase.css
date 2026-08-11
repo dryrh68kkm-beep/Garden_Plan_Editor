@@ -671,3 +671,12 @@ body::-webkit-scrollbar,
 @media(max-width:380px){
   .sc-nav-brand img{width:88px}
 }
+
+
+/* Thai hero typography: leave room for stacked vowels and tone marks. */
+@media(max-width:640px){
+  .sc-hero-copy h1{
+    line-height:1.14;
+    letter-spacing:-.02em;
+  }
+}
