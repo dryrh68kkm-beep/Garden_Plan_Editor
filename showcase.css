@@ -597,3 +597,28 @@ body::-webkit-scrollbar,
   .sc-specimen-info h4{font-size:1.08rem}
   .sc-specimen-info .small-btn{padding:8px 9px;font-size:.72rem}
 }
+
+
+/* Lightweight single-page reveal to avoid painting two image grids at once */
+.page.sc-page-reveal{
+  opacity:0;
+  transform:translate3d(0,8px,0);
+  transition:opacity .18s ease-out,transform .18s ease-out;
+  will-change:opacity,transform;
+}
+.page.sc-page-reveal.sc-page-reveal-active{
+  opacity:1;
+  transform:translate3d(0,0,0);
+}
+.style-grid>*,
+.showcase-plant-grid>*{
+  content-visibility:auto;
+  contain-intrinsic-size:360px;
+}
+@media(prefers-reduced-motion:reduce){
+  .page.sc-page-reveal{
+    opacity:1;
+    transform:none;
+    transition:none;
+  }
+}
