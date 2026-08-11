@@ -680,3 +680,20 @@ body::-webkit-scrollbar,
     letter-spacing:-.02em;
   }
 }
+
+
+/* Organic mobile logo badge: soft, botanical silhouette without a rigid box. */
+@media(max-width:640px){
+  .sc-nav-brand{top:calc(50% + 16px)}
+  .sc-nav-brand img{
+    width:104px;
+    height:auto;
+    border:1px solid rgba(255,255,255,.72);
+    border-radius:52% 48% 55% 45% / 44% 56% 44% 56%;
+    background:#fffaf0;
+    box-shadow:0 10px 28px rgba(4,28,20,.25);
+  }
+}
+@media(max-width:380px){
+  .sc-nav-brand img{width:94px}
+}
