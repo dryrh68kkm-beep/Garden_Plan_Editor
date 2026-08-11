@@ -359,6 +359,20 @@
     <form id="plantAddForm" method="dialog">
       <div class="modal-head"><div class="modal-head-title"><img src="assets/rinlada-logo-main.webp" class="modal-logo" alt="" /><h3 id="plantAddTitle">เพิ่มต้นไม้ใหม่</h3></div><button type="button" class="icon-btn close-dialog">×</button></div>
       <input type="hidden" id="plantAddId" />
+      <input type="hidden" id="plantAddSpeciesId" />
+      <div class="form-section">
+        <p class="form-section-title">สินค้าจริงแต่ละต้น</p>
+        <div class="two-col">
+          <label>รหัสประจำต้น<input id="plantAddInventoryCode" class="input" placeholder="สร้างอัตโนมัติ" /></label>
+          <label>วันที่สินค้าเข้า<input id="plantAddArrivalDate" class="input" type="date" /></label>
+        </div>
+        <label>สถานะสินค้า<select id="plantAddStockStatus" class="input">
+          <option value="available">พร้อมขาย</option>
+          <option value="reserved">จองแล้ว</option>
+          <option value="sold">ขายแล้ว</option>
+        </select></label>
+        <p class="meta">เพิ่มได้ไม่จำกัดจำนวน ระบบจะรวมต้นไม้ชื่อเดียวกันเป็นหมวดเดียวบนหน้า Showcase</p>
+      </div>
       <div class="form-section">
         <p class="form-section-title">ข้อมูลพื้นฐาน</p>
         <label>ชื่อไทย<input id="plantAddThaiName" class="input" required /></label>
@@ -447,6 +461,6 @@
   <script src="data/garden-styles-data.js?v=20260811"></script>
   <script src="local-store.js?v=202608041637"></script>
   <script src="firebase-client.js?v=202608081344"></script>
-  <script src="app.js?v=202608090407"></script>
+  <script src="app.js?v=202608111930"></script>
 </body>
 </html>
