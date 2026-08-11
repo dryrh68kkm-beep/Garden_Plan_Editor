@@ -160,44 +160,28 @@ function plantCoverThumb(p){
   return (p.thumbs&&p.thumbs[0])||plantImages(p)[0];
 }
 
-// Every page change slides the outgoing page out to the right and brings
-// the incoming page in from the left — the same direction as the
-// swipe-right-to-go-back gesture, so navigating (by tap or swipe) feels
-// like one consistent "back" motion instead of an instant cut.
-const SC_PAGE_TRANSITION_MS=340;
+// Keep page changes lightweight on mobile: never animate two complete,
+ // image-heavy pages at the same time. Hide the outgoing page immediately,
+ // then reveal only the incoming page with a short compositor-friendly motion.
+const SC_PAGE_TRANSITION_MS=180;
+let scPageTransitionTimer=0;
 function showPage(name){
   const next=document.getElementById(`${name}Page`);
   const current=document.querySelector(".page.active");
-  if(!current||current===next){
-    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-    next.classList.add("active");
-    next.scrollTop=0;
-    window.scrollTo({top:0,left:0,behavior:"instant"});
-    return;
-  }
-  // Reset scroll position on both the outgoing element (so it doesn't
-  // still show mid-scroll once it becomes a fixed overlay) and the
-  // incoming one, using "instant" — html{scroll-behavior:smooth} would
-  // otherwise animate this scroll at the same time as the slide
-  // transform, fighting it and making the whole thing look janky.
-  current.scrollTop=0;
-  next.scrollTop=0;
-  window.scrollTo({top:0,left:0,behavior:"instant"});
-  // Both pages carry .active during the transition so each still resolves
-  // its own display value normally (e.g. the mobile home page's grid
-  // layout override) — the transition classes only add position/transform.
-  current.classList.add("sc-page-exit");
-  next.classList.add("active","sc-page-enter");
-  void next.offsetWidth;
-  requestAnimationFrame(()=>{
-    requestAnimationFrame(()=>{
-      current.classList.add("sc-page-exit-active");
-      next.classList.add("sc-page-enter-active");
-    });
+  if(!next||current===next) return;
+
+  clearTimeout(scPageTransitionTimer);
+  document.querySelectorAll(".page").forEach(page=>{
+    page.classList.remove("active","sc-page-exit","sc-page-exit-active","sc-page-enter","sc-page-enter-active","sc-page-reveal","sc-page-reveal-active");
   });
-  setTimeout(()=>{
-    current.classList.remove("active","sc-page-exit","sc-page-exit-active");
-    next.classList.remove("sc-page-enter","sc-page-enter-active");
+
+  next.scrollTop=0;
+  next.classList.add("active","sc-page-reveal");
+  window.scrollTo({top:0,left:0,behavior:"instant"});
+
+  requestAnimationFrame(()=>next.classList.add("sc-page-reveal-active"));
+  scPageTransitionTimer=setTimeout(()=>{
+    next.classList.remove("sc-page-reveal","sc-page-reveal-active");
   },SC_PAGE_TRANSITION_MS);
 }
 // The plant lightbox slides in/out (see openScPlantLightbox / closeScPlantLightboxAnimated);
