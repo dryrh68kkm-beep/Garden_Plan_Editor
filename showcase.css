@@ -418,3 +418,31 @@
   font-size:.75rem;
   line-height:1.6;
 }
+
+
+/* Full-bleed hero cover: overscan removes subpixel seams on mobile Safari */
+.sc-hero-panel{
+  width:100%;
+  isolation:isolate;
+}
+.sc-hero-image{
+  inset:-3px;
+  transform:none;
+  background-size:cover;
+  background-repeat:no-repeat;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+@media(max-width:640px){
+  #showcaseHomePage.active{
+    width:100%;
+  }
+  .sc-hero-panel{
+    width:100%;
+    margin:0;
+  }
+  .sc-hero-image{
+    inset:-4px;
+    background-position:center 48%;
+  }
+}
