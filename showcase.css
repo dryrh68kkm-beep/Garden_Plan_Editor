@@ -471,3 +471,55 @@ body::-webkit-scrollbar,
     -webkit-overflow-scrolling:touch;
   }
 }
+
+
+/* Mobile full-bleed landing: extend under the safe area and remove card gutters */
+@media(max-width:640px){
+  html,
+  body:has(#showcaseHomePage.active){
+    background:var(--green);
+  }
+
+  #showcaseHomePage.active{
+    width:100%;
+    margin-top:calc(-1 * env(safe-area-inset-top));
+  }
+
+  .sc-home-nav{
+    top:env(safe-area-inset-top);
+  }
+
+  .sc-hero-panel{
+    width:100%;
+    min-height:calc(72svh + env(safe-area-inset-top));
+    margin:0;
+    border:0;
+  }
+
+  .sc-choice-section{
+    width:100%;
+    padding-left:0;
+    padding-right:0;
+  }
+
+  .sc-trust-strip{
+    margin-left:14px;
+    margin-right:14px;
+  }
+
+  .sc-choice-head{
+    margin-left:16px;
+    margin-right:16px;
+  }
+
+  .sc-feature-stack{
+    width:100%;
+  }
+
+  .sc-feature-card{
+    width:100%;
+    border-left:0;
+    border-right:0;
+    border-radius:0;
+  }
+}
