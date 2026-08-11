@@ -591,3 +591,47 @@ body::-webkit-scrollbar,
   .sc-specimen-info h4{font-size:1.08rem}
   .sc-specimen-info .small-btn{padding:8px 9px;font-size:.72rem}
 }
+
+
+/* Subtle content motion: keeps navigation responsive while adding visual life.
+   Only child content animates; the page and scroll container never transform. */
+@keyframes sc-content-reveal{
+  from{opacity:0;transform:translate3d(0,10px,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
+}
+#showcaseHomePage.active .sc-hero-copy,
+#showcaseHomePage.active .sc-trust-strip,
+#showcaseHomePage.active .sc-choice-head,
+#showcaseHomePage.active .sc-feature-card,
+.sc-content-page.active .sc-page-toolbar,
+.sc-content-page.active .sc-page-head,
+.sc-content-page.active .sc-filter-panel,
+.sc-content-page.active .sc-count,
+.sc-content-page.active .style-grid,
+.sc-content-page.active .showcase-plant-grid{
+  animation:sc-content-reveal .34s cubic-bezier(.22,.61,.36,1) both;
+}
+#showcaseHomePage.active .sc-trust-strip,
+.sc-content-page.active .sc-page-head{animation-delay:.04s}
+#showcaseHomePage.active .sc-choice-head,
+.sc-content-page.active .sc-filter-panel{animation-delay:.07s}
+#showcaseHomePage.active .sc-feature-card:nth-child(1),
+.sc-content-page.active .sc-count{animation-delay:.10s}
+#showcaseHomePage.active .sc-feature-card:nth-child(2),
+.sc-content-page.active .style-grid,
+.sc-content-page.active .showcase-plant-grid{animation-delay:.14s}
+
+@media(prefers-reduced-motion:reduce){
+  #showcaseHomePage.active .sc-hero-copy,
+  #showcaseHomePage.active .sc-trust-strip,
+  #showcaseHomePage.active .sc-choice-head,
+  #showcaseHomePage.active .sc-feature-card,
+  .sc-content-page.active .sc-page-toolbar,
+  .sc-content-page.active .sc-page-head,
+  .sc-content-page.active .sc-filter-panel,
+  .sc-content-page.active .sc-count,
+  .sc-content-page.active .style-grid,
+  .sc-content-page.active .showcase-plant-grid{
+    animation:none;
+  }
+}
