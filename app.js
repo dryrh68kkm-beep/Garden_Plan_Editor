@@ -338,7 +338,7 @@ document.querySelectorAll(".close-dialog").forEach(b=>b.addEventListener("click"
 document.getElementById("resetAllBtn").onclick=()=>{
   if(confirm("ต้องการล้างข้อมูลแบบสวน ต้นไม้ที่เพิ่มเอง และรูปภาพที่แนบทั้งหมดหรือไม่?")){
     plantOverrides={};styleOverrides={};customPlants=[];portfolioItems=[];failedSaves=new Map();
-    [STORAGE.plantOverrides,STORAGE.styleOverrides,STORAGE.customPlants,STORAGE.gardenPortfolio,FAILED_SAVES_KEY].forEach(k=>LS.remove(k));
+    [STORAGE.plantOverrides,STORAGE.styleOverrides,STORAGE.customPlants,STORAGE.plantShowcaseIndex,STORAGE.gardenPortfolio,FAILED_SAVES_KEY].forEach(k=>LS.remove(k));
     rebuildPlantsList();
     resetPlantPaging();
     renderAll();
@@ -1252,7 +1252,7 @@ loadCareBeliefs();
 async function hydrateFromLocalCache(){
   await LS.migrateFromLocalStorage([
     STORAGE.plantOverrides, STORAGE.styleOverrides, STORAGE.customPlants,
-    STORAGE.gardenPortfolio, FAILED_SAVES_KEY
+    STORAGE.plantShowcaseIndex, STORAGE.gardenPortfolio, FAILED_SAVES_KEY
   ]);
   const [pO,sO,cP,pI,fS]=await Promise.all([
     LS.get(STORAGE.plantOverrides,{}),
