@@ -1,11 +1,5 @@
 :root{--green:#0d2e23;--green-2:#174b39;--gold:#e4c58f;--cream:#f4f2eb;--ink:#173128;--muted:#728078;--line:rgba(18,68,50,.13);--shadow:0 24px 70px rgba(5,34,24,.16)}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:"IBM Plex Sans Thai",sans-serif}.page{display:none}.page.active{display:block}button,input,select{font:inherit}
-.page.sc-page-exit,.page.sc-page-enter{position:fixed!important;inset:0;z-index:40;overflow:auto;background:var(--cream);pointer-events:none;will-change:transform;backface-visibility:hidden;transition:transform .34s cubic-bezier(.22,.61,.36,1)}
-.page.sc-page-exit{z-index:40;transform:translate3d(0,0,0)}
-.page.sc-page-exit.sc-page-exit-active{transform:translate3d(100%,0,0)}
-.page.sc-page-enter{z-index:41;transform:translate3d(-100%,0,0)}
-.page.sc-page-enter.sc-page-enter-active{transform:translate3d(0,0,0)}
-
 /* Plant-card tap opens the lightbox with a slide-left motion (content
    entering from the right), the "forward" complement of the page system's
    slide-right "back" navigation above; closing reverses the same motion. */
@@ -596,29 +590,4 @@ body::-webkit-scrollbar,
   .sc-specimen-grid:has(> .sc-specimen-card:only-child) .sc-specimen-info{align-content:center;padding:13px 12px}
   .sc-specimen-info h4{font-size:1.08rem}
   .sc-specimen-info .small-btn{padding:8px 9px;font-size:.72rem}
-}
-
-
-/* Lightweight single-page reveal to avoid painting two image grids at once */
-.page.sc-page-reveal{
-  opacity:0;
-  transform:translate3d(0,8px,0);
-  transition:opacity .18s ease-out,transform .18s ease-out;
-  will-change:opacity,transform;
-}
-.page.sc-page-reveal.sc-page-reveal-active{
-  opacity:1;
-  transform:translate3d(0,0,0);
-}
-.style-grid>*,
-.showcase-plant-grid>*{
-  content-visibility:auto;
-  contain-intrinsic-size:360px;
-}
-@media(prefers-reduced-motion:reduce){
-  .page.sc-page-reveal{
-    opacity:1;
-    transform:none;
-    transition:none;
-  }
 }

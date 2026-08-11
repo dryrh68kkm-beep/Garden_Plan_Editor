@@ -160,30 +160,24 @@ function plantCoverThumb(p){
   return (p.thumbs&&p.thumbs[0])||plantImages(p)[0];
 }
 
-// Keep page changes lightweight on mobile: never animate two complete,
- // image-heavy pages at the same time. Hide the outgoing page immediately,
- // then reveal only the incoming page with a short compositor-friendly motion.
-const SC_PAGE_TRANSITION_MS=180;
+// Page navigation is intentionally instant. Any page-level transform,
+ // fade, or smooth root scrolling competes with layout and image decoding on
+ // iPhone Safari and is more noticeable than a clean immediate switch.
 const SC_MODAL_TRANSITION_MS=340;
-let scPageTransitionTimer=0;
 function showPage(name){
   const next=document.getElementById(`${name}Page`);
   const current=document.querySelector(".page.active");
   if(!next||current===next) return;
 
-  clearTimeout(scPageTransitionTimer);
+  // Direct scrollTop assignment bypasses html{scroll-behavior:smooth};
+  // switching content while a root scroll animation is running looks like a stutter.
+  document.documentElement.scrollTop=0;
+  document.body.scrollTop=0;
+
   document.querySelectorAll(".page").forEach(page=>{
     page.classList.remove("active","sc-page-exit","sc-page-exit-active","sc-page-enter","sc-page-enter-active","sc-page-reveal","sc-page-reveal-active");
   });
-
-  next.scrollTop=0;
-  next.classList.add("active","sc-page-reveal");
-  window.scrollTo({top:0,left:0,behavior:"instant"});
-
-  requestAnimationFrame(()=>next.classList.add("sc-page-reveal-active"));
-  scPageTransitionTimer=setTimeout(()=>{
-    next.classList.remove("sc-page-reveal","sc-page-reveal-active");
-  },SC_PAGE_TRANSITION_MS);
+  next.classList.add("active");
 }
 // The plant lightbox slides in/out (see openScPlantLightbox / closeScPlantLightboxAnimated);
 // every other dialog just closes instantly as before.
