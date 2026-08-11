@@ -599,7 +599,13 @@ body::-webkit-scrollbar,
   from{opacity:0;transform:translate3d(0,10px,0)}
   to{opacity:1;transform:translate3d(0,0,0)}
 }
-#showcaseHomePage.active .sc-hero-copy,
+@keyframes sc-hero-reveal{
+  from{opacity:0}
+  to{opacity:1}
+}
+#showcaseHomePage.active .sc-hero-copy{
+  animation:sc-hero-reveal .34s cubic-bezier(.22,.61,.36,1) both;
+}
 #showcaseHomePage.active .sc-trust-strip,
 #showcaseHomePage.active .sc-choice-head,
 #showcaseHomePage.active .sc-feature-card,
