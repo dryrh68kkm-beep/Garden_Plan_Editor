@@ -164,6 +164,7 @@ function plantCoverThumb(p){
  // image-heavy pages at the same time. Hide the outgoing page immediately,
  // then reveal only the incoming page with a short compositor-friendly motion.
 const SC_PAGE_TRANSITION_MS=180;
+const SC_MODAL_TRANSITION_MS=340;
 let scPageTransitionTimer=0;
 function showPage(name){
   const next=document.getElementById(`${name}Page`);
@@ -204,7 +205,7 @@ function closeScPlantLightboxAnimated(){
   setTimeout(()=>{
     dlg.classList.remove("sc-modal-exit-active");
     dlg.close();
-  },SC_PAGE_TRANSITION_MS);
+  },SC_MODAL_TRANSITION_MS);
 }
 
 // Swipe right (like a mobile "back" gesture) on a content page returns to
@@ -703,7 +704,7 @@ async function openScPlantLightbox(id){
   });
   setTimeout(()=>{
     dlg.classList.remove("sc-modal-enter","sc-modal-enter-active");
-  },SC_PAGE_TRANSITION_MS);
+  },SC_MODAL_TRANSITION_MS);
 }
 document.getElementById("scPlantSearch").addEventListener("input",resetScPlantPaging);
 document.getElementById("scPlantCategoryFilter").addEventListener("change",resetScPlantPaging);
