@@ -2,6 +2,7 @@ const STORAGE = {
   plantOverrides: "garden_plant_overrides_v1",
   styleOverrides: "garden_style_overrides_v1",
   customPlants: "garden_custom_plants_v1",
+  plantShowcaseIndex: "garden_plant_showcase_index_v1",
   gardenPortfolio: "garden_portfolio_v1"
 };
 
@@ -129,9 +130,63 @@ async function savePlantOverrides(id){
   safeSetLocal(STORAGE.plantOverrides, plantOverrides);
   if(id) await saveDoc("plantOverrides",id,plantOverrides[id],"ข้อมูลต้นไม้");
 }
+function plantShowcaseIndexRecord(plant){
+  const {id,images,thumbs,...meta}=plant;
+  const thumb=(thumbs&&thumbs[0])||"";
+  return {...meta,thumbs:thumb?[thumb]:[],images:thumb?[thumb]:[],detailLoaded:false};
+}
+async function thumbnailFromDataUrl(src){
+  if(!src) return "";
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.onerror=()=>reject(new Error("สร้างรูปย่อไม่สำเร็จ"));
+    img.onload=()=>{
+      const side=Math.min(img.width,img.height);
+      resolve(renderSquareVariant(img,side,(img.width-side)/2,(img.height-side)/2,280,45*1024));
+    };
+    img.src=src;
+  });
+}
+async function ensureCustomPlantThumbnail(plant){
+  if(plant.thumbs&&plant.thumbs[0]) return plant;
+  const source=plant.images&&plant.images[0];
+  if(!source) return plant;
+  const thumb=await thumbnailFromDataUrl(source);
+  const updated={...plant,thumbs:thumb?[thumb]:[]};
+  customPlants=customPlants.map(p=>p.id===plant.id?updated:p);
+  await saveDoc("customPlants",updated.id,updated,"รูปย่อต้นไม้เดิม");
+  return updated;
+}
+async function cachePlantShowcaseIndex(index){
+  await safeSetLocal(STORAGE.plantShowcaseIndex,index);
+}
+async function syncPlantShowcaseIndexes(rows,remoteRows=[]){
+  const remoteById=new Map(remoteRows.map(p=>[p.id,p]));
+  for(const original of rows){
+    try{
+      const plant=await ensureCustomPlantThumbnail(original);
+      const index=plantShowcaseIndexRecord(plant);
+      const current=remoteById.get(plant.id);
+      const cleanCurrent=current?Object.fromEntries(Object.entries(current).filter(([k])=>k!=="id")):null;
+      if(!cleanCurrent||JSON.stringify(cleanCurrent)!==JSON.stringify(index)){
+        await saveDoc("plantShowcaseIndex",plant.id,index,"ข้อมูลย่อหน้า Showcase");
+      }
+    }catch(error){
+      console.error("Could not build plant showcase index:",original.id,error);
+    }
+  }
+  safeSetLocal(STORAGE.customPlants,customPlants);
+  cachePlantShowcaseIndex(customPlants.map(p=>({...plantShowcaseIndexRecord(p),id:p.id})));
+  rebuildPlantsList();
+  resetPlantPaging();
+}
 async function saveCustomPlant(plant){
   safeSetLocal(STORAGE.customPlants, customPlants);
   await saveDoc("customPlants",plant.id,plant,"ต้นไม้ที่เพิ่มเอง");
+  const index=plantShowcaseIndexRecord(plant);
+  await saveDoc("plantShowcaseIndex",plant.id,index,"ข้อมูลย่อหน้า Showcase");
+  const cached=await LS.get(STORAGE.plantShowcaseIndex,[]);
+  cachePlantShowcaseIndex(cached.some(p=>p.id===plant.id)?cached.map(p=>p.id===plant.id?{...index,id:plant.id}:p):[...cached,{...index,id:plant.id}]);
 }
 // The Rinlada LINE bot (repo Rinlada-AI-V3-) reads live prices for its own
 // order flow from the SAME Firestore project this app already writes to
@@ -198,8 +253,12 @@ async function deleteCustomPlant(id){
   rebuildPlantsList();
   resetPlantPaging();
   safeSetLocal(STORAGE.customPlants, customPlants);
+  LS.get(STORAGE.plantShowcaseIndex,[]).then(rows=>cachePlantShowcaseIndex(rows.filter(p=>p.id!==id)));
   document.getElementById("plantAddDialog").close();
-  await cloudSave(()=>fbDelete("customPlants",id),"การลบต้นไม้ที่เพิ่มเอง");
+  await Promise.all([
+    cloudSave(()=>fbDelete("customPlants",id),"การลบต้นไม้ที่เพิ่มเอง"),
+    cloudSave(()=>fbDelete("plantShowcaseIndex",id),"การลบข้อมูลย่อหน้า Showcase")
+  ]);
 }
 function getPlant(id){
   const p=plants.find(x=>x.id===id);
@@ -279,7 +338,7 @@ document.querySelectorAll(".close-dialog").forEach(b=>b.addEventListener("click"
 document.getElementById("resetAllBtn").onclick=()=>{
   if(confirm("ต้องการล้างข้อมูลแบบสวน ต้นไม้ที่เพิ่มเอง และรูปภาพที่แนบทั้งหมดหรือไม่?")){
     plantOverrides={};styleOverrides={};customPlants=[];portfolioItems=[];failedSaves=new Map();
-    [STORAGE.plantOverrides,STORAGE.styleOverrides,STORAGE.customPlants,STORAGE.gardenPortfolio,FAILED_SAVES_KEY].forEach(k=>LS.remove(k));
+    [STORAGE.plantOverrides,STORAGE.styleOverrides,STORAGE.customPlants,STORAGE.plantShowcaseIndex,STORAGE.gardenPortfolio,FAILED_SAVES_KEY].forEach(k=>LS.remove(k));
     rebuildPlantsList();
     resetPlantPaging();
     renderAll();
@@ -1193,7 +1252,7 @@ loadCareBeliefs();
 async function hydrateFromLocalCache(){
   await LS.migrateFromLocalStorage([
     STORAGE.plantOverrides, STORAGE.styleOverrides, STORAGE.customPlants,
-    STORAGE.gardenPortfolio, FAILED_SAVES_KEY
+    STORAGE.plantShowcaseIndex, STORAGE.gardenPortfolio, FAILED_SAVES_KEY
   ]);
   const [pO,sO,cP,pI,fS]=await Promise.all([
     LS.get(STORAGE.plantOverrides,{}),
@@ -1310,11 +1369,12 @@ async function retryFailedSaves(){
 // local cache — the app must keep working offline.
 async function initFromFirestore(){
   try{
-    const [remotePlantOverrides,remoteStyleOverrides,remoteCustomPlants,remotePortfolio]=await Promise.all([
+    const [remotePlantOverrides,remoteStyleOverrides,remoteCustomPlants,remotePortfolio,remotePlantShowcaseIndex]=await Promise.all([
       fbList("plantOverrides"),
       fbList("styleOverrides"),
       fbList("customPlants"),
-      fbList("gardenPortfolio")
+      fbList("gardenPortfolio"),
+      fbList("plantShowcaseIndex")
     ]);
     plantOverrides={};
     remotePlantOverrides.forEach(p=>{const {id,...rest}=p;plantOverrides[id]=rest;});
@@ -1340,6 +1400,9 @@ async function initFromFirestore(){
     if(plants.length) renderPlants();
     setCloudStatus(true);
     if(failedSaves.size) retryFailedSaves();
+    // One-time/background migration: old records had only 800px full images.
+    // Create 280px thumbnails and a lightweight public index without blocking Admin.
+    syncPlantShowcaseIndexes(customPlants,remotePlantShowcaseIndex);
     return true;
   }catch(error){
     console.error("Firestore initial sync failed, staying on local data:",error);
