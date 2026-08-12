@@ -3,7 +3,8 @@ const STORAGE = {
   styleOverrides: "garden_style_overrides_v1",
   customPlants: "garden_custom_plants_v1",
   plantShowcaseIndex: "garden_plant_showcase_index_v1",
-  gardenPortfolio: "garden_portfolio_v1"
+  gardenPortfolio: "garden_portfolio_v1",
+  gardenSupplies: "garden_supplies_v1"
 };
 
 function esc(s=""){ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m])); }
@@ -117,23 +118,50 @@ let styleOverrides = {};
 let plantOverrides = {};
 let customPlants = [];
 let portfolioItems = [];
+let supplyItems = [];
 async function hydrateFromLocalCache(){
-  await LS.migrateFromLocalStorage([STORAGE.styleOverrides, STORAGE.plantOverrides, STORAGE.plantShowcaseIndex, STORAGE.gardenPortfolio]);
-  const [sO,pO,cP,pI]=await Promise.all([
+  await LS.migrateFromLocalStorage([STORAGE.styleOverrides, STORAGE.plantOverrides, STORAGE.plantShowcaseIndex, STORAGE.gardenPortfolio, STORAGE.gardenSupplies]);
+  const [sO,pO,cP,pI,sI]=await Promise.all([
     LS.get(STORAGE.styleOverrides,{}),
     LS.get(STORAGE.plantOverrides,{}),
     LS.get(STORAGE.plantShowcaseIndex,[]),
-    LS.get(STORAGE.gardenPortfolio,[])
+    LS.get(STORAGE.gardenPortfolio,[]),
+    LS.get(STORAGE.gardenSupplies,[])
   ]);
   styleOverrides=sO;
   plantOverrides=pO;
   customPlants=cP;
   portfolioItems=pI;
+  supplyItems=sI;
   renderScStyles();
   renderScPortfolio();
   rebuildAllPlants();
   fillScPlantCategoryFilter();
   renderScPlantGallery();
+  fillScSupplyCategories();
+  renderScSupplies();
+}
+
+function supplyLineUrl(p){
+  const text=`สนใจสอบถามสินค้า: ${p.name}${p.code?` รหัส ${p.code}`:""}${p.price?` ราคา ${money(p.price)}/${p.unit||"ชิ้น"}`:""}`;
+  return `https://line.me/R/oaMessage/${LINE_OA_ID}/?${encodeURIComponent(text)}`;
+}
+function renderScSupplies(){
+  const list=document.getElementById("scSupplyList");
+  if(!list) return;
+  const q=(document.getElementById("scSupplySearch")?.value||"").trim().toLowerCase();
+  const category=document.getElementById("scSupplyCategoryFilter")?.value||"";
+  const rows=supplyItems.filter(p=>p.available!==false&&(!category||p.category===category)&&(!q||[p.name,p.code,p.category,p.description].join(" ").toLowerCase().includes(q)));
+  document.getElementById("scSupplyCount").textContent=`${rows.length} สินค้าพร้อมขาย`;
+  list.innerHTML=rows.length?rows.map(p=>`<article class="showcase-supply-card"><div class="showcase-supply-photo">${p.image?`<img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" decoding="async" />`:'<span>🧰</span>'}</div><div class="showcase-supply-body"><p class="eyebrow">${esc(p.category||"GARDEN SHOP")}</p><h3>${esc(p.name)}</h3>${p.description?`<p class="meta">${esc(p.description)}</p>`:""}<div class="showcase-supply-price"><strong>${p.price?money(p.price):"สอบถามราคา"}</strong><span>${p.stock>0?`เหลือ ${p.stock} ${esc(p.unit||"ชิ้น")}`:"สอบถามสต็อก"}</span></div><a class="showcase-order-btn" href="${supplyLineUrl(p)}" target="_blank" rel="noopener">💬 สอบถามผ่าน LINE</a></div></article>`).join(""):'<div class="empty">ยังไม่มีสินค้าในหมวดนี้</div>';
+}
+function fillScSupplyCategories(){
+  const select=document.getElementById("scSupplyCategoryFilter");
+  if(!select) return;
+  const value=select.value;
+  const categories=[...new Set(supplyItems.filter(p=>p.available!==false).map(p=>p.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"th"));
+  select.innerHTML='<option value="">ทุกหมวด</option>'+categories.map(x=>`<option>${esc(x)}</option>`).join("");
+  select.value=value;
 }
 
 function mergedStyles(){
@@ -750,9 +778,13 @@ document.getElementById("scLoadMorePlantsBtn").addEventListener("click",()=>{
   scPlantVisibleCount+=PLANT_PAGE_SIZE;
   renderScPlantGallery();
 });
+document.getElementById("scSupplySearch").addEventListener("input",renderScSupplies);
+document.getElementById("scSupplyCategoryFilter").addEventListener("change",renderScSupplies);
 
 renderScStyles();
 renderScPortfolio();
+fillScSupplyCategories();
+renderScSupplies();
 loadAllPlants();
 loadCareBeliefs();
 
@@ -763,11 +795,12 @@ loadCareBeliefs();
 let lastFetchSignature=null;
 async function initFromFirestore(){
   try{
-    const [remoteStyleOverrides,remotePlantOverrides,remotePlantShowcaseIndex,remotePortfolio]=await Promise.all([
+    const [remoteStyleOverrides,remotePlantOverrides,remotePlantShowcaseIndex,remotePortfolio,remoteSupplies]=await Promise.all([
       fbList("styleOverrides"),
       fbList("plantOverrides"),
       fbList("plantShowcaseIndex"),
-      fbList("gardenPortfolio")
+      fbList("gardenPortfolio"),
+      fbList("gardenSupplies")
     ]);
     // Compatibility during rollout: before an admin has opened the back office
     // once to create the lightweight index, fall back to the old full collection.
@@ -776,7 +809,7 @@ async function initFromFirestore(){
       : await fbList("customPlants");
     // Poll only lightweight metadata and thumbnails. Full galleries are
     // fetched one physical tree at a time when a customer opens its detail.
-    const signature=JSON.stringify([remoteStyleOverrides,remotePlantOverrides,remoteCustomPlants,remotePortfolio]);
+    const signature=JSON.stringify([remoteStyleOverrides,remotePlantOverrides,remoteCustomPlants,remotePortfolio,remoteSupplies]);
     if(signature===lastFetchSignature) return;
     lastFetchSignature=signature;
     styleOverrides={};
@@ -785,6 +818,7 @@ async function initFromFirestore(){
     remotePlantOverrides.forEach(p=>{const {id,...rest}=p;plantOverrides[id]=rest;});
     customPlants=remoteCustomPlants;
     portfolioItems=remotePortfolio;
+    supplyItems=remoteSupplies;
     // A full local-cache quota on the visitor's own device (unrelated to
     // this site) must never stop the page from rendering the data it just
     // fetched — caching locally is a nice-to-have for instant reloads, not
@@ -793,11 +827,14 @@ async function initFromFirestore(){
     // once could.
     LS.set(STORAGE.gardenPortfolio,portfolioItems);
     LS.set(STORAGE.plantShowcaseIndex,customPlants);
+    LS.set(STORAGE.gardenSupplies,supplyItems);
     renderScStyles();
     renderScPortfolio();
     rebuildAllPlants();
     fillScPlantCategoryFilter();
     renderScPlantGallery();
+    fillScSupplyCategories();
+    renderScSupplies();
   }catch(error){
     console.error("Showcase Firestore sync failed, staying on local data:",error);
   }

@@ -3,7 +3,8 @@ const STORAGE = {
   styleOverrides: "garden_style_overrides_v1",
   customPlants: "garden_custom_plants_v1",
   plantShowcaseIndex: "garden_plant_showcase_index_v1",
-  gardenPortfolio: "garden_portfolio_v1"
+  gardenPortfolio: "garden_portfolio_v1",
+  gardenSupplies: "garden_supplies_v1"
 };
 
 // data/garden-styles-data.js sets window.GARDEN_STYLES with a different
@@ -231,6 +232,35 @@ async function syncPlantPriceToBot(id,thaiName,salePrice,sizeLabel,potSize){
 // alongside the 50 style templates — a separate collection since these are
 // actual jobs done for actual customers, not reusable style presets). ----
 let portfolioItems = [];
+let supplyItems = [];
+
+function renderSupplies(){
+  const q=(document.getElementById("supplySearch")?.value||"").trim().toLowerCase();
+  const category=document.getElementById("supplyCategoryFilter")?.value||"";
+  const rows=supplyItems.filter(p=>(!category||p.category===category)&&(!q||[p.name,p.code,p.category,p.description].join(" ").toLowerCase().includes(q)));
+  document.getElementById("supplyCount").textContent=`${rows.length} สินค้า`;
+  document.getElementById("supplyList").innerHTML=rows.length?rows.map(p=>`<article class="plant-card"><div class="plant-thumb">${p.image?`<img src="${esc(p.image)}" alt="${esc(p.name)}" />`:"🧰"}</div><p class="plant-code">${esc(p.code||p.category)}</p><h3>${esc(p.name)}</h3><p class="meta">${esc(p.category)} · คงเหลือ ${Number(p.stock)||0} ${esc(p.unit||"ชิ้น")}</p><div class="plant-price-row"><div><span>ราคาขาย</span><strong>${money(p.price)}</strong></div><span>${p.available!==false?"พร้อมขาย":"ซ่อนจากหน้าร้าน"}</span></div><button class="btn btn-primary" onclick="openSupplyEdit('${p.id}')">แก้ไขสินค้า</button></article>`).join(""):'<div class="empty">ยังไม่มีสินค้า กด "+ เพิ่มสินค้า" เพื่อเริ่มต้น</div>';
+}
+let supplyEditImage="";
+function openSupplyEdit(id=""){
+  const p=supplyItems.find(x=>x.id===id)||{};
+  document.getElementById("supplyEditId").value=p.id||"";
+  document.getElementById("supplyEditTitle").textContent=p.id?`แก้ไข: ${p.name}`:"เพิ่มอุปกรณ์หรือปุ๋ย";
+  ["Name","Code","Description","Price","Unit","Stock"].forEach(k=>document.getElementById(`supply${k}`).value=p[k.charAt(0).toLowerCase()+k.slice(1)]??"");
+  document.getElementById("supplyCategory").value=p.category||"ปุ๋ย";
+  document.getElementById("supplyAvailable").checked=p.available!==false;
+  document.getElementById("supplyDeleteBtn").style.display=p.id?"inline-flex":"none";
+  supplyEditImage=p.image||"";
+  document.getElementById("supplyImagePreview").innerHTML=supplyEditImage?`<img src="${esc(supplyEditImage)}" alt="" />`:"";
+  document.getElementById("supplyImage").value="";
+  document.getElementById("supplyEditDialog").showModal();
+}
+document.getElementById("addSupplyBtn").addEventListener("click",()=>openSupplyEdit());
+document.getElementById("supplySearch").addEventListener("input",renderSupplies);
+document.getElementById("supplyCategoryFilter").addEventListener("change",renderSupplies);
+document.getElementById("supplyImage").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;supplyEditImage=await resizeImageToDataURL(file,900,260*1024);document.getElementById("supplyImagePreview").innerHTML=`<img src="${esc(supplyEditImage)}" alt="" />`;});
+document.getElementById("supplyEditForm").addEventListener("submit",e=>{e.preventDefault();const existing=document.getElementById("supplyEditId").value;const item={id:existing||uid("supply"),name:document.getElementById("supplyName").value.trim(),code:document.getElementById("supplyCode").value.trim(),category:document.getElementById("supplyCategory").value,description:document.getElementById("supplyDescription").value.trim(),price:Number(document.getElementById("supplyPrice").value)||0,unit:document.getElementById("supplyUnit").value.trim()||"ชิ้น",stock:Number(document.getElementById("supplyStock").value)||0,available:document.getElementById("supplyAvailable").checked,image:supplyEditImage,updatedAt:new Date().toISOString()};if(!checkDocSizeOrWarn(item,"สินค้า"))return;supplyItems=existing?supplyItems.map(x=>x.id===existing?item:x):[...supplyItems,item];safeSetLocal(STORAGE.gardenSupplies,supplyItems);renderSupplies();document.getElementById("supplyEditDialog").close();saveDoc("gardenSupplies",item.id,item,"อุปกรณ์และปุ๋ย");});
+document.getElementById("supplyDeleteBtn").addEventListener("click",async()=>{const id=document.getElementById("supplyEditId").value;if(!id||!confirm("ลบสินค้านี้หรือไม่?"))return;supplyItems=supplyItems.filter(x=>x.id!==id);safeSetLocal(STORAGE.gardenSupplies,supplyItems);renderSupplies();document.getElementById("supplyEditDialog").close();await cloudSave(()=>fbDelete("gardenSupplies",id),"การลบสินค้า");});
 async function savePortfolioItem(item){
   safeSetLocal(STORAGE.gardenPortfolio, portfolioItems);
   await saveDoc("gardenPortfolio",item.id,item,"ผลงานจัดสวน");
@@ -337,8 +367,8 @@ document.querySelectorAll(".close-dialog").forEach(b=>b.addEventListener("click"
 
 document.getElementById("resetAllBtn").onclick=()=>{
   if(confirm("ต้องการล้างข้อมูลแบบสวน ต้นไม้ที่เพิ่มเอง และรูปภาพที่แนบทั้งหมดหรือไม่?")){
-    plantOverrides={};styleOverrides={};customPlants=[];portfolioItems=[];failedSaves=new Map();
-    [STORAGE.plantOverrides,STORAGE.styleOverrides,STORAGE.customPlants,STORAGE.plantShowcaseIndex,STORAGE.gardenPortfolio,FAILED_SAVES_KEY].forEach(k=>LS.remove(k));
+    plantOverrides={};styleOverrides={};customPlants=[];portfolioItems=[];supplyItems=[];failedSaves=new Map();
+    [STORAGE.plantOverrides,STORAGE.styleOverrides,STORAGE.customPlants,STORAGE.plantShowcaseIndex,STORAGE.gardenPortfolio,STORAGE.gardenSupplies,FAILED_SAVES_KEY].forEach(k=>LS.remove(k));
     rebuildPlantsList();
     resetPlantPaging();
     renderAll();
@@ -1236,7 +1266,7 @@ document.getElementById("plantAddForm").addEventListener("submit",async e=>{
   syncPlantPriceToBot(plant.id,plant.thaiName,plant.salePrice,plantSizeLabel(plant),plant.potSize);
 });
 
-function renderAll(){renderStyles();renderPortfolio();}
+function renderAll(){renderStyles();renderPortfolio();renderSupplies();}
 renderAll();
 loadPlantDatabase();
 loadCareBeliefs();
@@ -1252,19 +1282,21 @@ loadCareBeliefs();
 async function hydrateFromLocalCache(){
   await LS.migrateFromLocalStorage([
     STORAGE.plantOverrides, STORAGE.styleOverrides, STORAGE.customPlants,
-    STORAGE.plantShowcaseIndex, STORAGE.gardenPortfolio, FAILED_SAVES_KEY
+    STORAGE.plantShowcaseIndex, STORAGE.gardenPortfolio, STORAGE.gardenSupplies, FAILED_SAVES_KEY
   ]);
-  const [pO,sO,cP,pI,fS]=await Promise.all([
+  const [pO,sO,cP,pI,sI,fS]=await Promise.all([
     LS.get(STORAGE.plantOverrides,{}),
     LS.get(STORAGE.styleOverrides,{}),
     LS.get(STORAGE.customPlants,[]),
     LS.get(STORAGE.gardenPortfolio,[]),
+    LS.get(STORAGE.gardenSupplies,[]),
     LS.get(FAILED_SAVES_KEY,[])
   ]);
   plantOverrides=pO;
   styleOverrides=sO;
   customPlants=cP;
   portfolioItems=pI;
+  supplyItems=sI;
   failedSaves=new Map((fS||[]).map(e=>[saveDocKey(e.collection,e.id),e]));
   rebuildPlantsList();
   renderAll();
@@ -1369,12 +1401,13 @@ async function retryFailedSaves(){
 // local cache — the app must keep working offline.
 async function initFromFirestore(){
   try{
-    const [remotePlantOverrides,remoteStyleOverrides,remoteCustomPlants,remotePortfolio,remotePlantShowcaseIndex]=await Promise.all([
+    const [remotePlantOverrides,remoteStyleOverrides,remoteCustomPlants,remotePortfolio,remotePlantShowcaseIndex,remoteSupplies]=await Promise.all([
       fbList("plantOverrides"),
       fbList("styleOverrides"),
       fbList("customPlants"),
       fbList("gardenPortfolio"),
-      fbList("plantShowcaseIndex")
+      fbList("plantShowcaseIndex"),
+      fbList("gardenSupplies")
     ]);
     plantOverrides={};
     remotePlantOverrides.forEach(p=>{const {id,...rest}=p;plantOverrides[id]=rest;});
@@ -1382,6 +1415,7 @@ async function initFromFirestore(){
     remoteStyleOverrides.forEach(s=>{const {id,...rest}=s;styleOverrides[id]=rest;});
     customPlants=remoteCustomPlants;
     portfolioItems=remotePortfolio;
+    supplyItems=remoteSupplies;
     // Re-apply any edit that's still waiting to reach the cloud (see
     // failedSaves above) so this refresh doesn't wipe it back out just
     // because it isn't in Firestore yet.
@@ -1390,11 +1424,13 @@ async function initFromFirestore(){
       else if(collection==="styleOverrides") styleOverrides[id]=obj;
       else if(collection==="customPlants") customPlants=customPlants.some(p=>p.id===id)?customPlants.map(p=>p.id===id?obj:p):[...customPlants,obj];
       else if(collection==="gardenPortfolio") portfolioItems=portfolioItems.some(p=>p.id===id)?portfolioItems.map(p=>p.id===id?obj:p):[...portfolioItems,obj];
+      else if(collection==="gardenSupplies") supplyItems=supplyItems.some(p=>p.id===id)?supplyItems.map(p=>p.id===id?obj:p):[...supplyItems,obj];
     });
     safeSetLocal(STORAGE.plantOverrides,plantOverrides);
     safeSetLocal(STORAGE.styleOverrides,styleOverrides);
     safeSetLocal(STORAGE.customPlants,customPlants);
     safeSetLocal(STORAGE.gardenPortfolio,portfolioItems);
+    safeSetLocal(STORAGE.gardenSupplies,supplyItems);
     renderAll();
     rebuildPlantsList();
     if(plants.length) renderPlants();
