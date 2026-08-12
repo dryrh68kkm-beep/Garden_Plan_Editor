@@ -184,7 +184,7 @@ function showPage(name){
   const direction=returningHome?-1:1;
   const scrollY=window.scrollY;
 
-  next.classList.add("active","sc-page-scene");
+  next.classList.add("active","sc-page-scene","sc-page-incoming");
   current.classList.add("sc-page-scene");
   next.scrollTop=0;
   current.scrollTop=scrollY;
@@ -214,7 +214,7 @@ function showPage(name){
     outgoing.cancel();
     incoming.cancel();
     current.classList.remove("active","sc-page-scene");
-    next.classList.remove("sc-page-scene");
+    next.classList.remove("sc-page-scene","sc-page-incoming");
     document.body.classList.remove("sc-page-transitioning");
     document.documentElement.scrollTop=0;
     document.body.scrollTop=0;
