@@ -697,3 +697,10 @@ body::-webkit-scrollbar,
 @media(max-width:380px){
   .sc-nav-brand img{width:94px}
 }
+
+
+/* Prevent the short directional page slide from exposing a horizontal seam. */
+html,body{overflow-x:clip}
+@supports not (overflow:clip){
+  html,body{overflow-x:hidden}
+}
