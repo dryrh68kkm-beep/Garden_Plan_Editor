@@ -118,7 +118,9 @@ let styleOverrides = {};
 let plantOverrides = {};
 let customPlants = [];
 let portfolioItems = [];
-let supplyItems = [];
+const DEFAULT_SUPPLIES=Array.isArray(window.GARDEN_SUPPLIES)?window.GARDEN_SUPPLIES:[];
+function mergeSupplyItems(rows=[]){const byId=new Map(DEFAULT_SUPPLIES.map(p=>[p.id,{...p}]));rows.forEach(p=>byId.set(p.id,{...(byId.get(p.id)||{}),...p}));return [...byId.values()].filter(p=>!p.deleted);}
+let supplyItems = mergeSupplyItems();
 async function hydrateFromLocalCache(){
   await LS.migrateFromLocalStorage([STORAGE.styleOverrides, STORAGE.plantOverrides, STORAGE.plantShowcaseIndex, STORAGE.gardenPortfolio, STORAGE.gardenSupplies]);
   const [sO,pO,cP,pI,sI]=await Promise.all([
@@ -132,7 +134,7 @@ async function hydrateFromLocalCache(){
   plantOverrides=pO;
   customPlants=cP;
   portfolioItems=pI;
-  supplyItems=sI;
+  supplyItems=mergeSupplyItems(sI);
   renderScStyles();
   renderScPortfolio();
   rebuildAllPlants();
@@ -151,9 +153,9 @@ function renderScSupplies(){
   if(!list) return;
   const q=(document.getElementById("scSupplySearch")?.value||"").trim().toLowerCase();
   const category=document.getElementById("scSupplyCategoryFilter")?.value||"";
-  const rows=supplyItems.filter(p=>p.available!==false&&(!category||p.category===category)&&(!q||[p.name,p.code,p.category,p.description].join(" ").toLowerCase().includes(q)));
+  const rows=supplyItems.filter(p=>p.available!==false&&(!category||p.category===category)&&(!q||[p.name,p.code,p.category,p.description,p.suitableFor,p.usage].join(" ").toLowerCase().includes(q)));
   document.getElementById("scSupplyCount").textContent=`${rows.length} สินค้าพร้อมขาย`;
-  list.innerHTML=rows.length?rows.map(p=>`<article class="showcase-supply-card"><div class="showcase-supply-photo">${p.image?`<img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" decoding="async" />`:'<span>🧰</span>'}</div><div class="showcase-supply-body"><p class="eyebrow">${esc(p.category||"GARDEN SHOP")}</p><h3>${esc(p.name)}</h3>${p.description?`<p class="meta">${esc(p.description)}</p>`:""}<div class="showcase-supply-price"><strong>${p.price?money(p.price):"สอบถามราคา"}</strong><span>${p.stock>0?`เหลือ ${p.stock} ${esc(p.unit||"ชิ้น")}`:"สอบถามสต็อก"}</span></div><a class="showcase-order-btn" href="${supplyLineUrl(p)}" target="_blank" rel="noopener">💬 สอบถามผ่าน LINE</a></div></article>`).join(""):'<div class="empty">ยังไม่มีสินค้าในหมวดนี้</div>';
+  list.innerHTML=rows.length?rows.map(p=>`<article class="showcase-supply-card"><div class="showcase-supply-photo">${p.image?`<img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" decoding="async" />`:'<span>🧰</span>'}</div><div class="showcase-supply-body"><p class="eyebrow">${esc(p.category||"GARDEN SHOP")}</p><h3>${esc(p.name)}</h3>${p.description?`<p class="meta">${esc(p.description)}</p>`:""}<details class="supply-usage"><summary>ดูวิธีใช้และคำแนะนำ</summary>${p.suitableFor?`<p><b>เหมาะกับ:</b> ${esc(p.suitableFor)}</p>`:""}${p.usage?`<p><b>วิธีใช้:</b> ${esc(p.usage)}</p>`:""}${p.frequency?`<p><b>ความถี่:</b> ${esc(p.frequency)}</p>`:""}${p.caution?`<p class="supply-caution"><b>คำเตือน:</b> ${esc(p.caution)}</p>`:""}</details><div class="showcase-supply-price"><strong>${p.price?money(p.price):"สอบถามราคา"}</strong><span>${p.stock>0?`เหลือ ${p.stock} ${esc(p.unit||"ชิ้น")}`:"สอบถามสต็อก"}</span></div><a class="showcase-order-btn" href="${supplyLineUrl(p)}" target="_blank" rel="noopener">💬 สอบถามผ่าน LINE</a></div></article>`).join(""):'<div class="empty">ยังไม่มีสินค้าในหมวดนี้</div>';
 }
 function fillScSupplyCategories(){
   const select=document.getElementById("scSupplyCategoryFilter");
@@ -818,7 +820,7 @@ async function initFromFirestore(){
     remotePlantOverrides.forEach(p=>{const {id,...rest}=p;plantOverrides[id]=rest;});
     customPlants=remoteCustomPlants;
     portfolioItems=remotePortfolio;
-    supplyItems=remoteSupplies;
+    supplyItems=mergeSupplyItems(remoteSupplies);
     // A full local-cache quota on the visitor's own device (unrelated to
     // this site) must never stop the page from rendering the data it just
     // fetched — caching locally is a nice-to-have for instant reloads, not
