@@ -184,16 +184,19 @@ function showPage(name){
 
   if(matchMedia("(prefers-reduced-motion: reduce)").matches||!next.animate) return;
   const offset=name==="showcaseHome"?-28:28;
-  scPageAnimation=next.animate(
+  const animation=next.animate(
     [
       {opacity:.72,transform:`translate3d(${offset}px,0,0)`},
       {opacity:1,transform:"translate3d(0,0,0)"}
     ],
     {duration:SC_PAGE_TRANSITION_MS,easing:"cubic-bezier(.22,.61,.36,1)"}
   );
-  const clearPageAnimation=()=>{ scPageAnimation=null; };
-  scPageAnimation.addEventListener("finish",clearPageAnimation,{once:true});
-  scPageAnimation.addEventListener("cancel",clearPageAnimation,{once:true});
+  scPageAnimation=animation;
+  const clearPageAnimation=()=>{
+    if(scPageAnimation===animation) scPageAnimation=null;
+  };
+  animation.addEventListener("finish",clearPageAnimation,{once:true});
+  animation.addEventListener("cancel",clearPageAnimation,{once:true});
 }
 
 // The plant lightbox slides in/out (see openScPlantLightbox / closeScPlantLightboxAnimated);
