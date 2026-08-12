@@ -750,8 +750,8 @@ body.sc-page-transitioning{
   body:has(#showcaseSuppliesPage.active) .sc-mobile-line{display:none}
   #showcaseSuppliesPage.sc-content-page{padding-bottom:46px}
   .showcase-supply-grid{grid-template-columns:1fr;gap:14px}
-  .showcase-supply-card{display:grid;grid-template-columns:112px minmax(0,1fr);border-radius:18px}
-  .showcase-supply-photo{aspect-ratio:auto;min-height:100%;font-size:0}
+  .showcase-supply-card{display:grid;grid-template-columns:112px minmax(0,1fr);height:auto;min-height:0;align-self:start;border-radius:18px}
+  .showcase-supply-photo{aspect-ratio:auto;min-height:0;height:100%;font-size:0}
   .showcase-supply-body{min-width:0;padding:15px}
   .showcase-supply-body .eyebrow{font-size:.62rem}
   .showcase-supply-body h3{margin:2px 0 5px;font-size:1.02rem;line-height:1.35}
