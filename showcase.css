@@ -736,13 +736,32 @@ body.sc-page-transitioning{
 /* Garden-shop entry and product catalog */
 .sc-feature-card--supplies::before{background-image:url("assets/garden-supplies-card.webp?v=20260812");background-position:center}
 .showcase-supply-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
-.showcase-supply-card{overflow:hidden;border:1px solid var(--line);border-radius:22px;background:#fff;box-shadow:0 10px 28px rgba(16,45,35,.08)}
+.showcase-supply-card{overflow:hidden;border:1px solid var(--line);border-radius:22px;background:#fff;box-shadow:0 10px 28px rgba(16,45,35,.08);transition:transform .22s ease,box-shadow .22s ease}
+.showcase-supply-card:hover{transform:translateY(-3px);box-shadow:0 18px 38px rgba(16,45,35,.13)}
 .showcase-supply-photo{aspect-ratio:4/3;display:grid;place-items:center;overflow:hidden;background:#edf3ef;font-size:3rem}
 .showcase-supply-photo img{width:100%;height:100%;object-fit:cover;display:block}
-.showcase-supply-body{padding:18px}.showcase-supply-body h3{margin:3px 0 7px;font-size:1.2rem}.showcase-supply-body .showcase-order-btn{margin:16px 0 0}
-.showcase-supply-price{display:flex;align-items:end;justify-content:space-between;gap:10px;margin-top:14px}.showcase-supply-price strong{font-size:1.15rem}.showcase-supply-price span{color:var(--muted);font-size:.76rem;text-align:right}
+.supply-photo-placeholder{display:grid;place-items:center;gap:4px;text-align:center;color:var(--green-2)}
+.supply-photo-placeholder span{font-size:1rem;font-weight:800;letter-spacing:.12em}.supply-photo-placeholder small{font-size:.7rem;color:var(--muted)}
+.showcase-supply-body{padding:18px}.showcase-supply-body h3{margin:3px 0 7px;font-size:1.2rem;line-height:1.35}.showcase-supply-body .showcase-order-btn{margin:16px 0 0}
+.supply-description{line-height:1.6}
+.showcase-supply-price{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}.showcase-supply-price strong{font-size:1.05rem}.showcase-supply-price span{color:var(--muted);font-size:.76rem;text-align:right}
 @media(max-width:820px){.showcase-supply-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:640px){.showcase-supply-grid{gap:10px}.showcase-supply-body{padding:12px}.showcase-supply-body h3{font-size:1rem}}
+@media(max-width:640px){
+  body:has(#showcaseSuppliesPage.active) .sc-mobile-line{display:none}
+  #showcaseSuppliesPage.sc-content-page{padding-bottom:46px}
+  .showcase-supply-grid{grid-template-columns:1fr;gap:14px}
+  .showcase-supply-card{display:grid;grid-template-columns:112px minmax(0,1fr);border-radius:18px}
+  .showcase-supply-photo{aspect-ratio:auto;min-height:100%;font-size:0}
+  .showcase-supply-body{min-width:0;padding:15px}
+  .showcase-supply-body .eyebrow{font-size:.62rem}
+  .showcase-supply-body h3{margin:2px 0 5px;font-size:1.02rem;line-height:1.35}
+  .showcase-supply-body .supply-description{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;margin:0;font-size:.78rem;line-height:1.55}
+  .showcase-supply-price{margin-top:11px}
+  .showcase-supply-price strong{font-size:.92rem;white-space:nowrap}
+  .showcase-supply-price span{font-size:.7rem;white-space:nowrap}
+  .showcase-supply-body .showcase-order-btn{margin:11px 0 0;padding:10px 12px;border-radius:11px;font-size:.76rem}
+  .supply-photo-placeholder{padding:12px 7px}.supply-photo-placeholder span{font-size:.76rem;letter-spacing:.08em}.supply-photo-placeholder small{font-size:.62rem}
+}
 
 
 /* Three clear Showcase destinations: equal cards on wide screens, three
@@ -767,3 +786,8 @@ body.sc-page-transitioning{
 .supply-usage[open] summary::after{content:"−"}
 .supply-usage p{margin:0;padding:0 12px 9px;color:var(--muted);font-size:.78rem;line-height:1.55}
 .supply-usage .supply-caution{margin-top:2px;padding-top:9px;border-top:1px solid rgba(180,35,24,.12);color:#8b3a31}
+@media(max-width:640px){
+  .supply-usage{margin-top:10px;border-radius:11px}
+  .supply-usage summary{padding:9px 10px;font-size:.73rem}
+  .supply-usage p{padding:0 10px 8px;font-size:.72rem}
+}
