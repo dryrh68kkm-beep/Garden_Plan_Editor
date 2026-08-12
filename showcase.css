@@ -759,3 +759,11 @@ body.sc-page-transitioning{
 @media(max-width:820px){
   .sc-feature-stack{grid-template-columns:1fr}
 }
+
+.supply-usage{margin-top:13px;border:1px solid var(--line);border-radius:13px;background:#f6f9f7}
+.supply-usage summary{padding:10px 12px;color:var(--green-2);font-size:.82rem;font-weight:800;cursor:pointer;list-style:none}
+.supply-usage summary::-webkit-details-marker{display:none}
+.supply-usage summary::after{content:"＋";float:right}
+.supply-usage[open] summary::after{content:"−"}
+.supply-usage p{margin:0;padding:0 12px 9px;color:var(--muted);font-size:.78rem;line-height:1.55}
+.supply-usage .supply-caution{margin-top:2px;padding-top:9px;border-top:1px solid rgba(180,35,24,.12);color:#8b3a31}

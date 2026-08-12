@@ -232,12 +232,18 @@ async function syncPlantPriceToBot(id,thaiName,salePrice,sizeLabel,potSize){
 // alongside the 50 style templates — a separate collection since these are
 // actual jobs done for actual customers, not reusable style presets). ----
 let portfolioItems = [];
-let supplyItems = [];
+const DEFAULT_SUPPLIES=Array.isArray(window.GARDEN_SUPPLIES)?window.GARDEN_SUPPLIES:[];
+function mergeSupplyItems(rows=[]){
+  const byId=new Map(DEFAULT_SUPPLIES.map(p=>[p.id,{...p}]));
+  rows.forEach(p=>byId.set(p.id,{...(byId.get(p.id)||{}),...p}));
+  return [...byId.values()].filter(p=>!p.deleted);
+}
+let supplyItems = mergeSupplyItems();
 
 function renderSupplies(){
   const q=(document.getElementById("supplySearch")?.value||"").trim().toLowerCase();
   const category=document.getElementById("supplyCategoryFilter")?.value||"";
-  const rows=supplyItems.filter(p=>(!category||p.category===category)&&(!q||[p.name,p.code,p.category,p.description].join(" ").toLowerCase().includes(q)));
+  const rows=supplyItems.filter(p=>(!category||p.category===category)&&(!q||[p.name,p.code,p.category,p.description,p.suitableFor,p.usage].join(" ").toLowerCase().includes(q)));
   document.getElementById("supplyCount").textContent=`${rows.length} สินค้า`;
   document.getElementById("supplyList").innerHTML=rows.length?rows.map(p=>`<article class="plant-card"><div class="plant-thumb">${p.image?`<img src="${esc(p.image)}" alt="${esc(p.name)}" />`:"🧰"}</div><p class="plant-code">${esc(p.code||p.category)}</p><h3>${esc(p.name)}</h3><p class="meta">${esc(p.category)} · คงเหลือ ${Number(p.stock)||0} ${esc(p.unit||"ชิ้น")}</p><div class="plant-price-row"><div><span>ราคาขาย</span><strong>${money(p.price)}</strong></div><span>${p.available!==false?"พร้อมขาย":"ซ่อนจากหน้าร้าน"}</span></div><button class="btn btn-primary" onclick="openSupplyEdit('${p.id}')">แก้ไขสินค้า</button></article>`).join(""):'<div class="empty">ยังไม่มีสินค้า กด "+ เพิ่มสินค้า" เพื่อเริ่มต้น</div>';
 }
@@ -246,7 +252,7 @@ function openSupplyEdit(id=""){
   const p=supplyItems.find(x=>x.id===id)||{};
   document.getElementById("supplyEditId").value=p.id||"";
   document.getElementById("supplyEditTitle").textContent=p.id?`แก้ไข: ${p.name}`:"เพิ่มอุปกรณ์หรือปุ๋ย";
-  ["Name","Code","Description","Price","Unit","Stock"].forEach(k=>document.getElementById(`supply${k}`).value=p[k.charAt(0).toLowerCase()+k.slice(1)]??"");
+  ["Name","Code","Description","SuitableFor","Usage","Frequency","Caution","Price","Unit","Stock"].forEach(k=>document.getElementById(`supply${k}`).value=p[k.charAt(0).toLowerCase()+k.slice(1)]??"");
   document.getElementById("supplyCategory").value=p.category||"ปุ๋ย";
   document.getElementById("supplyAvailable").checked=p.available!==false;
   document.getElementById("supplyDeleteBtn").style.display=p.id?"inline-flex":"none";
@@ -259,8 +265,8 @@ document.getElementById("addSupplyBtn").addEventListener("click",()=>openSupplyE
 document.getElementById("supplySearch").addEventListener("input",renderSupplies);
 document.getElementById("supplyCategoryFilter").addEventListener("change",renderSupplies);
 document.getElementById("supplyImage").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;supplyEditImage=await resizeImageToDataURL(file,900,260*1024);document.getElementById("supplyImagePreview").innerHTML=`<img src="${esc(supplyEditImage)}" alt="" />`;});
-document.getElementById("supplyEditForm").addEventListener("submit",e=>{e.preventDefault();const existing=document.getElementById("supplyEditId").value;const item={id:existing||uid("supply"),name:document.getElementById("supplyName").value.trim(),code:document.getElementById("supplyCode").value.trim(),category:document.getElementById("supplyCategory").value,description:document.getElementById("supplyDescription").value.trim(),price:Number(document.getElementById("supplyPrice").value)||0,unit:document.getElementById("supplyUnit").value.trim()||"ชิ้น",stock:Number(document.getElementById("supplyStock").value)||0,available:document.getElementById("supplyAvailable").checked,image:supplyEditImage,updatedAt:new Date().toISOString()};if(!checkDocSizeOrWarn(item,"สินค้า"))return;supplyItems=existing?supplyItems.map(x=>x.id===existing?item:x):[...supplyItems,item];safeSetLocal(STORAGE.gardenSupplies,supplyItems);renderSupplies();document.getElementById("supplyEditDialog").close();saveDoc("gardenSupplies",item.id,item,"อุปกรณ์และปุ๋ย");});
-document.getElementById("supplyDeleteBtn").addEventListener("click",async()=>{const id=document.getElementById("supplyEditId").value;if(!id||!confirm("ลบสินค้านี้หรือไม่?"))return;supplyItems=supplyItems.filter(x=>x.id!==id);safeSetLocal(STORAGE.gardenSupplies,supplyItems);renderSupplies();document.getElementById("supplyEditDialog").close();await cloudSave(()=>fbDelete("gardenSupplies",id),"การลบสินค้า");});
+document.getElementById("supplyEditForm").addEventListener("submit",e=>{e.preventDefault();const existing=document.getElementById("supplyEditId").value;const item={id:existing||uid("supply"),name:document.getElementById("supplyName").value.trim(),code:document.getElementById("supplyCode").value.trim(),category:document.getElementById("supplyCategory").value,description:document.getElementById("supplyDescription").value.trim(),suitableFor:document.getElementById("supplySuitableFor").value.trim(),usage:document.getElementById("supplyUsage").value.trim(),frequency:document.getElementById("supplyFrequency").value.trim(),caution:document.getElementById("supplyCaution").value.trim(),price:Number(document.getElementById("supplyPrice").value)||0,unit:document.getElementById("supplyUnit").value.trim()||"ชิ้น",stock:Number(document.getElementById("supplyStock").value)||0,available:document.getElementById("supplyAvailable").checked,image:supplyEditImage,updatedAt:new Date().toISOString()};if(!checkDocSizeOrWarn(item,"สินค้า"))return;supplyItems=existing?supplyItems.map(x=>x.id===existing?item:x):[...supplyItems,item];safeSetLocal(STORAGE.gardenSupplies,supplyItems);renderSupplies();document.getElementById("supplyEditDialog").close();saveDoc("gardenSupplies",item.id,item,"อุปกรณ์และปุ๋ย");});
+document.getElementById("supplyDeleteBtn").addEventListener("click",async()=>{const id=document.getElementById("supplyEditId").value;if(!id||!confirm("ลบสินค้านี้หรือไม่?"))return;const isDefault=DEFAULT_SUPPLIES.some(x=>x.id===id);supplyItems=supplyItems.filter(x=>x.id!==id);const tombstone={id,deleted:true,updatedAt:new Date().toISOString()};safeSetLocal(STORAGE.gardenSupplies,isDefault?[...supplyItems,tombstone]:supplyItems);renderSupplies();document.getElementById("supplyEditDialog").close();if(isDefault)await saveDoc("gardenSupplies",id,tombstone,"การซ่อนสินค้าเริ่มต้น");else await cloudSave(()=>fbDelete("gardenSupplies",id),"การลบสินค้า");});
 async function savePortfolioItem(item){
   safeSetLocal(STORAGE.gardenPortfolio, portfolioItems);
   await saveDoc("gardenPortfolio",item.id,item,"ผลงานจัดสวน");
@@ -1296,7 +1302,7 @@ async function hydrateFromLocalCache(){
   styleOverrides=sO;
   customPlants=cP;
   portfolioItems=pI;
-  supplyItems=sI;
+  supplyItems=mergeSupplyItems(sI);
   failedSaves=new Map((fS||[]).map(e=>[saveDocKey(e.collection,e.id),e]));
   rebuildPlantsList();
   renderAll();
@@ -1415,7 +1421,7 @@ async function initFromFirestore(){
     remoteStyleOverrides.forEach(s=>{const {id,...rest}=s;styleOverrides[id]=rest;});
     customPlants=remoteCustomPlants;
     portfolioItems=remotePortfolio;
-    supplyItems=remoteSupplies;
+    supplyItems=mergeSupplyItems(remoteSupplies);
     // Re-apply any edit that's still waiting to reach the cloud (see
     // failedSaves above) so this refresh doesn't wipe it back out just
     // because it isn't in Firestore yet.
@@ -1424,7 +1430,7 @@ async function initFromFirestore(){
       else if(collection==="styleOverrides") styleOverrides[id]=obj;
       else if(collection==="customPlants") customPlants=customPlants.some(p=>p.id===id)?customPlants.map(p=>p.id===id?obj:p):[...customPlants,obj];
       else if(collection==="gardenPortfolio") portfolioItems=portfolioItems.some(p=>p.id===id)?portfolioItems.map(p=>p.id===id?obj:p):[...portfolioItems,obj];
-      else if(collection==="gardenSupplies") supplyItems=supplyItems.some(p=>p.id===id)?supplyItems.map(p=>p.id===id?obj:p):[...supplyItems,obj];
+      else if(collection==="gardenSupplies") supplyItems=obj.deleted?supplyItems.filter(p=>p.id!==id):(supplyItems.some(p=>p.id===id)?supplyItems.map(p=>p.id===id?obj:p):[...supplyItems,obj]);
     });
     safeSetLocal(STORAGE.plantOverrides,plantOverrides);
     safeSetLocal(STORAGE.styleOverrides,styleOverrides);
