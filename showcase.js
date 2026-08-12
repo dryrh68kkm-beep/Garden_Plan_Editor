@@ -118,7 +118,19 @@ let styleOverrides = {};
 let plantOverrides = {};
 let customPlants = [];
 let portfolioItems = [];
-const DEFAULT_SUPPLIES=Array.isArray(window.GARDEN_SUPPLIES)?window.GARDEN_SUPPLIES:[];
+let DEFAULT_SUPPLIES=Array.isArray(window.GARDEN_SUPPLIES)?window.GARDEN_SUPPLIES:[];
+async function ensureSupplyCatalog(){
+  if(DEFAULT_SUPPLIES.length) return;
+  await new Promise((resolve,reject)=>{
+    const script=document.createElement("script");
+    script.src=`data/garden-supplies-data.js?v=202608130020-${Date.now()}`;
+    script.onload=resolve;
+    script.onerror=()=>reject(new Error("โหลดข้อมูลอุปกรณ์และปุ๋ยไม่สำเร็จ"));
+    document.head.appendChild(script);
+  });
+  DEFAULT_SUPPLIES=Array.isArray(window.GARDEN_SUPPLIES)?window.GARDEN_SUPPLIES:[];
+  supplyItems=mergeSupplyItems(supplyItems);
+}
 function mergeSupplyItems(rows=[]){const byId=new Map(DEFAULT_SUPPLIES.map(p=>[p.id,{...p}]));rows.forEach(p=>byId.set(p.id,{...(byId.get(p.id)||{}),...p}));return [...byId.values()].filter(p=>!p.deleted);}
 let supplyItems = mergeSupplyItems();
 async function hydrateFromLocalCache(){
@@ -841,7 +853,10 @@ async function initFromFirestore(){
     console.error("Showcase Firestore sync failed, staying on local data:",error);
   }
 }
-hydrateFromLocalCache().then(initFromFirestore);
+ensureSupplyCatalog()
+  .catch(error=>console.error(error))
+  .then(hydrateFromLocalCache)
+  .then(initFromFirestore);
 
 // REST-only Firestore has no realtime listener (that needs the SDK), so we
 // poll instead: refetch periodically so a photo/style added on another
