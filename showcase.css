@@ -704,3 +704,31 @@ html,body{overflow-x:clip}
 @supports not (overflow:clip){
   html,body{overflow-x:hidden}
 }
+
+
+/* Full-width two-scene navigation. Fixed layers keep both pages stable while
+   one leaves the viewport and the other enters from the opposite side. */
+body.sc-page-transitioning{
+  overflow:hidden!important;
+  touch-action:none;
+}
+.page.sc-page-scene{
+  position:fixed!important;
+  z-index:90;
+  inset:0;
+  width:100vw!important;
+  max-width:none!important;
+  height:100dvh;
+  min-height:100dvh;
+  margin:0!important;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:none;
+  background:var(--cream);
+  will-change:transform;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  contain:paint;
+}
+.page.sc-page-scene.sc-page-incoming{z-index:91}
+#showcaseHomePage.sc-page-scene{background:var(--green)}
