@@ -36,6 +36,7 @@
   <nav class="tabs" aria-label="เมนูหลัก">
     <button class="tab active" data-page="styles">แบบสวน</button>
     <button class="tab" data-page="plants">ฐานข้อมูลต้นไม้</button>
+    <button class="tab" data-page="supplies">อุปกรณ์และปุ๋ย</button>
   </nav>
 
   <main class="container">
@@ -124,7 +125,21 @@
         <button id="loadMorePlantsBtn" class="btn btn-secondary" style="display:none">โหลดเพิ่ม</button>
       </div>
     </section>
+
+    <section id="suppliesPage" class="page">
+      <div class="page-head"><div><p class="eyebrow">GARDEN SHOP</p><h2>อุปกรณ์และปุ๋ย</h2></div><button id="addSupplyBtn" class="btn btn-primary">+ เพิ่มสินค้า</button></div>
+      <div class="filters"><div class="search-wrap"><input id="supplySearch" class="input" type="search" placeholder="ค้นหาชื่อสินค้า รหัส หรือหมวดหมู่" autocomplete="off" /></div><select id="supplyCategoryFilter" class="input"><option value="">ทุกหมวด</option><option>ปุ๋ย</option><option>ดินและวัสดุปลูก</option><option>กระถาง</option><option>เครื่องมือ</option><option>อุปกรณ์รดน้ำ</option><option>สารบำรุงและป้องกัน</option><option>อื่นๆ</option></select></div>
+      <div id="supplyCount" class="meta"></div><div id="supplyList" class="plant-grid"></div>
+    </section>
   </main>
+
+  <dialog id="supplyEditDialog" class="modal"><form id="supplyEditForm" method="dialog">
+    <div class="modal-head"><div class="modal-head-title"><img src="assets/rinlada-logo-main.webp" class="modal-logo" alt="" /><h3 id="supplyEditTitle">เพิ่มอุปกรณ์หรือปุ๋ย</h3></div><button type="button" class="icon-btn close-dialog">×</button></div><input type="hidden" id="supplyEditId" />
+    <div class="form-section"><p class="form-section-title">ข้อมูลสินค้า</p><label>ชื่อสินค้า<input id="supplyName" class="input" required placeholder="เช่น ปุ๋ยละลายช้า 13-13-13" /></label><div class="two-col"><label>รหัสสินค้า<input id="supplyCode" class="input" placeholder="FER-001" /></label><label>หมวดหมู่<select id="supplyCategory" class="input"><option>ปุ๋ย</option><option>ดินและวัสดุปลูก</option><option>กระถาง</option><option>เครื่องมือ</option><option>อุปกรณ์รดน้ำ</option><option>สารบำรุงและป้องกัน</option><option>อื่นๆ</option></select></label></div><label>รายละเอียด<textarea id="supplyDescription" class="input" rows="3" placeholder="วิธีใช้ จุดเด่น หรือข้อมูลสำคัญ"></textarea></label></div>
+    <div class="form-section"><p class="form-section-title">ราคาและสต็อก</p><div class="two-col"><label>ราคาขาย<input id="supplyPrice" class="input" type="number" min="0" step="0.01" required /></label><label>หน่วย<input id="supplyUnit" class="input" placeholder="ถุง / ชิ้น / ขวด" /></label></div><div class="two-col"><label>จำนวนคงเหลือ<input id="supplyStock" class="input" type="number" min="0" step="1" /></label><label class="checkbox-label" style="align-self:flex-end"><input id="supplyAvailable" type="checkbox" checked /> แสดงพร้อมขาย</label></div></div>
+    <div class="form-section"><p class="form-section-title">รูปภาพ</p><label>รูปสินค้า<input id="supplyImage" class="input" type="file" accept="image/*" /></label><div id="supplyImagePreview" class="style-edit-gallery"></div></div>
+    <div class="modal-actions"><button type="button" id="supplyDeleteBtn" class="small-btn danger" style="display:none;margin-right:auto">ลบสินค้า</button><button type="button" class="btn btn-ghost close-dialog">ยกเลิก</button><button class="btn btn-primary" value="default">บันทึก</button></div>
+  </form></dialog>
 
   <dialog id="styleDetailDialog" class="modal style-detail-modal">
     <div class="style-detail-wrap">
@@ -461,6 +476,6 @@
   <script src="data/garden-styles-data.js?v=20260811"></script>
   <script src="local-store.js?v=202608041637"></script>
   <script src="firebase-client.js?v=202608081344"></script>
-  <script src="app.js?v=202608112130"></script>
+  <script src="app.js?v=202608121530"></script>
 </body>
 </html>
