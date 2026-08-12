@@ -160,25 +160,45 @@ function plantCoverThumb(p){
   return (p.thumbs&&p.thumbs[0])||plantImages(p)[0];
 }
 
-// Page navigation is intentionally instant. Any page-level transform,
- // fade, or smooth root scrolling competes with layout and image decoding on
- // iPhone Safari and is more noticeable than a clean immediate switch.
+// Keep the switch immediate, then animate only the incoming page over a
+// short distance. This avoids rendering two full pages at the same time.
 const SC_MODAL_TRANSITION_MS=340;
+const SC_PAGE_TRANSITION_MS=280;
+let scPageAnimation=null;
 function showPage(name){
   const next=document.getElementById(`${name}Page`);
   const current=document.querySelector(".page.active");
   if(!next||current===next) return;
 
-  // Direct scrollTop assignment bypasses html{scroll-behavior:smooth};
-  // switching content while a root scroll animation is running looks like a stutter.
   document.documentElement.scrollTop=0;
   document.body.scrollTop=0;
 
+  if(scPageAnimation){
+    scPageAnimation.cancel();
+    scPageAnimation=null;
+  }
   document.querySelectorAll(".page").forEach(page=>{
     page.classList.remove("active","sc-page-exit","sc-page-exit-active","sc-page-enter","sc-page-enter-active","sc-page-reveal","sc-page-reveal-active");
   });
   next.classList.add("active");
+
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches||!next.animate) return;
+  const offset=name==="showcaseHome"?-28:28;
+  const animation=next.animate(
+    [
+      {opacity:.72,transform:`translate3d(${offset}px,0,0)`},
+      {opacity:1,transform:"translate3d(0,0,0)"}
+    ],
+    {duration:SC_PAGE_TRANSITION_MS,easing:"cubic-bezier(.22,.61,.36,1)"}
+  );
+  scPageAnimation=animation;
+  const clearPageAnimation=()=>{
+    if(scPageAnimation===animation) scPageAnimation=null;
+  };
+  animation.addEventListener("finish",clearPageAnimation,{once:true});
+  animation.addEventListener("cancel",clearPageAnimation,{once:true});
 }
+
 // The plant lightbox slides in/out (see openScPlantLightbox / closeScPlantLightboxAnimated);
 // every other dialog just closes instantly as before.
 document.querySelectorAll(".close-dialog").forEach(b=>b.addEventListener("click",()=>{
