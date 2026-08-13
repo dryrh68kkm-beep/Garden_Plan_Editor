@@ -233,9 +233,11 @@ async function syncPlantPriceToBot(id,thaiName,salePrice,sizeLabel,potSize){
 // actual jobs done for actual customers, not reusable style presets). ----
 let portfolioItems = [];
 const DEFAULT_SUPPLIES=Array.isArray(window.GARDEN_SUPPLIES)?window.GARDEN_SUPPLIES:[];
+let deletedSupplyItems=[];
 function mergeSupplyItems(rows=[]){
   const byId=new Map(DEFAULT_SUPPLIES.map(p=>[p.id,{...p}]));
   rows.forEach(p=>byId.set(p.id,{...(byId.get(p.id)||{}),...p}));
+  deletedSupplyItems=[...byId.values()].filter(p=>p.deleted);
   return [...byId.values()].filter(p=>!p.deleted);
 }
 let supplyItems = mergeSupplyItems();
@@ -245,9 +247,31 @@ function renderSupplies(){
   const category=document.getElementById("supplyCategoryFilter")?.value||"";
   const rows=supplyItems.filter(p=>(!category||p.category===category)&&(!q||[p.name,p.code,p.category,p.description,p.suitableFor,p.usage].join(" ").toLowerCase().includes(q)));
   document.getElementById("supplyCount").textContent=`${rows.length} สินค้า`;
-  document.getElementById("supplyList").innerHTML=rows.length?rows.map(p=>`<article class="plant-card"><div class="plant-thumb">${p.image?`<img src="${esc(p.image)}" alt="${esc(p.name)}" />`:"🧰"}</div><p class="plant-code">${esc(p.code||p.category)}</p><h3>${esc(p.name)}</h3><p class="meta">${esc(p.category)} · คงเหลือ ${Number(p.stock)||0} ${esc(p.unit||"ชิ้น")}</p><div class="plant-price-row"><div><span>ราคาขาย</span><strong>${money(p.price)}</strong></div><span>${p.available!==false?"พร้อมขาย":"ซ่อนจากหน้าร้าน"}</span></div><button class="btn btn-primary" onclick="openSupplyEdit('${p.id}')">แก้ไขสินค้า</button></article>`).join(""):'<div class="empty">ยังไม่มีสินค้า กด "+ เพิ่มสินค้า" เพื่อเริ่มต้น</div>';
+  document.getElementById("supplyList").innerHTML=rows.length?rows.map(p=>`<article class="plant-card supply-card"><div class="plant-thumb">${p.image?`<img src="${esc(p.image)}" alt="${esc(p.name)}" />`:"🧰"}</div><p class="plant-code">${esc(p.code||p.category)}</p><h3>${esc(p.name)}</h3><p class="meta">${esc(p.category)} · คงเหลือ ${Number(p.stock)||0} ${esc(p.unit||"ชิ้น")}</p><div class="plant-price-row"><div><span>ราคาขาย</span><strong>${money(p.price)}</strong></div><span>${p.available!==false?"พร้อมขาย":"ซ่อนจากหน้าร้าน"}</span></div><button class="btn btn-primary" onclick="openSupplyEdit('${p.id}')">แก้ไขสินค้า</button></article>`).join(""):'<div class="empty">ยังไม่มีสินค้า กด "+ เพิ่มสินค้า" เพื่อเริ่มต้น</div>';
+  const restoreBtn=document.getElementById("restoreSuppliesBtn");
+  restoreBtn.style.display=deletedSupplyItems.length?"inline-flex":"none";
+  restoreBtn.textContent=`กู้คืนสินค้าที่ลบ${deletedSupplyItems.length?` (${deletedSupplyItems.length})`:""}`;
 }
+function renderDeletedSupplies(){
+  const list=document.getElementById("deletedSuppliesList");
+  list.innerHTML=deletedSupplyItems.length?deletedSupplyItems.map(p=>{const fallback=DEFAULT_SUPPLIES.find(x=>x.id===p.id)||{};return `<div class="deleted-supply-item"><div><strong>${esc(p.name||fallback.name||p.id)}</strong><span>${esc(p.code||fallback.code||p.id)} · ${esc(p.category||fallback.category||"สินค้า")}</span></div><button type="button" class="btn btn-secondary" onclick="restoreSupply('${p.id}')">กู้คืน</button></div>`}).join(""):'<div class="empty">ไม่มีสินค้าที่ลบ</div>';
+}
+window.restoreSupply=async function(id){
+  const deleted=deletedSupplyItems.find(x=>x.id===id)||{};
+  const fallback=DEFAULT_SUPPLIES.find(x=>x.id===id)||{};
+  const item={...fallback,...deleted,deleted:false,updatedAt:new Date().toISOString()};
+  if(!item.name){alert("ไม่พบข้อมูลสินค้าสำหรับกู้คืน");return;}
+  deletedSupplyItems=deletedSupplyItems.filter(x=>x.id!==id);
+  supplyItems=[...supplyItems,item];
+  safeSetLocal(STORAGE.gardenSupplies,[...supplyItems,...deletedSupplyItems]);
+  renderSupplies();renderDeletedSupplies();
+  await saveDoc("gardenSupplies",id,item,"การกู้คืนสินค้า");
+};
 let supplyEditImage="";
+function renderSupplyImagePreview(){
+  document.getElementById("supplyImagePreview").innerHTML=supplyEditImage?`<div class="supply-preview-frame"><img src="${esc(supplyEditImage)}" alt="รูปสินค้า" /><button type="button" class="small-btn danger supply-image-remove">ลบรูปสินค้า</button></div>`:"";
+  document.querySelector(".supply-image-remove")?.addEventListener("click",()=>{supplyEditImage="";document.getElementById("supplyImage").value="";renderSupplyImagePreview();});
+}
 function openSupplyEdit(id=""){
   const p=supplyItems.find(x=>x.id===id)||{};
   document.getElementById("supplyEditId").value=p.id||"";
@@ -257,16 +281,17 @@ function openSupplyEdit(id=""){
   document.getElementById("supplyAvailable").checked=p.available!==false;
   document.getElementById("supplyDeleteBtn").style.display=p.id?"inline-flex":"none";
   supplyEditImage=p.image||"";
-  document.getElementById("supplyImagePreview").innerHTML=supplyEditImage?`<img src="${esc(supplyEditImage)}" alt="" />`:"";
+  renderSupplyImagePreview();
   document.getElementById("supplyImage").value="";
   document.getElementById("supplyEditDialog").showModal();
 }
 document.getElementById("addSupplyBtn").addEventListener("click",()=>openSupplyEdit());
+document.getElementById("restoreSuppliesBtn").addEventListener("click",()=>{renderDeletedSupplies();document.getElementById("restoreSuppliesDialog").showModal();});
 document.getElementById("supplySearch").addEventListener("input",renderSupplies);
 document.getElementById("supplyCategoryFilter").addEventListener("change",renderSupplies);
-document.getElementById("supplyImage").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;supplyEditImage=await resizeImageToDataURL(file,900,260*1024);document.getElementById("supplyImagePreview").innerHTML=`<img src="${esc(supplyEditImage)}" alt="" />`;});
+document.getElementById("supplyImage").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;supplyEditImage=await resizeImageToDataURL(file,900,260*1024);renderSupplyImagePreview();});
 document.getElementById("supplyEditForm").addEventListener("submit",e=>{e.preventDefault();const existing=document.getElementById("supplyEditId").value;const item={id:existing||uid("supply"),name:document.getElementById("supplyName").value.trim(),code:document.getElementById("supplyCode").value.trim(),category:document.getElementById("supplyCategory").value,description:document.getElementById("supplyDescription").value.trim(),suitableFor:document.getElementById("supplySuitableFor").value.trim(),usage:document.getElementById("supplyUsage").value.trim(),frequency:document.getElementById("supplyFrequency").value.trim(),caution:document.getElementById("supplyCaution").value.trim(),price:Number(document.getElementById("supplyPrice").value)||0,unit:document.getElementById("supplyUnit").value.trim()||"ชิ้น",stock:Number(document.getElementById("supplyStock").value)||0,available:document.getElementById("supplyAvailable").checked,image:supplyEditImage,updatedAt:new Date().toISOString()};if(!checkDocSizeOrWarn(item,"สินค้า"))return;supplyItems=existing?supplyItems.map(x=>x.id===existing?item:x):[...supplyItems,item];safeSetLocal(STORAGE.gardenSupplies,supplyItems);renderSupplies();document.getElementById("supplyEditDialog").close();saveDoc("gardenSupplies",item.id,item,"อุปกรณ์และปุ๋ย");});
-document.getElementById("supplyDeleteBtn").addEventListener("click",async()=>{const id=document.getElementById("supplyEditId").value;if(!id||!confirm("ลบสินค้านี้หรือไม่?"))return;const isDefault=DEFAULT_SUPPLIES.some(x=>x.id===id);supplyItems=supplyItems.filter(x=>x.id!==id);const tombstone={id,deleted:true,updatedAt:new Date().toISOString()};safeSetLocal(STORAGE.gardenSupplies,isDefault?[...supplyItems,tombstone]:supplyItems);renderSupplies();document.getElementById("supplyEditDialog").close();if(isDefault)await saveDoc("gardenSupplies",id,tombstone,"การซ่อนสินค้าเริ่มต้น");else await cloudSave(()=>fbDelete("gardenSupplies",id),"การลบสินค้า");});
+document.getElementById("supplyDeleteBtn").addEventListener("click",async()=>{const id=document.getElementById("supplyEditId").value;const item=supplyItems.find(x=>x.id===id);if(!id||!item||!confirm(`ย้าย “${item.name}” ไปสินค้าที่ลบแล้วหรือไม่?\nสามารถกู้คืนภายหลังได้`))return;const tombstone={...item,deleted:true,updatedAt:new Date().toISOString()};supplyItems=supplyItems.filter(x=>x.id!==id);deletedSupplyItems=[...deletedSupplyItems.filter(x=>x.id!==id),tombstone];safeSetLocal(STORAGE.gardenSupplies,[...supplyItems,...deletedSupplyItems]);renderSupplies();document.getElementById("supplyEditDialog").close();await saveDoc("gardenSupplies",id,tombstone,"การย้ายสินค้าไปถังขยะ");});
 async function savePortfolioItem(item){
   safeSetLocal(STORAGE.gardenPortfolio, portfolioItems);
   await saveDoc("gardenPortfolio",item.id,item,"ผลงานจัดสวน");
