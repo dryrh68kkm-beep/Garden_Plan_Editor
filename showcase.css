@@ -791,3 +791,8 @@ body.sc-page-transitioning{
   .supply-usage summary{padding:9px 10px;font-size:.73rem}
   .supply-usage p{padding:0 10px 8px;font-size:.72rem}
 }
+
+/* Shown only when Firestore is genuinely unreachable (offline, quota, etc.)
+   — see showStaleDataNoticeIfConnectionLost() in showcase.js. Never shown
+   just because the catalog revision hasn't changed. */
+#scStaleDataNotice{position:fixed;top:0;left:0;right:0;z-index:200;background:#7a4b12;color:#fff;text-align:center;font-size:.78rem;padding:6px 12px;box-shadow:0 2px 8px rgba(0,0,0,.2)}

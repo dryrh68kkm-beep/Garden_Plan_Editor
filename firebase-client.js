@@ -1,20 +1,26 @@
 // Firestore + Auth via plain REST calls (fetch) — no SDK, no CDN.
-// Shared between the admin app (app.js) and the public showcase (showcase.js)
-// so both read/write the same backend instead of per-browser localStorage.
+// Shared between the admin app (app.js) and the public showcase (showcase.js).
+//
+// SECURITY MODEL (rewritten — no shared credentials in client code):
+// - The showcase (public site) never authenticates. It calls Firestore
+//   completely unauthenticated, relying on firestore.rules to allow public
+//   READ of the collections it needs and to deny ALL writes without auth.
+// - The admin app authenticates as a real Firebase Auth user (email +
+//   password typed into a login form — see fbAdminLogin below). There is no
+//   embedded password anywhere in this file or shipped to any browser.
+// - `apiKey` below is NOT a secret — it's the public identifier Firebase's
+//   own client SDKs always ship in browser code; access control lives
+//   entirely in firestore.rules, never in this key. See docs/firestore-ops.md.
 const FB_CONFIG = {
   apiKey: "AIzaSyDBIRpyH5Hvp-mMqs5i9LmWzk1w0toYQZw",
   projectId: "rinlada-plant-stock"
 };
 const FB_BASE = `https://firestore.googleapis.com/v1/projects/${FB_CONFIG.projectId}/databases/(default)/documents`;
-// Technical shared account (not an end-user login) so both pages can read/write
-// without anyone typing credentials. Auth is required only because Firestore
-// security rules require request.auth != null; the real access control is
-// those rules, not this password.
-const FB_SHARED_EMAIL = "backend@rinlada-plant-stock.local";
-const FB_SHARED_PASSWORD = "sSZCkeNxcoGz4kIWzNHl";
 
 let fbIdToken = null;
 let fbTokenExpiry = 0;
+let fbRefreshToken = null;
+const FB_REFRESH_TOKEN_KEY = "garden_admin_refresh_token_v1";
 
 // Plain fetch() has no built-in timeout — on a slow/flaky connection (not
 // fully offline, just stalling) it can hang for a very long time before the
@@ -58,28 +64,77 @@ async function fbFetch(url, options={}){
   }
 }
 
-async function fbAutoLogin(){
+// ---- Admin authentication (real Firebase Auth user, typed credentials) ----
+// Nothing here runs unless the admin app explicitly calls fbAdminLogin() —
+// the showcase never imports/calls any of this, so it never holds a token.
+function fbApplyAuthResult(data){
+  fbIdToken=data.idToken;
+  fbTokenExpiry=Date.now()+50*60*1000; // refresh a bit before the real 1h expiry
+  fbRefreshToken=data.refreshToken||fbRefreshToken;
+  if(fbRefreshToken){
+    try{ localStorage.setItem(FB_REFRESH_TOKEN_KEY, fbRefreshToken); }catch{}
+  }
+}
+async function fbAdminLogin(email,password){
   const res = await fbFetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FB_CONFIG.apiKey}`,{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({email:FB_SHARED_EMAIL,password:FB_SHARED_PASSWORD,returnSecureToken:true})
+    body:JSON.stringify({email,password,returnSecureToken:true})
   });
   const data=await res.json();
-  if(data.error) throw new Error(data.error.message);
-  fbIdToken=data.idToken;
-  fbTokenExpiry=Date.now()+50*60*1000; // refresh a bit before the real 1h expiry
+  if(data.error) throw new Error(data.error.message==="INVALID_LOGIN_CREDENTIALS"||data.error.message==="EMAIL_NOT_FOUND"||data.error.message==="INVALID_PASSWORD" ? "อีเมลหรือรหัสผ่านไม่ถูกต้อง" : data.error.message);
+  fbApplyAuthResult(data);
   return fbIdToken;
 }
+async function fbRefreshIdToken(){
+  if(!fbRefreshToken) return null;
+  const res = await fbFetch(`https://securetoken.googleapis.com/v1/token?key=${FB_CONFIG.apiKey}`,{
+    method:"POST",
+    headers:{"Content-Type":"application/x-www-form-urlencoded"},
+    body:`grant_type=refresh_token&refresh_token=${encodeURIComponent(fbRefreshToken)}`
+  });
+  const data=await res.json();
+  if(data.error){
+    fbIdToken=null; fbRefreshToken=null;
+    try{ localStorage.removeItem(FB_REFRESH_TOKEN_KEY); }catch{}
+    return null;
+  }
+  fbIdToken=data.id_token;
+  fbTokenExpiry=Date.now()+50*60*1000;
+  fbRefreshToken=data.refresh_token||fbRefreshToken;
+  try{ localStorage.setItem(FB_REFRESH_TOKEN_KEY, fbRefreshToken); }catch{}
+  return fbIdToken;
+}
+// Called once on the admin page's startup so a returning admin doesn't have
+// to retype their password every visit — silently exchanges the saved
+// refresh token for a fresh session if one exists. Returns true if a
+// session was restored, false if the admin still needs to log in.
+async function fbTryRestoreSession(){
+  try{ fbRefreshToken=localStorage.getItem(FB_REFRESH_TOKEN_KEY); }catch{ fbRefreshToken=null; }
+  if(!fbRefreshToken) return false;
+  const token=await fbRefreshIdToken();
+  return !!token;
+}
+function fbAdminLogout(){
+  fbIdToken=null; fbTokenExpiry=0; fbRefreshToken=null;
+  try{ localStorage.removeItem(FB_REFRESH_TOKEN_KEY); }catch{}
+}
+function fbIsLoggedIn(){ return !!fbIdToken; }
+
 let fbLoginPromise=null;
+// Public reads (showcase) never have a token and never try to get one — this
+// just returns plain JSON headers, which is exactly what an unauthenticated
+// Firestore REST read needs. Admin calls only work once fbAdminLogin() has
+// run; if the token is close to expiring and a refresh token is available,
+// this transparently refreshes it first.
 async function fbHeaders(){
-  if(!fbIdToken||Date.now()>fbTokenExpiry){
-    // Share one in-flight login across concurrent callers instead of each
-    // of them firing its own sign-in request (Promise.all at startup calls
-    // this from several requests at once).
-    if(!fbLoginPromise) fbLoginPromise=fbAutoLogin().finally(()=>{fbLoginPromise=null;});
+  if(fbIdToken && Date.now()>fbTokenExpiry && fbRefreshToken){
+    if(!fbLoginPromise) fbLoginPromise=fbRefreshIdToken().finally(()=>{fbLoginPromise=null;});
     await fbLoginPromise;
   }
-  return {"Content-Type":"application/json","Authorization":"Bearer "+fbIdToken};
+  return fbIdToken
+    ? {"Content-Type":"application/json","Authorization":"Bearer "+fbIdToken}
+    : {"Content-Type":"application/json"};
 }
 
 function fbToValue(v){
