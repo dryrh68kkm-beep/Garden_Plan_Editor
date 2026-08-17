@@ -1532,6 +1532,17 @@ document.getElementById("logoutBtn").addEventListener("click",()=>{
   fbAdminLogout();
   location.reload();
 });
+// Fires only when Firebase explicitly rejects the saved refresh token (not
+// on a network blip) — bring back the login screen so the admin sees why
+// saves stopped working, instead of writes silently failing forever.
+fbSetSessionExpiredHandler(()=>{
+  document.getElementById("adminApp").style.display="none";
+  const errorEl=document.getElementById("loginError");
+  errorEl.textContent="เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่อีกครั้ง (ข้อมูลที่แก้ไว้ยังอยู่ในเครื่องนี้ ไม่หายไปไหน)";
+  errorEl.style.display="block";
+  document.getElementById("loginScreen").style.display="flex";
+  document.getElementById("loginEmail").focus();
+});
 fbTryRestoreSession().then(restored=>{
   if(restored) showAdminApp();
   else document.getElementById("loginEmail").focus();
