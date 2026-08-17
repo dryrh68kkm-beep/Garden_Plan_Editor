@@ -806,15 +806,22 @@ loadCareBeliefs();
 // office from any device, not just the browser that saved them. Falls back
 // to whatever the local cache already had (or nothing) if the cloud is
 // unreachable — the showcase must still render either way.
+//
+// Cost note: this is the expensive path (6-7 document-list reads). It only
+// ever runs on first load and when checkForCatalogUpdates() (below) detects
+// the admin side's catalogMeta/public revision has actually changed — never
+// on a plain timer. That's what keeps a showcase tab left open for hours
+// from re-downloading the whole catalog over and over.
 let lastFetchSignature=null;
 async function initFromFirestore(){
   try{
-    const [remoteStyleOverrides,remotePlantOverrides,remotePlantShowcaseIndex,remotePortfolio,remoteSupplies]=await Promise.all([
+    const [remoteStyleOverrides,remotePlantOverrides,remotePlantShowcaseIndex,remotePortfolio,remoteSupplies,remoteCatalogMeta]=await Promise.all([
       fbList("styleOverrides"),
       fbList("plantOverrides"),
       fbList("plantShowcaseIndex"),
       fbList("gardenPortfolio"),
-      fbList("gardenSupplies")
+      fbList("gardenSupplies"),
+      fbGet("catalogMeta","public")
     ]);
     // Compatibility during rollout: before an admin has opened the back office
     // once to create the lightweight index, fall back to the old full collection.
@@ -824,6 +831,7 @@ async function initFromFirestore(){
     // Poll only lightweight metadata and thumbnails. Full galleries are
     // fetched one physical tree at a time when a customer opens its detail.
     const signature=JSON.stringify([remoteStyleOverrides,remotePlantOverrides,remoteCustomPlants,remotePortfolio,remoteSupplies]);
+    rememberCatalogRevision(remoteCatalogMeta);
     if(signature===lastFetchSignature) return;
     lastFetchSignature=signature;
     styleOverrides={};
@@ -849,22 +857,78 @@ async function initFromFirestore(){
     renderScPlantGallery();
     fillScSupplyCategories();
     renderScSupplies();
+    hideStaleDataNotice();
   }catch(error){
     console.error("Showcase Firestore sync failed, staying on local data:",error);
+    showStaleDataNoticeIfConnectionLost();
   }
 }
+
+// ---- Revision-based refresh (avoids re-downloading the whole catalog) ----
+// The admin app bumps catalogMeta/public's `revision` field on every save,
+// delete, or restore (see app.js's bumpCatalogRevision()). The showcase only
+// needs to compare that one small number against the last one it saw; a
+// match means nothing changed and the expensive 6-collection fetch above
+// can be skipped entirely.
+const CATALOG_REVISION_KEY="garden_catalog_revision_v1";
+let lastKnownCatalogRevision=null;
+try{ lastKnownCatalogRevision=localStorage.getItem(CATALOG_REVISION_KEY)||null; }catch{}
+function rememberCatalogRevision(catalogMetaDoc){
+  const revision=catalogMetaDoc && catalogMetaDoc.revision!=null ? String(catalogMetaDoc.revision) : null;
+  if(revision===null) return;
+  lastKnownCatalogRevision=revision;
+  try{ localStorage.setItem(CATALOG_REVISION_KEY,revision); }catch{}
+}
+let catalogSyncInFlight=false;
+// Cheap check (1 document read) run on a timer and on tab refocus. Only
+// triggers the full initFromFirestore() fetch when the admin side's
+// revision actually moved, or when this tab has no data to show yet.
+async function checkForCatalogUpdates(){
+  if(catalogSyncInFlight) return;
+  if(document.querySelector("dialog[open]")) return; // don't yank content from under someone mid-view
+  catalogSyncInFlight=true;
+  try{
+    const hasContent=customPlants.length>0||portfolioItems.length>0;
+    let meta=null;
+    try{
+      meta=await fbGet("catalogMeta","public");
+    }catch(error){
+      console.error("Catalog revision check failed, staying on current data:",error);
+      showStaleDataNoticeIfConnectionLost();
+      return;
+    }
+    const revision=meta && meta.revision!=null ? String(meta.revision) : null;
+    if(hasContent && revision!==null && revision===lastKnownCatalogRevision) return;
+    await initFromFirestore();
+  }finally{
+    catalogSyncInFlight=false;
+  }
+}
+// "ข้อมูลอาจยังไม่ใช่ข้อมูลล่าสุด" must only ever appear when Firestore is
+// genuinely unreachable (offline, quota exhausted, etc.) — never merely
+// because the revision hasn't changed, which is the normal, expected case.
+function showStaleDataNoticeIfConnectionLost(){
+  const el=document.getElementById("scStaleDataNotice");
+  if(el) el.style.display="block";
+}
+function hideStaleDataNotice(){
+  const el=document.getElementById("scStaleDataNotice");
+  if(el) el.style.display="none";
+}
+
 ensureSupplyCatalog()
   .catch(error=>console.error(error))
   .then(hydrateFromLocalCache)
   .then(initFromFirestore);
 
 // REST-only Firestore has no realtime listener (that needs the SDK), so we
-// poll instead: refetch periodically so a photo/style added on another
-// device (e.g. the back office) shows up here without a manual reload.
-// Skipped while a detail dialog/lightbox is open so a background refresh
-// doesn't yank content out from under someone mid-view.
-const FIRESTORE_POLL_MS=120000;
-setInterval(()=>{
-  if(document.querySelector("dialog[open]")) return;
-  initFromFirestore();
-},FIRESTORE_POLL_MS);
+// poll instead — but only the tiny catalogMeta/public document, not the
+// whole catalog. A full refetch only happens when that document's revision
+// actually changed (see checkForCatalogUpdates above). Also re-checked on
+// visibilitychange so returning to a backgrounded tab picks up new data
+// immediately instead of waiting out the rest of the interval.
+const CATALOG_CHECK_MS=600000; // 10 minutes
+setInterval(checkForCatalogUpdates,CATALOG_CHECK_MS);
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="visible") checkForCatalogUpdates();
+});

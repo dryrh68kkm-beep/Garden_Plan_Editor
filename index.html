@@ -17,6 +17,19 @@
   <link rel="stylesheet" href="style.css?v=202608131230" />
 </head>
 <body>
+  <div id="loginScreen" class="login-screen">
+    <form id="loginForm" class="login-card">
+      <p class="eyebrow">LANDSCAPE MANAGEMENT</p>
+      <h1>เข้าสู่ระบบแอดมิน</h1>
+      <p class="login-sub">ต้องมีบัญชีแอดมินจริงใน Firebase Authentication — ดู <code>docs/firestore-ops.md</code> สำหรับขั้นตอนสร้างบัญชี</p>
+      <label>อีเมล<input id="loginEmail" class="input" type="email" autocomplete="username" required /></label>
+      <label>รหัสผ่าน<input id="loginPassword" class="input" type="password" autocomplete="current-password" required /></label>
+      <p id="loginError" class="login-error" style="display:none"></p>
+      <button type="submit" id="loginSubmitBtn" class="btn btn-primary">เข้าสู่ระบบ</button>
+    </form>
+  </div>
+
+  <div id="adminApp" style="display:none">
   <header class="topbar">
     <div>
       <p class="eyebrow">LANDSCAPE MANAGEMENT</p>
@@ -28,6 +41,7 @@
         <button id="manualSyncBtn" class="btn btn-ghost" title="ดึงข้อมูลล่าสุดจากคลาวด์ทันที">🔄 ซิงก์ข้อมูล</button>
       </div>
       <div class="admin-actions">
+        <button id="logoutBtn" class="btn btn-ghost" title="ออกจากระบบ">ออกจากระบบ</button>
         <button id="resetAllBtn" class="btn btn-ghost btn-danger-ghost">ล้างข้อมูลทั้งหมด</button>
       </div>
     </div>
@@ -464,6 +478,7 @@
       </div>
     </form>
   </dialog>
+  </div>
 
   <script src="data/garden-style-images/GS001.js?v=20260811"></script>
   <script src="data/garden-style-images/GS006.js?v=20260811"></script>

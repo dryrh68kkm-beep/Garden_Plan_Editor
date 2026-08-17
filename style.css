@@ -119,3 +119,15 @@ input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none;appea
 .linked-plant-thumb{height:80px;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#e7f0e8,#afd0b6);display:flex;align-items:center;justify-content:center;font-size:30px}
 .linked-plant-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .linked-plant-name{font-size:12px;margin-top:5px;color:var(--muted)}
+
+/* Admin login gate — blocks the whole admin UI until a real Firebase Auth
+   session exists (see firebase-client.js's fbAdminLogin/fbTryRestoreSession). */
+.login-screen{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#10291d,#1f6b46);padding:20px}
+.login-card{background:#fff;border-radius:20px;padding:32px 28px;width:min(380px,100%);box-shadow:0 30px 80px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:4px}
+.login-card h1{margin:2px 0 10px;font-size:24px}
+.login-sub{color:var(--muted);font-size:13px;line-height:1.6;margin:0 0 18px}
+.login-sub code{background:#eef3ef;padding:1px 5px;border-radius:5px;font-size:12px}
+.login-card label{display:block;margin:10px 0;color:var(--muted);font-weight:700;font-size:13px}
+.login-card label .input,.login-card label input{margin-top:6px}
+.login-error{color:var(--danger);font-size:13px;margin:6px 0 0;display:none}
+.login-card button[type="submit"]{margin-top:16px;width:100%}

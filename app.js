@@ -1354,6 +1354,7 @@ async function cloudSave(fn,label){
   try{
     await fn();
     setCloudStatus(true);
+    bumpCatalogRevision();
     return true;
   }catch(err){
     console.error("Firestore save failed, staying on local data:",err);
@@ -1390,6 +1391,22 @@ function saveDocKey(collection,id){ return `${collection}:${id}`; }
 function persistFailedSaves(){
   safeSetLocal(FAILED_SAVES_KEY, [...failedSaves.values()]);
 }
+// Collections that either ARE the revision marker itself, or are never read
+// by the showcase, so writing them shouldn't trigger a showcase refetch.
+const NO_REVISION_BUMP_COLLECTIONS=new Set(["catalogMeta","plants"]);
+// Lets the showcase know new data exists without it re-downloading all 6
+// collections on every poll cycle: the showcase just checks this one tiny
+// doc's revision and only re-fetches everything when the number changed.
+// Best-effort and silent — losing this bump would only make the showcase's
+// next scheduled metadata check (still running on its own interval) require
+// an extra cycle, not lose any data.
+async function bumpCatalogRevision(){
+  try{
+    await fbSet("catalogMeta","public",{revision:Date.now(),updatedAt:new Date().toISOString()});
+  }catch(err){
+    console.error("Catalog revision bump failed (showcase will still refresh on its own next check):",err);
+  }
+}
 async function saveDoc(collection,id,obj,label){
   pendingCloudSaves++;
   try{
@@ -1397,6 +1414,7 @@ async function saveDoc(collection,id,obj,label){
     failedSaves.delete(saveDocKey(collection,id));
     persistFailedSaves();
     setCloudStatus(true);
+    if(!NO_REVISION_BUMP_COLLECTIONS.has(collection)) bumpCatalogRevision();
     return true;
   }catch(err){
     console.error("Firestore save failed, will keep retrying in the background:",err);
@@ -1417,6 +1435,7 @@ async function retryFailedSaves(){
       failedSaves.delete(saveDocKey(collection,id));
       persistFailedSaves();
       setCloudStatus(true);
+      if(!NO_REVISION_BUMP_COLLECTIONS.has(collection)) bumpCatalogRevision();
     }catch(err){
       console.error("Retry save still failing, will try again on the next sync:",err);
     }finally{
@@ -1477,7 +1496,46 @@ async function initFromFirestore(){
     return false;
   }
 }
-hydrateFromLocalCache().then(initFromFirestore);
+// ---- Admin login gate ----
+// The whole admin UI stays hidden behind #loginScreen until a real Firebase
+// Auth session exists (see firebase-client.js — no more shared password).
+// A returning admin's session is restored silently from a saved refresh
+// token; a brand-new admin (or one whose session expired/was revoked) sees
+// the login form. See docs/firestore-ops.md for creating the account.
+function showAdminApp(){
+  document.getElementById("loginScreen").style.display="none";
+  document.getElementById("adminApp").style.display="";
+  hydrateFromLocalCache().then(initFromFirestore);
+}
+document.getElementById("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const email=document.getElementById("loginEmail").value.trim();
+  const password=document.getElementById("loginPassword").value;
+  const errorEl=document.getElementById("loginError");
+  const submitBtn=document.getElementById("loginSubmitBtn");
+  errorEl.style.display="none";
+  submitBtn.disabled=true;
+  submitBtn.textContent="กำลังเข้าสู่ระบบ...";
+  try{
+    await fbAdminLogin(email,password);
+    showAdminApp();
+  }catch(err){
+    errorEl.textContent=err.message||"เข้าสู่ระบบไม่สำเร็จ";
+    errorEl.style.display="block";
+  }finally{
+    submitBtn.disabled=false;
+    submitBtn.textContent="เข้าสู่ระบบ";
+  }
+});
+document.getElementById("logoutBtn").addEventListener("click",()=>{
+  if(!confirm("ออกจากระบบ?")) return;
+  fbAdminLogout();
+  location.reload();
+});
+fbTryRestoreSession().then(restored=>{
+  if(restored) showAdminApp();
+  else document.getElementById("loginEmail").focus();
+});
 
 document.getElementById("manualSyncBtn").addEventListener("click",async()=>{
   if(pendingCloudSaves>0){
