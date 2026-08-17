@@ -665,8 +665,11 @@ function renderScPlantGallery(){
     &&(special!=="focal"||p.isFocalPlant));
   const groups=groupPlantsBySpecies(rows)
     .sort((a,b)=>{
-      const arrival=String(b[0]?.arrivalDate||"").localeCompare(String(a[0]?.arrivalDate||""));
-      return arrival||(b.some(p=>p.bestSeller)?1:0)-(a.some(p=>p.bestSeller)?1:0);
+      // Best sellers always lead the gallery, regardless of arrival date;
+      // within each of those two tiers, newest arrivals still show first.
+      const bestSeller=(b.some(p=>p.bestSeller)?1:0)-(a.some(p=>p.bestSeller)?1:0);
+      if(bestSeller) return bestSeller;
+      return String(b[0]?.arrivalDate||"").localeCompare(String(a[0]?.arrivalDate||""));
     });
   scPlantGroupsByKey=new Map(groups.map(g=>[plantGroupKey(g[0]),g]));
   const visibleGroups=groups.slice(0,scPlantVisibleCount);
