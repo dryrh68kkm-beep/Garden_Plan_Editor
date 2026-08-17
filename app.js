@@ -1566,10 +1566,15 @@ document.getElementById("manualSyncBtn").addEventListener("click",async()=>{
 // poll instead: refetch periodically and re-render if the page has been
 // open a while, so a change made on another device shows up here without
 // needing a manual reload. Skipped while any dialog is open (still filling
-// in a form) or while a save is still in flight (see pendingCloudSaves
-// above) so a background refresh can't blow away in-progress work.
+// in a form), while a save is still in flight (see pendingCloudSaves
+// above), or before the admin has actually logged in — otherwise this
+// fires every 20s on the bare login screen, and a stuck failedSaves retry
+// (see retryFailedSaves inside initFromFirestore) rejects with no auth and
+// pops a blocking alert() right on top of the password field, over and
+// over, making it impossible to type.
 const FIRESTORE_POLL_MS=20000;
 setInterval(()=>{
+  if(!fbIsLoggedIn()) return;
   if(document.querySelector("dialog[open]")) return;
   if(pendingCloudSaves>0) return;
   initFromFirestore();
