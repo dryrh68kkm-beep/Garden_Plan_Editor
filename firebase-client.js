@@ -86,17 +86,46 @@ async function fbAdminLogin(email,password){
   fbApplyAuthResult(data);
   return fbIdToken;
 }
-async function fbRefreshIdToken(){
-  if(!fbRefreshToken) return null;
+// Called by the admin app when a refresh definitively fails (the server
+// explicitly rejected the refresh token, not just a network blip) — lets
+// app.js show the login screen again instead of leaving the admin looking
+// "logged in" while every write silently fails with permission-denied.
+let fbOnSessionExpired=null;
+function fbSetSessionExpiredHandler(fn){ fbOnSessionExpired=fn; }
+async function fbRefreshTokenOnce(){
   const res = await fbFetch(`https://securetoken.googleapis.com/v1/token?key=${FB_CONFIG.apiKey}`,{
     method:"POST",
     headers:{"Content-Type":"application/x-www-form-urlencoded"},
     body:`grant_type=refresh_token&refresh_token=${encodeURIComponent(fbRefreshToken)}`
   });
-  const data=await res.json();
+  return res.json();
+}
+async function fbRefreshIdToken(){
+  if(!fbRefreshToken) return null;
+  let data;
+  try{
+    data = await fbRefreshTokenOnce();
+  }catch(err){
+    // Network-level failure (fbFetch already retried once internally) —
+    // treat as transient, keep the existing session intact so the next
+    // save attempt just tries again rather than forcing a re-login.
+    return null;
+  }
+  if(data.error){
+    // A real answer came back saying the refresh token itself is invalid/
+    // expired/revoked — one more attempt after a short pause in case this
+    // was a momentary server-side hiccup, not a real session end.
+    await new Promise(r=>setTimeout(r,1000));
+    try{
+      data = await fbRefreshTokenOnce();
+    }catch{
+      return null;
+    }
+  }
   if(data.error){
     fbIdToken=null; fbRefreshToken=null;
     try{ localStorage.removeItem(FB_REFRESH_TOKEN_KEY); }catch{}
+    if(fbOnSessionExpired) fbOnSessionExpired();
     return null;
   }
   fbIdToken=data.id_token;
