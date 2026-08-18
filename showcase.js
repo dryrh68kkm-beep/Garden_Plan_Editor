@@ -763,6 +763,35 @@ async function openScPlantLightbox(id){
     }catch(error){
       console.error("Could not load full plant detail, using thumbnail:",error);
     }
+  } else if(p.custom&&p.detailLoaded){
+    // Already fetched the full document once this session — but that copy
+    // goes stale if an admin edits this same plant (water, maintenance,
+    // images, auspicious, ...) from another tab/device before the next
+    // periodic catalog check (checkForCatalogUpdates, every 10 minutes or
+    // on tab refocus) happens to run. Re-check the tiny catalogMeta/public
+    // revision doc first — if it hasn't moved since the last full sync,
+    // nothing changed anywhere and the cached detail is still current, no
+    // extra document fetch needed. Only when it HAS moved (which may mean
+    // a different plant changed, not necessarily this one — an accepted
+    // tradeoff, see report) do we refetch this one document. Deliberately
+    // does NOT call rememberCatalogRevision(): only this one plant was
+    // refreshed, not the whole catalog, so lastKnownCatalogRevision must
+    // stay as-is for checkForCatalogUpdates() to still detect everything
+    // else that may be stale (grid thumbnails, other plants, etc.).
+    try{
+      const meta=await fbGet("catalogMeta","public");
+      const revision=meta&&meta.revision!=null?String(meta.revision):null;
+      if(revision!==null&&revision!==lastKnownCatalogRevision){
+        const detail=await fbGet("customPlants",id);
+        if(detail){
+          p={...p,...detail,detailLoaded:true};
+          customPlants=customPlants.map(x=>x.id===id?p:x);
+          rebuildAllPlants();
+        }
+      }
+    }catch(error){
+      console.error("Could not refresh plant detail, using cached copy:",error);
+    }
   }
   const images=plantImages(p);
   if(!images.length) return;
