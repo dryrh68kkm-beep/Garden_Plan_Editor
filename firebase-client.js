@@ -249,11 +249,6 @@ async function fbSet(col,id,obj){
   if(data.error) throw new Error(data.error.message);
   return data;
 }
-async function fbDelete(col,id){
-  const res=await fbFetch(`${FB_BASE}/${col}/${encodeURIComponent(id)}`,{method:"DELETE",headers:await fbHeaders()});
-  return res.ok;
-}
-
 // ---- Atomic multi-write commits (STEP 9C6) ----
 // Firestore's :commit endpoint applies a list of writes as a single
 // all-or-nothing operation — no separate beginTransaction/runTransaction

@@ -357,7 +357,6 @@ function esc(s=""){ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&l
 // plants) to the same colored-dot label for consistent display everywhere.
 const MAINTENANCE_LABELS={"ต่ำ":"🟢 ง่าย","กลาง":"🟡 ปานกลาง","สูง":"🔴 ยาก","ง่าย":"🟢 ง่าย","ปานกลาง":"🟡 ปานกลาง","ยาก":"🔴 ยาก"};
 function maintenanceLabel(m){ return MAINTENANCE_LABELS[m]||m||"-"; }
-function styleName(id){ return gardenStyles.find(s=>s.id===id)?.name || "-"; }
 // Admins can now type an exact size (cm or m) per plant record instead of
 // being stuck with the catalog's fixed preset labels (เล็ก/กลาง/ใหญ่/...) —
 // falls back to that preset only until the admin has entered their own.
@@ -1500,28 +1499,11 @@ function setCloudStatus(ok){
 // the just-added item/photo back out of the local view until the write
 // finally lands. pendingCloudSaves tracks that.
 let pendingCloudSaves = 0;
-async function cloudSave(fn,label){
-  pendingCloudSaves++;
-  try{
-    await fn();
-    setCloudStatus(true);
-    bumpCatalogRevision();
-    return true;
-  }catch(err){
-    console.error("Firestore save failed, staying on local data:",err);
-    setCloudStatus(false);
-    alert(`⚠️ บันทึก${label||"ข้อมูล"}ขึ้นคลาวด์ไม่สำเร็จ\n\nสาเหตุ: ${err.message||err}\n\nข้อมูลบันทึกไว้ในเครื่องนี้ชั่วคราวเท่านั้น กรุณาลองบันทึกซ้ำอีกครั้ง`);
-    return false;
-  }finally{
-    pendingCloudSaves--;
-  }
-}
 // Delete counterpart to saveDoc()'s atomic set+revision commit (STEP 9C6):
 // bundles the document delete with the catalogMeta/public revision bump in
 // one atomic Firestore commit, so a caller can never end up with the
 // document gone but the revision left pointing at the pre-delete state (or
-// vice versa). Used at the showcase-relevant delete call sites below;
-// cloudSave() above is left as-is for any other generic operation.
+// vice versa). Used at the showcase-relevant delete call sites below.
 async function cloudDelete(collection,id,label){
   pendingCloudSaves++;
   try{
@@ -1566,19 +1548,6 @@ function persistFailedSaves(){
 // Collections that either ARE the revision marker itself, or are never read
 // by the showcase, so writing them shouldn't trigger a showcase refetch.
 const NO_REVISION_BUMP_COLLECTIONS=new Set(["catalogMeta","plants"]);
-// Lets the showcase know new data exists without it re-downloading all 6
-// collections on every poll cycle: the showcase just checks this one tiny
-// doc's revision and only re-fetches everything when the number changed.
-// Best-effort and silent — losing this bump would only make the showcase's
-// next scheduled metadata check (still running on its own interval) require
-// an extra cycle, not lose any data.
-async function bumpCatalogRevision(){
-  try{
-    await fbSet("catalogMeta","public",{revision:Date.now(),updatedAt:new Date().toISOString()});
-  }catch(err){
-    console.error("Catalog revision bump failed (showcase will still refresh on its own next check):",err);
-  }
-}
 async function saveDoc(collection,id,obj,label){
   pendingCloudSaves++;
   try{
