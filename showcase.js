@@ -668,7 +668,7 @@ function renderScSpecimenHtml(p,index){
       <strong>รหัส ${esc(code)}</strong>
       <span>${[plantSizeLabel(p)?`ขนาด ${plantSizeLabel(p)}`:"",p.arrivalDate?`เข้า ${p.arrivalDate}`:""].filter(Boolean).map(esc).join(" · ")}</span>
       <b>${p.salePrice?money(p.salePrice):"สอบถามราคา"}</b>
-      <button type="button" class="small-btn">ดูรูปและรายละเอียด →</button>
+      <button type="button" class="small-btn" onclick="event.stopPropagation();openScSpecimen('${esc(p.id)}')">ดูรูปและรายละเอียด →</button>
     </div>
   </article>`;
 }
