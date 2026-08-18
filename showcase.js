@@ -173,6 +173,7 @@ async function hydrateFromLocalCache(){
   renderScPortfolio();
   rebuildAllPlants();
   fillScPlantCategoryFilter();
+  fillScPlantLightFilter();
   renderScPlantGallery();
   fillScSupplyCategories();
   renderScSupplies();
@@ -371,6 +372,20 @@ function fillScPlantCategoryFilter(){
   select.innerHTML='<option value="">ทุกประเภท</option>'+categories.map(x=>`<option>${esc(x)}</option>`).join("");
   select.value=current;
 }
+// Friendly, customer-facing labels for the canonical light values already
+// used throughout the app (see LIGHT_CODE_TO_TH for base plants and the
+// plantAddLight options for custom plants) -- decoration only, the option
+// value stays the exact canonical Thai string so filtering is a plain
+// equality check, no new mapping/normalization introduced.
+const LIGHT_FILTER_LABELS={"แดดจัด":"☀️ แดดจัด","แดดรำไร":"🌤 แดดรำไร","รำไรถึงแดด":"🌤 รำไรถึงแดด","รำไร":"🌥 รำไร","ร่ม":"🌿 ร่ม"};
+function fillScPlantLightFilter(){
+  const select=document.getElementById("scPlantLightFilter");
+  if(!select) return;
+  const current=select.value;
+  const lights=[...new Set(allPlants.map(p=>p.light).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"th"));
+  select.innerHTML='<option value="">ทุกสภาพแสง</option>'+lights.map(x=>`<option value="${esc(x)}">${esc(LIGHT_FILTER_LABELS[x]||x)}</option>`).join("");
+  select.value=current;
+}
 // Supplementary care/belief info for the 300-item catalog (data/plant-care-beliefs.json),
 // keyed by plantId. Belief text is only surfaced once hasVerifiedBelief is
 // true, per that file's own policy.
@@ -409,6 +424,7 @@ async function loadAllPlants(){
     rawPlants=data.filter(p=>p.active!==false).map(adaptPlant);
     rebuildAllPlants();
     fillScPlantCategoryFilter();
+    fillScPlantLightFilter();
     renderScPlantGallery();
   }catch(error){
     console.error("Showcase plant data error:",error);
@@ -700,11 +716,13 @@ function openScSpecimen(id){
 function renderScPlantGallery(){
   const q=(document.getElementById("scPlantSearch").value||"").toLowerCase();
   const category=document.getElementById("scPlantCategoryFilter").value||"";
+  const light=document.getElementById("scPlantLightFilter")?.value||"";
   const special=document.getElementById("scPlantSpecialFilter").value;
   const rows=allPlants.filter(p=>!!plantImages(p).length
     &&(!p.custom||isAvailablePlant(p))
     &&[p.thaiName,p.englishName,p.scientificName,p.inventoryCode].join(" ").toLowerCase().includes(q)
     &&(!category||p.category===category)
+    &&(!light||p.light===light)
     &&(special!=="bestSeller"||p.bestSeller)
     &&(special!=="focal"||p.isFocalPlant));
   const groups=groupPlantsBySpecies(rows)
@@ -864,6 +882,7 @@ async function openScPlantLightbox(id){
 }
 document.getElementById("scPlantSearch").addEventListener("input",resetScPlantPaging);
 document.getElementById("scPlantCategoryFilter").addEventListener("change",resetScPlantPaging);
+document.getElementById("scPlantLightFilter")?.addEventListener("change",resetScPlantPaging);
 document.getElementById("scPlantSpecialFilter").addEventListener("change",resetScPlantPaging);
 document.getElementById("scLoadMorePlantsBtn").addEventListener("click",()=>{
   scPlantVisibleCount+=PLANT_PAGE_SIZE;
@@ -982,6 +1001,7 @@ async function initFromFirestore(){
     renderScPortfolio();
     rebuildAllPlants();
     fillScPlantCategoryFilter();
+    fillScPlantLightFilter();
     renderScPlantGallery();
     fillScSupplyCategories();
     renderScSupplies();
