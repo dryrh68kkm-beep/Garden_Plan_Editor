@@ -40,6 +40,11 @@ function lineOrderUrl(p){
 // (see openSharedPlantFromHash below).
 const SHOWCASE_SHARE_URL="https://dryrh68kkm-beep.github.io/Garden_Plan_Editor/showcase.html";
 let scLightboxPlant=null;
+// Bumped on every openScPlantLightbox() call; a pending fetch checks it
+// still matches after awaiting before applying its result, so opening
+// plant B while plant A's detail fetch is still in flight can't let A's
+// late response overwrite B's already-open dialog (STEP 11B).
+let scPlantLightboxRequestToken=0;
 function sharePlantText(p){
   const priceText=p.salePrice?` ราคา ${money(p.salePrice)}${p.unit?`/${p.unit}`:""}`:"";
   const sizeText=plantSizeLabel(p)?` ขนาด ${plantSizeLabel(p)}`:"";
@@ -858,57 +863,15 @@ function renderScPlantLightboxGallery(images){
   };
   carousel.scrollLeft=0;
 }
-async function openScPlantLightbox(id){
-  let p=plantById.get(id);
-  if(!p) return;
-  // Public inventory index contains only a small thumbnail. Fetch the full
-  // Firestore document for this one physical tree only after the customer clicks.
-  if(p.custom&&!p.detailLoaded){
-    try{
-      const detail=await fbGet("customPlants",id);
-      if(detail){
-        p={...p,...detail,detailLoaded:true};
-        customPlants=customPlants.map(x=>x.id===id?p:x);
-        rebuildAllPlants();
-      }
-    }catch(error){
-      console.error("Could not load full plant detail, using thumbnail:",error);
-    }
-  } else if(p.custom&&p.detailLoaded){
-    // Already fetched the full document once this session — but that copy
-    // goes stale if an admin edits this same plant (water, maintenance,
-    // images, auspicious, ...) from another tab/device before the next
-    // periodic catalog check (checkForCatalogUpdates, every 10 minutes or
-    // on tab refocus) happens to run. Re-check the tiny catalogMeta/public
-    // revision doc first — if it hasn't moved since the last full sync,
-    // nothing changed anywhere and the cached detail is still current, no
-    // extra document fetch needed. Only when it HAS moved (which may mean
-    // a different plant changed, not necessarily this one — an accepted
-    // tradeoff, see report) do we refetch this one document. Deliberately
-    // does NOT call rememberCatalogRevision(): only this one plant was
-    // refreshed, not the whole catalog, so lastKnownCatalogRevision must
-    // stay as-is for checkForCatalogUpdates() to still detect everything
-    // else that may be stale (grid thumbnails, other plants, etc.).
-    try{
-      const meta=await fbGet("catalogMeta","public");
-      const revision=meta&&meta.revision!=null?String(meta.revision):null;
-      if(revision!==null&&revision!==lastKnownCatalogRevision){
-        const detail=await fbGet("customPlants",id);
-        if(detail){
-          p={...p,...detail,detailLoaded:true};
-          customPlants=customPlants.map(x=>x.id===id?p:x);
-          rebuildAllPlants();
-        }
-      }
-    }catch(error){
-      console.error("Could not refresh plant detail, using cached copy:",error);
-    }
-  }
-  const images=plantImages(p);
-  if(!images.length) return;
-  scLightboxPlant=p;
+// Populates every field of the already-open lightbox from a plant object —
+// called once immediately with whatever's known (index/cache data), and
+// again later if a background fetch brings in fuller data, WITHOUT
+// reopening/re-animating the dialog (STEP 11B: separated out of
+// openScPlantLightbox so a second call here is just a content refresh).
+function renderScPlantLightboxContent(p){
   document.getElementById("scPlantLightboxName").textContent=[p.thaiName,publicInventoryCode(p)?`รหัส ${publicInventoryCode(p)}`:"",plantSizeLabel(p)?`ขนาด${plantSizeLabel(p)}`:"",p.englishName].filter(Boolean).join(" · ");
-  renderScPlantLightboxGallery(images);
+  renderScPlantLightboxGallery(plantImages(p));
+  document.getElementById("scPlantLightboxCarousel").scrollLeft=0;
   const priceTag=document.getElementById("scPlantLightboxPriceTag");
   if(p.salePrice){
     priceTag.textContent=`🏷️ ${money(p.salePrice)}${p.unit?` / ${p.unit}`:""}`;
@@ -945,11 +908,32 @@ async function openScPlantLightbox(id){
   } else {
     auspiciousSection.style.display="none";
   }
+}
+function setScPlantLightboxLoadingNote(text){
+  const note=document.getElementById("scPlantLightboxLoadingNote");
+  note.textContent=text||"";
+  note.style.display=text?"block":"none";
+}
+async function openScPlantLightbox(id){
+  const p0=plantById.get(id);
+  if(!p0) return;
+  // Grid tiles/specimen cards/group lists are all pre-filtered to plants
+  // with at least one image already (see renderScPlantGallery), so this
+  // only bails out for the rare linked-plant reference to a plant with
+  // truly no photo anywhere yet — same net effect as the old post-fetch
+  // check for every plant that can actually be clicked from the UI.
+  if(!plantImages(p0).length) return;
+  const myToken=++scPlantLightboxRequestToken;
+  scLightboxPlant=p0;
+  // Open immediately with whatever's already known (index/cache data) —
+  // never block the dialog open on a network round-trip (STEP 11B). A
+  // pending full-document fetch below fills in the rest afterwards.
+  renderScPlantLightboxContent(p0);
+  setScPlantLightboxLoadingNote(p0.custom&&!p0.detailLoaded?"⏳ กำลังโหลดรายละเอียดเพิ่มเติม...":"");
   const dlg=document.getElementById("scPlantLightbox");
   dlg.classList.remove("sc-modal-exit-active");
   dlg.classList.add("sc-modal-enter");
   dlg.showModal();
-  document.getElementById("scPlantLightboxCarousel").scrollLeft=0;
   // Force layout with the entering transform applied first, then flip to
   // the resting position on the next frame so the transition actually
   // animates instead of jumping straight to the end state.
@@ -962,6 +946,66 @@ async function openScPlantLightbox(id){
   setTimeout(()=>{
     dlg.classList.remove("sc-modal-enter","sc-modal-enter-active");
   },SC_MODAL_TRANSITION_MS);
+
+  let p=p0;
+  // Public inventory index contains only a small thumbnail. Fetch the full
+  // Firestore document for this one physical tree only after the customer clicks.
+  if(p.custom&&!p.detailLoaded){
+    try{
+      const detail=await fbGet("customPlants",id);
+      // A different plant was opened while this fetch was in flight —
+      // discard this stale result instead of overwriting its dialog.
+      if(myToken!==scPlantLightboxRequestToken) return;
+      if(detail){
+        p={...p,...detail,detailLoaded:true};
+        customPlants=customPlants.map(x=>x.id===id?p:x);
+        rebuildAllPlants();
+        scLightboxPlant=p;
+        renderScPlantLightboxContent(p);
+      }
+      setScPlantLightboxLoadingNote("");
+    }catch(error){
+      console.error("Could not load full plant detail, using thumbnail:",error);
+      if(myToken!==scPlantLightboxRequestToken) return;
+      setScPlantLightboxLoadingNote("รายละเอียดบางส่วนอาจโหลดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
+    }
+  } else if(p.custom&&p.detailLoaded){
+    // Already fetched the full document once this session — but that copy
+    // goes stale if an admin edits this same plant (water, maintenance,
+    // images, auspicious, ...) from another tab/device before the next
+    // periodic catalog check (checkForCatalogUpdates, every 10 minutes or
+    // on tab refocus) happens to run. Re-check the tiny catalogMeta/public
+    // revision doc first — if it hasn't moved since the last full sync,
+    // nothing changed anywhere and the cached detail is still current, no
+    // extra document fetch needed. Only when it HAS moved (which may mean
+    // a different plant changed, not necessarily this one — an accepted
+    // tradeoff, see report) do we refetch this one document. Deliberately
+    // does NOT call rememberCatalogRevision(): only this one plant was
+    // refreshed, not the whole catalog, so lastKnownCatalogRevision must
+    // stay as-is for checkForCatalogUpdates() to still detect everything
+    // else that may be stale (grid thumbnails, other plants, etc.). No
+    // loading note here — the dialog already shows the cached copy, which
+    // is correct far more often than not, so flashing a loading state for
+    // this quick background check would be noise, not signal.
+    try{
+      const meta=await fbGet("catalogMeta","public");
+      if(myToken!==scPlantLightboxRequestToken) return;
+      const revision=meta&&meta.revision!=null?String(meta.revision):null;
+      if(revision!==null&&revision!==lastKnownCatalogRevision){
+        const detail=await fbGet("customPlants",id);
+        if(myToken!==scPlantLightboxRequestToken) return;
+        if(detail){
+          p={...p,...detail,detailLoaded:true};
+          customPlants=customPlants.map(x=>x.id===id?p:x);
+          rebuildAllPlants();
+          scLightboxPlant=p;
+          renderScPlantLightboxContent(p);
+        }
+      }
+    }catch(error){
+      console.error("Could not refresh plant detail, using cached copy:",error);
+    }
+  }
 }
 document.getElementById("scPlantSearch").addEventListener("input",resetScPlantPaging);
 document.getElementById("scPlantCategoryFilter").addEventListener("change",resetScPlantPaging);
