@@ -865,18 +865,19 @@ async function initFromFirestore(){
       // plantShowcaseIndex is a denormalized copy of customPlants written as
       // a separate operation (see saveCustomPlant/syncPlantShowcaseIndexes
       // in app.js) — it can lag behind if that second write hasn't landed
-      // yet. Availability, price, grid-thumbnail, and size decisions must
-      // never trust a stale copy, so this reads stockStatus/salePrice/
-      // thumbs/customSizeValue/customSizeUnit straight from customPlants
-      // itself, using a field mask so nothing else comes along for the
-      // ride. `images` (the full gallery) is deliberately NOT masked in
-      // here — some older, not-yet-migrated plants still carry base64 in
-      // `images`, and pulling that for every plant on every catalog load
-      // would bloat this request for the whole grid. The grid only ever
-      // needs `thumbs`; the full gallery is fetched lazily, one plant at a
-      // time, when a customer opens its Detail view (see
-      // openScPlantLightbox's detailLoaded fetch below).
-      fbList("customPlants",["stockStatus","salePrice","thumbs","customSizeValue","customSizeUnit"])
+      // yet. Availability, price, grid-thumbnail, size, and name decisions
+      // must never trust a stale copy, so this reads stockStatus/salePrice/
+      // thumbs/customSizeValue/customSizeUnit/thaiName/englishName/
+      // scientificName straight from customPlants itself, using a field
+      // mask so nothing else comes along for the ride. `images` (the full
+      // gallery) is deliberately NOT masked in here — some older,
+      // not-yet-migrated plants still carry base64 in `images`, and pulling
+      // that for every plant on every catalog load would bloat this request
+      // for the whole grid. The grid only ever needs `thumbs`; the full
+      // gallery is fetched lazily, one plant at a time, when a customer
+      // opens its Detail view (see openScPlantLightbox's detailLoaded fetch
+      // below).
+      fbList("customPlants",["stockStatus","salePrice","thumbs","customSizeValue","customSizeUnit","thaiName","englishName","scientificName"])
     ]);
     // Compatibility during rollout: before an admin has opened the back office
     // once to create the lightweight index, fall back to the old full collection.
@@ -897,7 +898,10 @@ async function initFromFirestore(){
         salePrice:authoritative.salePrice,
         thumbs:overlayField(authoritative,p,"thumbs"),
         customSizeValue:overlayField(authoritative,p,"customSizeValue"),
-        customSizeUnit:overlayField(authoritative,p,"customSizeUnit")
+        customSizeUnit:overlayField(authoritative,p,"customSizeUnit"),
+        thaiName:overlayField(authoritative,p,"thaiName"),
+        englishName:overlayField(authoritative,p,"englishName"),
+        scientificName:overlayField(authoritative,p,"scientificName")
       };
     });
     // Poll only lightweight metadata and thumbnails. Full galleries are
