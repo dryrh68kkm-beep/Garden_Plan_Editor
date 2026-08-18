@@ -279,7 +279,7 @@ document.getElementById("addSupplyBtn").addEventListener("click",()=>openSupplyE
 document.getElementById("restoreSuppliesBtn").addEventListener("click",()=>{renderDeletedSupplies();document.getElementById("restoreSuppliesDialog").showModal();});
 document.getElementById("supplySearch").addEventListener("input",renderSupplies);
 document.getElementById("supplyCategoryFilter").addEventListener("change",renderSupplies);
-document.getElementById("supplyImage").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;supplyEditImage=await resizeImageToDataURL(file,900,260*1024);renderSupplyImagePreview();});
+document.getElementById("supplyImage").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;const resized=await resizeImageToDataURL(file,900,260*1024);supplyEditImage=await hostSupplyPhoto(resized,file.name||"supply-photo");renderSupplyImagePreview();});
 document.getElementById("supplyEditForm").addEventListener("submit",e=>{e.preventDefault();const existing=document.getElementById("supplyEditId").value;const item={id:existing||uid("supply"),name:document.getElementById("supplyName").value.trim(),code:document.getElementById("supplyCode").value.trim(),category:document.getElementById("supplyCategory").value,description:document.getElementById("supplyDescription").value.trim(),suitableFor:document.getElementById("supplySuitableFor").value.trim(),usage:document.getElementById("supplyUsage").value.trim(),frequency:document.getElementById("supplyFrequency").value.trim(),caution:document.getElementById("supplyCaution").value.trim(),price:Number(document.getElementById("supplyPrice").value)||0,unit:document.getElementById("supplyUnit").value.trim()||"ชิ้น",stock:Number(document.getElementById("supplyStock").value)||0,available:document.getElementById("supplyAvailable").checked,image:supplyEditImage,updatedAt:new Date().toISOString()};if(!checkDocSizeOrWarn(item,"สินค้า"))return;supplyItems=existing?supplyItems.map(x=>x.id===existing?item:x):[...supplyItems,item];safeSetLocal(STORAGE.gardenSupplies,supplyItems);renderSupplies();document.getElementById("supplyEditDialog").close();saveDoc("gardenSupplies",item.id,item,"อุปกรณ์และปุ๋ย");});
 document.getElementById("supplyDeleteBtn").addEventListener("click",async()=>{const id=document.getElementById("supplyEditId").value;const item=supplyItems.find(x=>x.id===id);if(!id||!item||!confirm(`ย้าย “${item.name}” ไปสินค้าที่ลบแล้วหรือไม่?\nสามารถกู้คืนภายหลังได้`))return;const tombstone={...item,deleted:true,updatedAt:new Date().toISOString()};supplyItems=supplyItems.filter(x=>x.id!==id);deletedSupplyItems=[...deletedSupplyItems.filter(x=>x.id!==id),tombstone];safeSetLocal(STORAGE.gardenSupplies,[...supplyItems,...deletedSupplyItems]);renderSupplies();document.getElementById("supplyEditDialog").close();await saveDoc("gardenSupplies",id,tombstone,"การย้ายสินค้าไปถังขยะ");});
 async function savePortfolioItem(item){
@@ -1163,6 +1163,25 @@ async function hostPlantPhotoPair(full,thumb,baseName){
     uploadPlantPhotoToR2(thumb,`${baseName}-thumb`)
   ]);
   return (fullUrl&&thumbUrl)?[fullUrl,thumbUrl]:[full,thumb];
+}
+// Supply photos have no thumbnail/gallery (see Supply Card — one cover image
+// only), so unlike hostPlantPhotoPair this hosts a single image. uploadPlantPhotoToR2
+// is generic (any data URL + filename in, hosted URL or null out) despite its
+// plant-specific name, so it's reused here as-is — no Worker/endpoint change.
+// Always resolves to a usable image string: the resized base64 image itself
+// if it isn't a data:image URL, or if the R2 upload throws/fails/returns
+// nothing — a supply's photo must never be lost or left broken because R2
+// was unavailable.
+async function hostSupplyPhoto(dataUrl,baseName){
+  if(typeof dataUrl!=="string"||!dataUrl.startsWith("data:image")) return dataUrl;
+  try{
+    const url=await uploadPlantPhotoToR2(dataUrl,baseName);
+    if(url) return url;
+    console.warn("Supply photo R2 upload did not return a URL, keeping base64 image");
+  }catch(error){
+    console.warn("Supply photo R2 upload failed, keeping base64 image:",error);
+  }
+  return dataUrl;
 }
 function openPlantEdit(id){
   const p=getPlant(id);
