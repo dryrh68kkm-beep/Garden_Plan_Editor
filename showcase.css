@@ -33,8 +33,9 @@
 .showcase-order-btn:hover{background:#05a848}
 .showcase-order-btn--lightbox{margin:0;padding:14px 16px;font-size:1rem;flex:1}
 .showcase-lightbox-actions{display:flex;gap:8px;margin:18px 0 0}
-.showcase-share-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:14px 16px;border-radius:12px;border:1.5px solid #0d2e23;background:#fff;color:#0d2e23;font-weight:700;font-size:1rem;cursor:pointer;flex:0 0 auto}
-.showcase-share-btn:hover{background:#f1f5f2}
+.showcase-share-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:14px 16px;border-radius:12px;border:1.5px solid #0d2e23;background:#fff;color:#0d2e23;font-weight:700;font-size:1rem;cursor:pointer;flex:0 0 auto;box-shadow:0 2px 8px rgba(13,46,35,.08);transition:background .15s ease,color .15s ease,box-shadow .15s ease,transform .1s ease}
+.showcase-share-btn:hover{background:#0d2e23;color:#fff;box-shadow:0 6px 16px rgba(13,46,35,.22)}
+.showcase-share-btn:active{transform:scale(.96)}
 .showcase-plant-caption{font-weight:800;font-size:1.05rem;color:var(--ink)}
 .showcase-plant-price-tag{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;border-radius:999px;font-weight:800;font-size:.85rem;padding:6px 12px;background:linear-gradient(135deg,var(--green-2),var(--green));color:#fff}
 .showcase-lightbox-img-wrap{position:relative}
@@ -555,7 +556,7 @@ body::-webkit-scrollbar,
 .sc-new-stock-badge{position:absolute;top:12px;right:12px;padding:7px 11px;border-radius:999px;background:#fff7df;color:#684710;font-size:.78rem;font-weight:800;box-shadow:0 6px 18px rgba(0,0,0,.2)}
 .sc-view-stock-btn{border:0;cursor:pointer;width:calc(100% - 32px)}
 .sc-plant-group-dialog{width:min(980px,calc(100% - 24px))}
-.sc-group-share-btn{margin-top:10px}
+.sc-group-share-btn{margin:2px 0 18px;padding:10px 18px;font-size:.85rem;width:fit-content}
 .sc-specimen-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:18px}
 .sc-specimen-card{overflow:hidden;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 10px 26px rgba(16,45,35,.09);cursor:pointer;transition:.2s}
 .sc-specimen-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
