@@ -31,7 +31,10 @@
 .showcase-plant-info{padding:14px 16px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .showcase-order-btn{display:flex;align-items:center;justify-content:center;gap:6px;margin:0 16px 16px;padding:11px 14px;border-radius:12px;background:#06C755;color:#fff;font-weight:700;font-size:.88rem;text-decoration:none;text-align:center}
 .showcase-order-btn:hover{background:#05a848}
-.showcase-order-btn--lightbox{margin:18px 0 0;padding:14px 16px;font-size:1rem}
+.showcase-order-btn--lightbox{margin:0;padding:14px 16px;font-size:1rem;flex:1}
+.showcase-lightbox-actions{display:flex;gap:8px;margin:18px 0 0}
+.showcase-share-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:14px 16px;border-radius:12px;border:1.5px solid #0d2e23;background:#fff;color:#0d2e23;font-weight:700;font-size:1rem;cursor:pointer;flex:0 0 auto}
+.showcase-share-btn:hover{background:#f1f5f2}
 .showcase-plant-caption{font-weight:800;font-size:1.05rem;color:var(--ink)}
 .showcase-plant-price-tag{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;border-radius:999px;font-weight:800;font-size:.85rem;padding:6px 12px;background:linear-gradient(135deg,var(--green-2),var(--green));color:#fff}
 .showcase-lightbox-img-wrap{position:relative}
@@ -271,6 +274,7 @@
   .sc-mobile-line{display:flex;position:fixed;z-index:35;left:14px;right:14px;bottom:calc(12px + env(safe-area-inset-bottom));align-items:center;justify-content:center;padding:13px 16px;border-radius:15px;background:#06C755;color:#fff;font-weight:800;text-decoration:none;box-shadow:0 12px 30px rgba(5,72,37,.28)}
   .sc-content-page{padding-bottom:118px}.showcase-plant-info{padding:11px 12px}.showcase-plant-price-row{align-items:flex-start;flex-direction:column}.showcase-plant-price-row>span{text-align:left}
   .showcase-order-btn{margin:0 12px 12px;padding:10px;font-size:.78rem}.showcase-plant-caption{font-size:.95rem}
+  .showcase-share-btn{padding:10px 12px;font-size:.78rem}
 }
 
 

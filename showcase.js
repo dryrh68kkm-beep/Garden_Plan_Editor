@@ -21,6 +21,35 @@ function lineOrderUrl(p){
   const text=`สนใจสอบถาม: ${p.thaiName}${codeText}${sizeText}${priceText}`;
   return `https://line.me/R/oaMessage/${LINE_OA_ID}/?${encodeURIComponent(text)}`;
 }
+// The site is a single-page app with no per-plant URL, so a shared link
+// always opens the same showcase.html — there's no way (without a build
+// step or server-side rendering, neither available on GitHub Pages) to give
+// each plant its own link or Open Graph preview image. Instead the plant's
+// name/price/code ride along as the share *text*, and the link always goes
+// to the shop's showcase itself.
+const SHOWCASE_SHARE_URL="https://dryrh68kkm-beep.github.io/Garden_Plan_Editor/showcase.html";
+let scLightboxPlant=null;
+function sharePlantText(p){
+  const priceText=p.salePrice?` ราคา ${money(p.salePrice)}${p.unit?`/${p.unit}`:""}`:"";
+  const sizeText=plantSizeLabel(p)?` ขนาด ${plantSizeLabel(p)}`:"";
+  return `${p.thaiName}${sizeText}${priceText} — ดูรูปและสั่งซื้อได้ที่ร้านรินลดา พันธุ์ไม้`;
+}
+async function scSharePlant(){
+  const p=scLightboxPlant;
+  if(!p) return;
+  const shareData={title:p.thaiName,text:sharePlantText(p),url:SHOWCASE_SHARE_URL};
+  if(navigator.share){
+    try{ await navigator.share(shareData); }catch(error){ /* user cancelled the native share sheet — nothing to do */ }
+    return;
+  }
+  const clipboardText=`${shareData.text}\n${shareData.url}`;
+  try{
+    await navigator.clipboard.writeText(clipboardText);
+    alert("คัดลอกข้อความและลิงก์ร้านแล้ว นำไปวางแชร์ต่อได้เลย");
+  }catch(error){
+    prompt("คัดลอกข้อความนี้เพื่อแชร์:",clipboardText);
+  }
+}
 // Maps both the new ง่าย/ปานกลาง/ยาก scale and the older ต่ำ/กลาง/สูง values
 // (still used by the static 300-item catalog) to the same colored-dot label.
 const MAINTENANCE_LABELS={"ต่ำ":"🟢 ง่าย","กลาง":"🟡 ปานกลาง","สูง":"🔴 ยาก","ง่าย":"🟢 ง่าย","ปานกลาง":"🟡 ปานกลาง","ยาก":"🔴 ยาก"};
@@ -732,6 +761,7 @@ async function openScPlantLightbox(id){
   }
   const images=plantImages(p);
   if(!images.length) return;
+  scLightboxPlant=p;
   document.getElementById("scPlantLightboxName").textContent=[p.thaiName,publicInventoryCode(p)?`รหัส ${publicInventoryCode(p)}`:"",plantSizeLabel(p)?`ขนาด${plantSizeLabel(p)}`:"",p.englishName].filter(Boolean).join(" · ");
   renderScPlantLightboxGallery(images);
   const priceTag=document.getElementById("scPlantLightboxPriceTag");
@@ -797,6 +827,7 @@ document.getElementById("scLoadMorePlantsBtn").addEventListener("click",()=>{
 });
 document.getElementById("scSupplySearch").addEventListener("input",renderScSupplies);
 document.getElementById("scSupplyCategoryFilter").addEventListener("change",renderScSupplies);
+document.getElementById("scPlantLightboxShareBtn").addEventListener("click",scSharePlant);
 
 renderScStyles();
 renderScPortfolio();
