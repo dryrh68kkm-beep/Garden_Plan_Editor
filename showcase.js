@@ -8,11 +8,12 @@ const STORAGE = {
   // Cache-commit completeness marker (STEP 9C2A/9C2B) — records which
   // revision all 5 IndexedDB dataset keys above were LAST fully,
   // successfully committed for. Deliberately separate from
-  // CATALOG_REVISION_KEY: that
-  // localStorage value is the one authoritative "what revision have we
-  // seen" pointer read by checkForCatalogUpdates()/the Detail reopen check
-  // and must not change meaning; this marker only vouches for the IndexedDB
-  // cache's own completeness and is not read anywhere yet.
+  // CATALOG_REVISION_KEY: that localStorage value is the one authoritative
+  // "what revision have we seen" pointer read by
+  // checkForCatalogUpdates()/the Detail reopen check and must not change
+  // meaning; this marker only vouches for the IndexedDB cache's own
+  // completeness. Read at startup (see syncCatalogAtStartup, STEP 9C3) to
+  // decide whether the full Firestore collection fetch can be skipped.
   catalogCacheSync: "garden_catalog_cache_sync_v1"
 };
 
@@ -997,7 +998,14 @@ loadCareBeliefs();
 // on a plain timer. That's what keeps a showcase tab left open for hours
 // from re-downloading the whole catalog over and over.
 let lastFetchSignature=null;
-async function initFromFirestore(){
+// prefetchedCatalogMeta (STEP 9C3): when the caller already read
+// catalogMeta/public itself (see syncCatalogAtStartup below) to decide
+// whether a full sync is even needed, pass that doc through here instead
+// of re-reading it — avoids a second, redundant catalogMeta read on the
+// same startup pass. Existing callers that don't have one (e.g.
+// checkForCatalogUpdates()) keep calling this with no arguments, and it
+// reads catalogMeta itself exactly as before.
+async function initFromFirestore(prefetchedCatalogMeta){
   try{
     const [remoteStyleOverrides,remotePlantOverrides,remotePlantShowcaseIndex,remotePortfolio,remoteSupplies,remoteCatalogMeta,remoteAuthoritativeFields]=await Promise.all([
       fbList("styleOverrides"),
@@ -1005,7 +1013,7 @@ async function initFromFirestore(){
       fbList("plantShowcaseIndex"),
       fbList("gardenPortfolio"),
       fbList("gardenSupplies"),
-      fbGet("catalogMeta","public"),
+      prefetchedCatalogMeta!==undefined ? Promise.resolve(prefetchedCatalogMeta) : fbGet("catalogMeta","public"),
       // plantShowcaseIndex is a denormalized copy of customPlants written as
       // a separate operation (see saveCustomPlant/syncPlantShowcaseIndexes
       // in app.js) — it can lag behind if that second write hasn't landed
@@ -1177,6 +1185,45 @@ function hideStaleDataNotice(){
   if(el) el.style.display="none";
 }
 
+// STEP 9C3: on startup (only — this is not used by the polling/refocus
+// path below, which is left exactly as it was), skip the expensive full
+// collection fetch entirely when the cache hydrateFromLocalCache() already
+// loaded is proven both complete and current for the live remote revision.
+// lastKnownCatalogRevision (localStorage) is NOT used as that proof — it
+// only records a revision this tab has previously seen, not that the
+// IndexedDB dataset cache actually finished committing. That guarantee
+// comes only from STORAGE.catalogCacheSync (see STEP 9C2A/9C2B), which is
+// what's checked here.
+async function syncCatalogAtStartup(){
+  let remoteCatalogMeta;
+  try{
+    remoteCatalogMeta=await fbGet("catalogMeta","public");
+  }catch(error){
+    // The revision check itself failed (offline, timeout, permission,
+    // malformed response) — never silently treat the cache as fresh.
+    // Fall back to the existing full-sync path unconditionally; it has its
+    // own try/catch and will leave the already-hydrated cached UI in place
+    // if the network is genuinely unreachable.
+    console.error("Startup catalog revision check failed, falling back to full sync:",error);
+    await initFromFirestore();
+    return;
+  }
+  const remoteRevision=remoteCatalogMeta && remoteCatalogMeta.revision!=null ? String(remoteCatalogMeta.revision) : null;
+  const manifest=await LS.get(STORAGE.catalogCacheSync,null);
+  const cacheValid=manifest!=null && manifest.complete===true && manifest.revision!=null
+    && remoteRevision!==null && String(manifest.revision)===remoteRevision;
+  if(cacheValid){
+    // Already-hydrated cache is confirmed current: nothing to fetch. Align
+    // the localStorage revision pointer (used by checkForCatalogUpdates()
+    // and the Detail reopen check) with what was just verified, in case it
+    // was missing or stale, then proceed exactly as a full sync would have.
+    rememberCatalogRevision(remoteCatalogMeta);
+    hideStaleDataNotice();
+    return;
+  }
+  await initFromFirestore(remoteCatalogMeta);
+}
+
 // Entry point for per-plant share links: the Cloudflare Worker's
 // /plant/<id> preview page (see cloudflare-worker/worker.js) redirects real
 // visitors here with #plant=<id> in the URL, after Facebook/LINE/etc.'s
@@ -1240,7 +1287,7 @@ ensureSupplyCatalog()
   .catch(error=>console.error(error))
   .then(hydrateFromLocalCache)
   .catch(error=>console.error("Local cache hydrate failed:",error))
-  .then(initFromFirestore)
+  .then(syncCatalogAtStartup)
   .catch(error=>console.error("Initial Firestore sync failed:",error))
   .then(openSharedPlantFromHash)
   .catch(error=>console.error("Could not open shared plant link:",error));
