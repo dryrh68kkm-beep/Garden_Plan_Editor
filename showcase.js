@@ -855,19 +855,28 @@ loadCareBeliefs();
 let lastFetchSignature=null;
 async function initFromFirestore(){
   try{
-    const [remoteStyleOverrides,remotePlantOverrides,remotePlantShowcaseIndex,remotePortfolio,remoteSupplies,remoteCatalogMeta]=await Promise.all([
+    const [remoteStyleOverrides,remotePlantOverrides,remotePlantShowcaseIndex,remotePortfolio,remoteSupplies,remoteCatalogMeta,remoteStockStatuses]=await Promise.all([
       fbList("styleOverrides"),
       fbList("plantOverrides"),
       fbList("plantShowcaseIndex"),
       fbList("gardenPortfolio"),
       fbList("gardenSupplies"),
-      fbGet("catalogMeta","public")
+      fbGet("catalogMeta","public"),
+      // plantShowcaseIndex is a denormalized copy of customPlants written as
+      // a separate operation (see saveCustomPlant/syncPlantShowcaseIndexes
+      // in app.js) — it can lag behind if that second write hasn't landed
+      // yet. Availability decisions must never trust a stale copy, so this
+      // reads stockStatus straight from customPlants itself, using a field
+      // mask to keep it cheap (no photos/price/etc. come along for the ride).
+      fbList("customPlants",["stockStatus"])
     ]);
     // Compatibility during rollout: before an admin has opened the back office
     // once to create the lightweight index, fall back to the old full collection.
-    const remoteCustomPlants=remotePlantShowcaseIndex.length
+    const authoritativeStockById=new Map(remoteStockStatuses.map(p=>[p.id,p.stockStatus]));
+    const remoteCustomPlants=(remotePlantShowcaseIndex.length
       ? remotePlantShowcaseIndex
-      : await fbList("customPlants");
+      : await fbList("customPlants")
+    ).map(p=>authoritativeStockById.has(p.id)?{...p,stockStatus:authoritativeStockById.get(p.id)}:p);
     // Poll only lightweight metadata and thumbnails. Full galleries are
     // fetched one physical tree at a time when a customer opens its detail.
     const signature=JSON.stringify([remoteStyleOverrides,remotePlantOverrides,remoteCustomPlants,remotePortfolio,remoteSupplies]);
