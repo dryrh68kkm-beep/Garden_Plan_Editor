@@ -1069,6 +1069,42 @@ function resizeImageToDataURL(file,targetDim=800,maxBytes=250*1024){
 function resizeImageWithThumb(file){
   return resizeImageVariants(file,[{targetDim:800,maxBytes:250*1024},{targetDim:280,maxBytes:45*1024}]);
 }
+// Uploads one already-resized photo to R2 via the Cloudflare Worker
+// (verifies the same Firebase admin session already used for Firestore
+// writes — see cloudflare-worker/worker.js). Returns the hosted URL, or
+// null on ANY failure (Worker not deployed yet, offline, not logged in,
+// etc.) — callers must fall back to the original base64 string, never
+// drop the photo.
+async function uploadPlantPhotoToR2(dataUrl,filename){
+  if(!SHOWCASE_WORKER_URL) return null;
+  try{
+    const headers=await fbHeaders();
+    if(!headers.Authorization) return null;
+    const blob=await (await fetch(dataUrl)).blob();
+    const res=await fetch(`${SHOWCASE_WORKER_URL}/upload`,{
+      method:"POST",
+      headers:{"Content-Type":blob.type||"image/jpeg","Authorization":headers.Authorization,"X-Photo-Name":filename},
+      body:blob
+    });
+    if(!res.ok) return null;
+    const data=await res.json();
+    return data.url||null;
+  }catch{
+    return null;
+  }
+}
+// Tries to host both the full photo and its thumbnail on R2 so the
+// Firestore doc stores real URLs instead of base64 — smaller documents, and
+// lets the per-plant share link show the actual photo. Falls back to the
+// original base64 pair untouched if either upload doesn't succeed; a
+// plant's photo must never be lost or left broken because of this.
+async function hostPlantPhotoPair(full,thumb,baseName){
+  const [fullUrl,thumbUrl]=await Promise.all([
+    uploadPlantPhotoToR2(full,`${baseName}-full`),
+    uploadPlantPhotoToR2(thumb,`${baseName}-thumb`)
+  ]);
+  return (fullUrl&&thumbUrl)?[fullUrl,thumbUrl]:[full,thumb];
+}
 function openPlantEdit(id){
   const p=getPlant(id);
   if(!p) return;
@@ -1094,8 +1130,9 @@ document.getElementById("plantEditImage").addEventListener("change",async e=>{
   try{
     for(const file of files){
       const [full,thumb]=await resizeImageWithThumb(file);
-      plantEditImages.push(full);
-      plantEditThumbs.push(thumb);
+      const [hostedFull,hostedThumb]=await hostPlantPhotoPair(full,thumb,file.name||"photo");
+      plantEditImages.push(hostedFull);
+      plantEditThumbs.push(hostedThumb);
     }
     renderPlantEditGallery();
   }catch{
@@ -1241,8 +1278,9 @@ document.getElementById("plantAddImage").addEventListener("change",async e=>{
   try{
     for(const file of files){
       const [full,thumb]=await resizeImageWithThumb(file);
-      plantAddImages.push(full);
-      plantAddThumbs.push(thumb);
+      const [hostedFull,hostedThumb]=await hostPlantPhotoPair(full,thumb,file.name||"photo");
+      plantAddImages.push(hostedFull);
+      plantAddThumbs.push(hostedThumb);
     }
     renderPlantAddGallery();
   }catch{

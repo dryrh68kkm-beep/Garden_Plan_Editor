@@ -21,12 +21,13 @@ function lineOrderUrl(p){
   const text=`สนใจสอบถาม: ${p.thaiName}${codeText}${sizeText}${priceText}`;
   return `https://line.me/R/oaMessage/${LINE_OA_ID}/?${encodeURIComponent(text)}`;
 }
-// The site is a single-page app with no per-plant URL, so a shared link
-// always opens the same showcase.html — there's no way (without a build
-// step or server-side rendering, neither available on GitHub Pages) to give
-// each plant its own link or Open Graph preview image. Instead the plant's
-// name/price/code ride along as the share *text*, and the link always goes
-// to the shop's showcase itself.
+// Without SHOWCASE_WORKER_URL (see firebase-client.js) configured, the site
+// is a single-page app with no per-plant URL — a shared link always opens
+// the same generic showcase.html, so the plant's name/price ride along as
+// the share *text* instead. Once the Worker is deployed, shares use its
+// /plant/<id> link instead, which gives Facebook/LINE a real per-plant
+// preview (photo + price) and still lands the customer on this exact plant
+// (see openSharedPlantFromHash below).
 const SHOWCASE_SHARE_URL="https://dryrh68kkm-beep.github.io/Garden_Plan_Editor/showcase.html";
 let scLightboxPlant=null;
 function sharePlantText(p){
@@ -34,10 +35,13 @@ function sharePlantText(p){
   const sizeText=plantSizeLabel(p)?` ขนาด ${plantSizeLabel(p)}`:"";
   return `${p.thaiName}${sizeText}${priceText} — ดูรูปและสั่งซื้อได้ที่ร้านรินลดา พันธุ์ไม้`;
 }
+function sharePlantUrl(p){
+  return SHOWCASE_WORKER_URL?`${SHOWCASE_WORKER_URL}/plant/${encodeURIComponent(p.id)}`:SHOWCASE_SHARE_URL;
+}
 async function scSharePlant(){
   const p=scLightboxPlant;
   if(!p) return;
-  const shareData={title:p.thaiName,text:sharePlantText(p),url:SHOWCASE_SHARE_URL};
+  const shareData={title:p.thaiName,text:sharePlantText(p),url:sharePlantUrl(p)};
   if(navigator.share){
     try{ await navigator.share(shareData); }catch(error){ /* user cancelled the native share sheet — nothing to do */ }
     return;
@@ -950,10 +954,24 @@ function hideStaleDataNotice(){
   if(el) el.style.display="none";
 }
 
+// Entry point for per-plant share links: the Cloudflare Worker's
+// /plant/<id> preview page (see cloudflare-worker/worker.js) redirects real
+// visitors here with #plant=<id> in the URL, after Facebook/LINE/etc.'s
+// crawler has already read that page's per-plant Open Graph tags. Once the
+// catalog has loaded, jump straight to that plant's detail view.
+function openSharedPlantFromHash(){
+  const match=/^#plant=(.+)$/.exec(location.hash);
+  if(!match) return;
+  const id=decodeURIComponent(match[1]);
+  if(!plantById.has(id)) return;
+  showPage("showcasePlants");
+  openScPlantLightbox(id);
+}
 ensureSupplyCatalog()
   .catch(error=>console.error(error))
   .then(hydrateFromLocalCache)
-  .then(initFromFirestore);
+  .then(initFromFirestore)
+  .then(openSharedPlantFromHash);
 
 // REST-only Firestore has no realtime listener (that needs the SDK), so we
 // poll instead — but only the tiny catalogMeta/public document, not the

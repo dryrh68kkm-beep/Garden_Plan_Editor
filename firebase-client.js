@@ -17,6 +17,14 @@ const FB_CONFIG = {
 };
 const FB_BASE = `https://firestore.googleapis.com/v1/projects/${FB_CONFIG.projectId}/databases/(default)/documents`;
 
+// Cloudflare Worker that hosts plant photos on R2 and serves per-plant share
+// links with a real Open Graph preview (see cloudflare-worker/worker.js and
+// docs/cloudflare-worker-ops.md). Left blank until the Worker is deployed —
+// every feature that uses this checks for an empty string first and quietly
+// falls back to the pre-Worker behavior (base64 photos, generic share link),
+// so nothing breaks before or during that one-time manual deploy.
+const SHOWCASE_WORKER_URL = ""; // e.g. "https://rinlada-showcase-og.<your-subdomain>.workers.dev"
+
 let fbIdToken = null;
 let fbTokenExpiry = 0;
 let fbRefreshToken = null;

@@ -1,0 +1,20 @@
+# Reference config for this Worker — documents the exact bindings it needs.
+# Deployed by pasting worker.js into the Cloudflare dashboard (see
+# docs/cloudflare-worker-ops.md), not via `wrangler deploy`, so this file
+# isn't actually used to deploy. Keep it in sync with the dashboard settings
+# anyway so the required bindings are never just tribal knowledge.
+
+name = "rinlada-showcase-og"
+main = "worker.js"
+compatibility_date = "2026-08-01"
+
+[[r2_buckets]]
+binding = "PLANT_PHOTOS"
+bucket_name = "rinlada-plant-photos"
+
+[vars]
+FIREBASE_PROJECT_ID = "rinlada-plant-stock"
+SHOWCASE_URL = "https://dryrh68kkm-beep.github.io/Garden_Plan_Editor/showcase.html"
+# FIREBASE_API_KEY is also a plain var (not a Secret) — it's the same public
+# value as FB_CONFIG.apiKey in firebase-client.js, not a credential. Set it
+# in the dashboard alongside the others.
