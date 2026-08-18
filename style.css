@@ -30,6 +30,13 @@ input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none;appea
 .form-section{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
 .form-section:first-of-type{margin-top:12px;padding-top:0;border-top:0}
 .form-section-title{margin:0 0 2px;font-size:12px;font-weight:800;letter-spacing:.08em;color:#6b7e70;text-transform:uppercase}
+/* Progressive disclosure for the optional half of the plant add/edit form —
+   native <details>/<summary>, styled to match .form-section-title. */
+.plant-add-more>summary.form-section-title{cursor:pointer;list-style:none}
+.plant-add-more>summary.form-section-title::-webkit-details-marker{display:none}
+.plant-add-more>summary.form-section-title::before{content:"▸ ";display:inline-block;transition:transform .15s}
+.plant-add-more[open]>summary.form-section-title::before{transform:rotate(90deg)}
+.plant-add-more>summary.form-section-title+*{margin-top:12px}
 /* Lets the admin jump straight into editing an item by name instead of
    scrolling the card grid to find its "แก้ไข" button. */
 .quick-edit-bar{margin-bottom:14px}
