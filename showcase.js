@@ -96,8 +96,80 @@ function adaptStyle(s){
     image:(window.GARDEN_STYLE_IMAGES&&window.GARDEN_STYLE_IMAGES[s.id])||s.image||""
   };
 }
-if(!Array.isArray(window.GARDEN_STYLES)) console.error("window.GARDEN_STYLES missing or invalid — check data/garden-styles-data.js");
-const gardenStyles = Array.isArray(window.GARDEN_STYLES) ? window.GARDEN_STYLES.map(adaptStyle) : [];
+// Garden Style static data (garden-styles-data.js, ~163KB) and its 10 photo
+// files (garden-style-images/GS*.js, ~1.2MB combined) are no longer loaded
+// eagerly in showcase.html -- see ensureGardenStyleAssetsLoaded() below,
+// which fetches them only once a customer actually opens the Styles page.
+// gardenStyles therefore starts empty and is rebuilt once those scripts have
+// run; every render path that reads it (mergedStyles(), renderScStyles())
+// already re-reads this variable fresh on each call, so it self-corrects
+// once the lazy load finishes -- no caller needed to change.
+let gardenStyles = [];
+function rebuildGardenStyles(){
+  if(!Array.isArray(window.GARDEN_STYLES)) console.error("window.GARDEN_STYLES missing or invalid — check data/garden-styles-data.js");
+  gardenStyles = Array.isArray(window.GARDEN_STYLES) ? window.GARDEN_STYLES.map(adaptStyle) : [];
+}
+function loadScriptOnce(src){
+  return new Promise((resolve,reject)=>{
+    const el=document.createElement("script");
+    el.src=src;
+    el.onload=()=>resolve();
+    el.onerror=()=>reject(new Error(`โหลด ${src} ไม่สำเร็จ`));
+    document.body.appendChild(el);
+  });
+}
+// Audited before removing the eager <script> tags: each GS*.js only adds one
+// key to window.GARDEN_STYLE_IMAGES, and garden-styles-data.js only assigns
+// window.GARDEN_STYLES as a plain array literal -- neither file reads the
+// other's global while it runs, so there is no load-order dependency between
+// them (only adaptStyle()/rebuildGardenStyles() above needs both finished).
+// Safe, and faster, to fetch all 11 in parallel.
+const GARDEN_STYLE_ASSET_URLS=[
+  "data/garden-style-images/GS001.js?v=20260811",
+  "data/garden-style-images/GS006.js?v=20260811",
+  "data/garden-style-images/GS011.js?v=20260811",
+  "data/garden-style-images/GS016.js?v=20260811",
+  "data/garden-style-images/GS021.js?v=20260811",
+  "data/garden-style-images/GS026.js?v=20260811",
+  "data/garden-style-images/GS031.js?v=20260811",
+  "data/garden-style-images/GS036.js?v=20260811",
+  "data/garden-style-images/GS041.js?v=20260811",
+  "data/garden-style-images/GS046.js?v=20260811",
+  "data/garden-styles-data.js?v=20260811"
+];
+let gardenStyleAssetsLoaded=false;
+let gardenStyleAssetsPromise=null;
+// Single-flight loader: first call kicks off the fetch, any call made while
+// it's still in flight (or after it already finished) reuses the same
+// promise/result instead of injecting the <script> tags again.
+function ensureGardenStyleAssetsLoaded(){
+  if(gardenStyleAssetsLoaded) return Promise.resolve();
+  if(gardenStyleAssetsPromise) return gardenStyleAssetsPromise;
+  gardenStyleAssetsPromise=Promise.all(GARDEN_STYLE_ASSET_URLS.map(loadScriptOnce))
+    .then(()=>{
+      rebuildGardenStyles();
+      gardenStyleAssetsLoaded=true;
+    })
+    .catch(error=>{
+      // Let a later click try again instead of being stuck on a failed load forever.
+      gardenStyleAssetsPromise=null;
+      throw error;
+    });
+  return gardenStyleAssetsPromise;
+}
+// Hooked from showPage() the moment a customer opens the Styles page (see
+// below) -- Home and every other page never wait on this.
+function loadGardenStylesPageAssets(){
+  if(gardenStyleAssetsLoaded) return;
+  const list=document.getElementById("scStyleList");
+  if(list) list.innerHTML='<div class="empty">กำลังโหลดไอเดียสวน…</div>';
+  ensureGardenStyleAssetsLoaded()
+    .then(()=>{ renderScStyles(); })
+    .catch(error=>{
+      console.error("Could not load garden style assets:",error);
+      if(list) list.innerHTML='<div class="empty">โหลดไอเดียสวนไม่สำเร็จ — <button type="button" class="btn btn-secondary" onclick="loadGardenStylesPageAssets()">ลองใหม่</button></div>';
+    });
+}
 
 let categoriesById = new Map();
 async function loadCategories(){
@@ -239,6 +311,7 @@ const SC_MODAL_TRANSITION_MS=340;
 const SC_PAGE_TRANSITION_MS=380;
 let scPageTransitioning=false;
 function showPage(name){
+  if(name==="showcaseStyles") loadGardenStylesPageAssets();
   const next=document.getElementById(`${name}Page`);
   const current=document.querySelector(".page.active");
   if(!next||current===next||scPageTransitioning) return;
