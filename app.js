@@ -699,7 +699,8 @@ document.getElementById("styleEditImage").addEventListener("change",async e=>{
   if(!files.length) return;
   try{
     for(const file of files){
-      styleEditImages.push(await resizeImageToDataURL(file));
+      const resized=await resizeImageToDataURL(file);
+      styleEditImages.push(await hostGardenStylePhoto(resized,file.name||"garden-style-photo"));
     }
     renderStyleEditGallery();
   }catch{
@@ -1196,6 +1197,22 @@ async function hostPortfolioPhoto(dataUrl,baseName){
     console.warn("Portfolio photo R2 upload did not return a URL, keeping base64 image");
   }catch(error){
     console.warn("Portfolio photo R2 upload failed, keeping base64 image:",error);
+  }
+  return dataUrl;
+}
+// Same shape as hostSupplyPhoto/hostPortfolioPhoto -- kept as its own small
+// function (not a shared rename) so this change can't affect the
+// already-shipped Plant/Supply/Portfolio upload paths. Only covers Admin
+// override images (styleOverrides[id].images); the static reference photos
+// in garden-style-images/GS*.js are untouched by this function entirely.
+async function hostGardenStylePhoto(dataUrl,baseName){
+  if(typeof dataUrl!=="string"||!dataUrl.startsWith("data:image")) return dataUrl;
+  try{
+    const url=await uploadPlantPhotoToR2(dataUrl,baseName);
+    if(url) return url;
+    console.warn("Garden style photo R2 upload did not return a URL, keeping base64 image");
+  }catch(error){
+    console.warn("Garden style photo R2 upload failed, keeping base64 image:",error);
   }
   return dataUrl;
 }
