@@ -4,7 +4,15 @@ const STORAGE = {
   customPlants: "garden_custom_plants_v1",
   plantShowcaseIndex: "garden_plant_showcase_index_v1",
   gardenPortfolio: "garden_portfolio_v1",
-  gardenSupplies: "garden_supplies_v1"
+  gardenSupplies: "garden_supplies_v1",
+  // Cache-commit completeness marker (STEP 9C2A) — records which revision
+  // the three IndexedDB dataset writes below were LAST fully, successfully
+  // committed for. Deliberately separate from CATALOG_REVISION_KEY: that
+  // localStorage value is the one authoritative "what revision have we
+  // seen" pointer read by checkForCatalogUpdates()/the Detail reopen check
+  // and must not change meaning; this marker only vouches for the IndexedDB
+  // cache's own completeness and is not read anywhere yet.
+  catalogCacheSync: "garden_catalog_cache_sync_v1"
 };
 
 function esc(s=""){ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m])); }
@@ -1051,8 +1059,13 @@ async function initFromFirestore(){
     // Poll only lightweight metadata and thumbnails. Full galleries are
     // fetched one physical tree at a time when a customer opens its detail.
     const signature=JSON.stringify([remoteStyleOverrides,remotePlantOverrides,remoteCustomPlants,remotePortfolio,remoteSupplies]);
-    rememberCatalogRevision(remoteCatalogMeta);
-    if(signature===lastFetchSignature) return;
+    if(signature===lastFetchSignature){
+      // Nothing changed: the IndexedDB cache and its completeness marker
+      // (if any) already reflect this content, so there's nothing new to
+      // commit. Still record that we've seen this revision.
+      rememberCatalogRevision(remoteCatalogMeta);
+      return;
+    }
     lastFetchSignature=signature;
     styleOverrides={};
     remoteStyleOverrides.forEach(s=>{const {id,...rest}=s;styleOverrides[id]=rest;});
@@ -1061,15 +1074,11 @@ async function initFromFirestore(){
     customPlants=remoteCustomPlants;
     portfolioItems=remotePortfolio;
     supplyItems=mergeSupplyItems(remoteSupplies);
-    // A full local-cache quota on the visitor's own device (unrelated to
-    // this site) must never stop the page from rendering the data it just
-    // fetched — caching locally is a nice-to-have for instant reloads, not
-    // a requirement. LS.set() never throws (see local-store.js), so this
-    // can't skip the render calls below it the way a raw localStorage write
-    // once could.
-    LS.set(STORAGE.gardenPortfolio,portfolioItems);
-    LS.set(STORAGE.plantShowcaseIndex,customPlants);
-    LS.set(STORAGE.gardenSupplies,supplyItems);
+    // Render from the freshly-fetched data immediately — a local-cache
+    // failure below (full quota, IndexedDB unavailable, etc. — all on the
+    // visitor's own device, unrelated to this site) must never stop the
+    // page from showing what it just successfully fetched. Caching locally
+    // is a nice-to-have for instant reloads, not a requirement.
     renderScStyles();
     renderScPortfolio();
     rebuildAllPlants();
@@ -1079,6 +1088,32 @@ async function initFromFirestore(){
     fillScSupplyCategories();
     renderScSupplies();
     hideStaleDataNotice();
+    // Commit the IndexedDB cache, then only advance the locally-remembered
+    // revision once every required write has actually succeeded (STEP
+    // 9C2A). Ordering matters: the completeness marker is set to
+    // NOT-complete first, so a crash mid-write leaves it invalid rather
+    // than stale-but-trusted; it's only (re)written to complete, with the
+    // matching revision, after all three dataset writes are confirmed —
+    // and rememberCatalogRevision() (the localStorage revision pointer
+    // read by checkForCatalogUpdates()/the Detail reopen check) only runs
+    // after that, as the very last step.
+    const remoteRevision=remoteCatalogMeta && remoteCatalogMeta.revision!=null ? String(remoteCatalogMeta.revision) : null;
+    await LS.set(STORAGE.catalogCacheSync,{revision:null,complete:false});
+    const portfolioSaved=await LS.set(STORAGE.gardenPortfolio,portfolioItems);
+    const showcaseIndexSaved=await LS.set(STORAGE.plantShowcaseIndex,customPlants);
+    const suppliesSaved=await LS.set(STORAGE.gardenSupplies,supplyItems);
+    if(portfolioSaved && showcaseIndexSaved && suppliesSaved && remoteRevision!==null){
+      await LS.set(STORAGE.catalogCacheSync,{revision:remoteRevision,complete:true});
+      rememberCatalogRevision(remoteCatalogMeta);
+    }else{
+      // One or more cache writes failed, or the catalogMeta doc had no
+      // usable revision. The marker set above stays NOT-complete and the
+      // locally-remembered revision is left unadvanced, so the next reload
+      // is forced into a full fetch instead of trusting an incomplete
+      // cache. The page already rendered the fetched data above — only
+      // future-reload caching is affected.
+      console.error("Showcase cache-sync commit incomplete; local cache revision left unadvanced.");
+    }
   }catch(error){
     console.error("Showcase Firestore sync failed, staying on local data:",error);
     showStaleDataNoticeIfConnectionLost();
