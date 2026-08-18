@@ -32,6 +32,10 @@
 .showcase-order-btn{display:flex;align-items:center;justify-content:center;gap:6px;margin:0 16px 16px;padding:11px 14px;border-radius:12px;background:#06C755;color:#fff;font-weight:700;font-size:.88rem;text-decoration:none;text-align:center}
 .showcase-order-btn:hover{background:#05a848}
 .showcase-order-btn--lightbox{margin:0;padding:14px 16px;font-size:1rem;flex:1}
+/* Portfolio/Style Detail CTA — sits directly in the already-padded
+   .style-detail-wrap, so it doesn't need the card-context side margins
+   .showcase-order-btn normally has. */
+.sc-detail-line-cta{margin:18px 0 0;padding:14px 16px;font-size:1rem}
 .showcase-lightbox-actions{display:flex;gap:8px;margin:18px 0 0}
 .showcase-share-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:14px 16px;border-radius:12px;border:1.5px solid #0d2e23;background:#fff;color:#0d2e23;font-weight:700;font-size:1rem;cursor:pointer;flex:0 0 auto;box-shadow:0 2px 8px rgba(13,46,35,.08);transition:background .15s ease,color .15s ease,box-shadow .15s ease,transform .1s ease}
 @media(hover:hover){.showcase-share-btn:hover{background:#0d2e23;color:#fff;box-shadow:0 6px 16px rgba(13,46,35,.22)}}
