@@ -572,7 +572,8 @@ document.getElementById("portfolioEditImage").addEventListener("change",async e=
   if(!files.length) return;
   try{
     for(const file of files){
-      portfolioEditImages.push(await resizeImageToDataURL(file));
+      const resized=await resizeImageToDataURL(file);
+      portfolioEditImages.push(await hostPortfolioPhoto(resized,file.name||"portfolio-photo"));
     }
     renderPortfolioEditGallery();
   }catch{
@@ -1180,6 +1181,21 @@ async function hostSupplyPhoto(dataUrl,baseName){
     console.warn("Supply photo R2 upload did not return a URL, keeping base64 image");
   }catch(error){
     console.warn("Supply photo R2 upload failed, keeping base64 image:",error);
+  }
+  return dataUrl;
+}
+// Same shape as hostSupplyPhoto (Portfolio has a gallery like Plant, but
+// each photo is independent -- no full/thumb pair per image), kept as its
+// own small function rather than a shared rename so this change can't
+// affect the already-shipped Plant/Supply upload paths.
+async function hostPortfolioPhoto(dataUrl,baseName){
+  if(typeof dataUrl!=="string"||!dataUrl.startsWith("data:image")) return dataUrl;
+  try{
+    const url=await uploadPlantPhotoToR2(dataUrl,baseName);
+    if(url) return url;
+    console.warn("Portfolio photo R2 upload did not return a URL, keeping base64 image");
+  }catch(error){
+    console.warn("Portfolio photo R2 upload failed, keeping base64 image:",error);
   }
   return dataUrl;
 }
