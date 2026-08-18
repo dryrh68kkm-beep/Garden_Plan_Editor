@@ -75,9 +75,14 @@ function fsField(doc,name){
 }
 async function fetchPlantDoc(env,id){
   const base=`https://firestore.googleapis.com/v1/projects/${env.FIREBASE_PROJECT_ID}/databases/(default)/documents`;
-  // Try the lightweight public index first (what the showcase itself
-  // reads), fall back to the full collection for older/edge-case ids.
-  for(const collection of ["plantShowcaseIndex","customPlants"]){
+  // customPlants is the authoritative document an admin edit writes to;
+  // plantShowcaseIndex is a denormalized copy written as a separate,
+  // un-awaited second step (see saveCustomPlant in app.js) that can still
+  // be catching up right after a save. Try customPlants first so a preview
+  // generated moments after an edit reflects it, not a stale index entry —
+  // plantShowcaseIndex is only a fallback for the rare case the full
+  // document is genuinely gone (legacy/edge-case ids).
+  for(const collection of ["customPlants","plantShowcaseIndex"]){
     const res=await fetch(`${base}/${collection}/${encodeURIComponent(id)}`);
     if(res.ok) return await res.json();
   }
