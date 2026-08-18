@@ -959,10 +959,26 @@ function hideStaleDataNotice(){
 // visitors here with #plant=<id> in the URL, after Facebook/LINE/etc.'s
 // crawler has already read that page's per-plant Open Graph tags. Once the
 // catalog has loaded, jump straight to that plant's detail view.
-function openSharedPlantFromHash(){
+async function openSharedPlantFromHash(){
   const match=/^#plant=(.+)$/.exec(location.hash);
   if(!match) return;
   const id=decodeURIComponent(match[1]);
+  if(!plantById.has(id)){
+    // Cold-start edge case: a brand-new browser (e.g. LINE's in-app
+    // browser, no local cache yet) may reach this before the full catalog
+    // has loaded, or the initial Firestore sync above may have failed
+    // outright — either way, fetch this one specimen directly rather than
+    // silently stranding the visitor on the home page.
+    try{
+      const doc=await fbGet("plantShowcaseIndex",id) || await fbGet("customPlants",id);
+      if(!doc) return;
+      customPlants=[...customPlants,doc];
+      rebuildAllPlants();
+    }catch(error){
+      console.error("Could not load shared plant link:",error);
+      return;
+    }
+  }
   if(!plantById.has(id)) return;
   showPage("showcasePlants");
   openScPlantLightbox(id);
@@ -970,8 +986,11 @@ function openSharedPlantFromHash(){
 ensureSupplyCatalog()
   .catch(error=>console.error(error))
   .then(hydrateFromLocalCache)
+  .catch(error=>console.error("Local cache hydrate failed:",error))
   .then(initFromFirestore)
-  .then(openSharedPlantFromHash);
+  .catch(error=>console.error("Initial Firestore sync failed:",error))
+  .then(openSharedPlantFromHash)
+  .catch(error=>console.error("Could not open shared plant link:",error));
 
 // REST-only Firestore has no realtime listener (that needs the SDK), so we
 // poll instead — but only the tiny catalogMeta/public document, not the
