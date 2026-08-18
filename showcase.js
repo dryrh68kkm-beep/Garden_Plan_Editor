@@ -865,17 +865,17 @@ async function initFromFirestore(){
       // plantShowcaseIndex is a denormalized copy of customPlants written as
       // a separate operation (see saveCustomPlant/syncPlantShowcaseIndexes
       // in app.js) — it can lag behind if that second write hasn't landed
-      // yet. Availability, price, and grid-photo decisions must never trust
-      // a stale copy, so this reads stockStatus/salePrice/thumbs/images
+      // yet. Availability, price, and grid-thumbnail decisions must never
+      // trust a stale copy, so this reads stockStatus/salePrice/thumbs
       // straight from customPlants itself, using a field mask so nothing
-      // else (name, category, etc.) comes along for the ride. `thumbs` is
-      // what the grid actually renders (see plantCoverThumb); `images` is
-      // included too only so plantCoverThumb's legacy fallback (used when a
-      // plant has no thumbnail at all) can't fall through to a stale,
-      // possibly-deleted photo — for an already-migrated (R2-hosted) plant
-      // both are just short URLs, but a not-yet-migrated plant's `images`
-      // can still be base64 and non-trivial in size; see report.
-      fbList("customPlants",["stockStatus","salePrice","thumbs","images"])
+      // else comes along for the ride. `images` (the full gallery) is
+      // deliberately NOT masked in here — some older, not-yet-migrated
+      // plants still carry base64 in `images`, and pulling that for every
+      // plant on every catalog load would bloat this request for the whole
+      // grid. The grid only ever needs `thumbs`; the full gallery is fetched
+      // lazily, one plant at a time, when a customer opens its Detail view
+      // (see openScPlantLightbox's detailLoaded fetch below).
+      fbList("customPlants",["stockStatus","salePrice","thumbs"])
     ]);
     // Compatibility during rollout: before an admin has opened the back office
     // once to create the lightweight index, fall back to the old full collection.
@@ -894,8 +894,7 @@ async function initFromFirestore(){
         ...p,
         stockStatus:authoritative.stockStatus,
         salePrice:authoritative.salePrice,
-        thumbs:overlayField(authoritative,p,"thumbs"),
-        images:overlayField(authoritative,p,"images")
+        thumbs:overlayField(authoritative,p,"thumbs")
       };
     });
     // Poll only lightweight metadata and thumbnails. Full galleries are
