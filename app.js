@@ -294,7 +294,7 @@ async function deletePortfolioItem(id){
   renderPortfolio();
   safeSetLocal(STORAGE.gardenPortfolio, portfolioItems);
   document.getElementById("portfolioEditDialog").close();
-  await cloudSave(()=>fbDelete("gardenPortfolio",id),"การลบผลงานจัดสวน");
+  await cloudDelete("gardenPortfolio",id,"การลบผลงานจัดสวน");
 }
 async function deleteCustomPlant(id){
   if(!confirm("ลบต้นไม้ที่เพิ่มเองรายการนี้หรือไม่?")) return;
@@ -307,8 +307,8 @@ async function deleteCustomPlant(id){
   LS.get(STORAGE.plantShowcaseIndex,[]).then(rows=>cachePlantShowcaseIndex(rows.filter(p=>p.id!==id)));
   document.getElementById("plantAddDialog").close();
   await Promise.all([
-    cloudSave(()=>fbDelete("customPlants",id),"การลบต้นไม้ที่เพิ่มเอง"),
-    cloudSave(()=>fbDelete("plantShowcaseIndex",id),"การลบข้อมูลย่อหน้า Showcase")
+    cloudDelete("customPlants",id,"การลบต้นไม้ที่เพิ่มเอง"),
+    cloudDelete("plantShowcaseIndex",id,"การลบข้อมูลย่อหน้า Showcase")
   ]);
 }
 function getPlant(id){
@@ -1516,6 +1516,27 @@ async function cloudSave(fn,label){
     pendingCloudSaves--;
   }
 }
+// Delete counterpart to saveDoc()'s atomic set+revision commit (STEP 9C6):
+// bundles the document delete with the catalogMeta/public revision bump in
+// one atomic Firestore commit, so a caller can never end up with the
+// document gone but the revision left pointing at the pre-delete state (or
+// vice versa). Used at the showcase-relevant delete call sites below;
+// cloudSave() above is left as-is for any other generic operation.
+async function cloudDelete(collection,id,label){
+  pendingCloudSaves++;
+  try{
+    await fbDeleteWithCatalogRevision(collection,id,Date.now(),new Date().toISOString());
+    setCloudStatus(true);
+    return true;
+  }catch(err){
+    console.error("Firestore delete failed, staying on local data:",err);
+    setCloudStatus(false);
+    alert(`⚠️ ลบ${label||"ข้อมูล"}จากคลาวด์ไม่สำเร็จ\n\nสาเหตุ: ${err.message||err}\n\nข้อมูลบันทึกไว้ในเครื่องนี้ชั่วคราวเท่านั้น กรุณาลองลบซ้ำอีกครั้ง`);
+    return false;
+  }finally{
+    pendingCloudSaves--;
+  }
+}
 
 // Same background-save timeout risk as pendingCloudSaves above, but for the
 // data itself, not just the sync guard: a weak connection (common on a job
@@ -1561,11 +1582,16 @@ async function bumpCatalogRevision(){
 async function saveDoc(collection,id,obj,label){
   pendingCloudSaves++;
   try{
-    await fbSet(collection,id,obj);
+    // The data write and the catalogMeta/public revision bump land in one
+    // atomic Firestore commit (STEP 9C6) — either both succeed or neither
+    // does, so a caller can never observe "data changed, revision didn't".
+    // Collections the showcase doesn't read (see NO_REVISION_BUMP_COLLECTIONS)
+    // skip the revision entirely and use the plain single-document write.
+    if(NO_REVISION_BUMP_COLLECTIONS.has(collection)) await fbSet(collection,id,obj);
+    else await fbSetWithCatalogRevision(collection,id,obj,Date.now(),new Date().toISOString());
     failedSaves.delete(saveDocKey(collection,id));
     persistFailedSaves();
     setCloudStatus(true);
-    if(!NO_REVISION_BUMP_COLLECTIONS.has(collection)) bumpCatalogRevision();
     return true;
   }catch(err){
     console.error("Firestore save failed, will keep retrying in the background:",err);
@@ -1582,11 +1608,15 @@ async function retryFailedSaves(){
   for(const {collection,id,obj} of [...failedSaves.values()]){
     pendingCloudSaves++;
     try{
-      await fbSet(collection,id,obj);
+      // Retry the same atomic set+revision commit saveDoc() would have done
+      // (STEP 9C6) — never a plain fbSet() here, or a successful retry could
+      // leave the document updated with the revision still pointing at the
+      // stale value from before the original failure.
+      if(NO_REVISION_BUMP_COLLECTIONS.has(collection)) await fbSet(collection,id,obj);
+      else await fbSetWithCatalogRevision(collection,id,obj,Date.now(),new Date().toISOString());
       failedSaves.delete(saveDocKey(collection,id));
       persistFailedSaves();
       setCloudStatus(true);
-      if(!NO_REVISION_BUMP_COLLECTIONS.has(collection)) bumpCatalogRevision();
     }catch(err){
       console.error("Retry save still failing, will try again on the next sync:",err);
     }finally{

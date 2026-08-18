@@ -253,6 +253,48 @@ async function fbDelete(col,id){
   const res=await fbFetch(`${FB_BASE}/${col}/${encodeURIComponent(id)}`,{method:"DELETE",headers:await fbHeaders()});
   return res.ok;
 }
+
+// ---- Atomic multi-write commits (STEP 9C6) ----
+// Firestore's :commit endpoint applies a list of writes as a single
+// all-or-nothing operation — no separate beginTransaction/runTransaction
+// call needed for an unconditional multi-document write like this. Used to
+// bundle one data document's write/delete together with the
+// catalogMeta/public revision update, so a caller can never end up with the
+// data changed but the revision left behind (or vice versa). Document
+// `name` fields need the resource path (no https://.../v1/ prefix), unlike
+// fbSet/fbDelete's request URLs above.
+const FB_DOC_ROOT=`projects/${FB_CONFIG.projectId}/databases/(default)/documents`;
+function fbDocName(col,id){ return `${FB_DOC_ROOT}/${col}/${id}`; }
+async function fbCommit(writes){
+  const res=await fbFetch(`${FB_BASE}:commit`,{
+    method:"POST",headers:await fbHeaders(),body:JSON.stringify({writes})
+  });
+  const data=await res.json();
+  if(data.error) throw new Error(data.error.message);
+  return data;
+}
+// Same contract as fbSet(), but also updates catalogMeta/public's revision
+// in the same atomic commit. revision/updatedAt are generated once by the
+// caller (not here) so every write in the same save operation — including
+// callers that build their own writes array in the future — can share the
+// exact same values; this helper just uses whatever it's given.
+async function fbSetWithCatalogRevision(col,id,obj,revision,updatedAt){
+  const fields={};
+  for(const k in obj) fields[k]=fbToValue(obj[k]);
+  return fbCommit([
+    {update:{name:fbDocName(col,id),fields}},
+    {update:{name:fbDocName("catalogMeta","public"),fields:{revision:fbToValue(revision),updatedAt:fbToValue(updatedAt)}}}
+  ]);
+}
+// Same contract as fbDelete(), but also updates catalogMeta/public's
+// revision in the same atomic commit.
+async function fbDeleteWithCatalogRevision(col,id,revision,updatedAt){
+  await fbCommit([
+    {delete:fbDocName(col,id)},
+    {update:{name:fbDocName("catalogMeta","public"),fields:{revision:fbToValue(revision),updatedAt:fbToValue(updatedAt)}}}
+  ]);
+  return true;
+}
 // Exact-match lookup by a single field (Firestore structured query), e.g.
 // finding a doc some OTHER system already created by name rather than by
 // our own doc id — returns the matching doc's id, or null if none exists.
