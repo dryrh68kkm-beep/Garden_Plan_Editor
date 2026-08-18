@@ -23,7 +23,7 @@ const FB_BASE = `https://firestore.googleapis.com/v1/projects/${FB_CONFIG.projec
 // every feature that uses this checks for an empty string first and quietly
 // falls back to the pre-Worker behavior (base64 photos, generic share link),
 // so nothing breaks before or during that one-time manual deploy.
-const SHOWCASE_WORKER_URL = ""; // e.g. "https://rinlada-showcase-og.<your-subdomain>.workers.dev"
+const SHOWCASE_WORKER_URL = "https://rinlada-showcase-og.dryrh68kkm.workers.dev";
 
 let fbIdToken = null;
 let fbTokenExpiry = 0;
