@@ -182,6 +182,14 @@ function supplyLineUrl(p){
   const text=`สนใจสอบถามสินค้า: ${p.name}${p.code?` รหัส ${p.code}`:""}${p.price?` ราคา ${money(p.price)}/${p.unit||"ชิ้น"}`:""}`;
   return `https://line.me/R/oaMessage/${LINE_OA_ID}/?${encodeURIComponent(text)}`;
 }
+function portfolioLineUrl(item){
+  const text=`สนใจสอบถามงานจัดสวน: ${item.title||"ผลงานจัดสวน"}`;
+  return `https://line.me/R/oaMessage/${LINE_OA_ID}/?${encodeURIComponent(text)}`;
+}
+function styleLineUrl(s){
+  const text=`สนใจปรึกษาแบบสวน: ${s.name}`;
+  return `https://line.me/R/oaMessage/${LINE_OA_ID}/?${encodeURIComponent(text)}`;
+}
 function renderScSupplies(){
   const list=document.getElementById("scSupplyList");
   if(!list) return;
@@ -509,6 +517,7 @@ function openScStyleDetail(id){
   document.getElementById("scStyleDetailPlants").innerHTML=(s.plants||[]).map(x=>`<span class="chip">${esc(x)}</span>`).join("");
   document.getElementById("scStyleDetailMaterials").innerHTML=(s.materials||[]).map(x=>`<span class="chip">${esc(x)}</span>`).join("");
   document.getElementById("scStyleDetailMood").textContent=s.mood;
+  document.getElementById("scStyleDetailLineBtn").href=styleLineUrl(s);
   document.getElementById("scStyleDetailDialog").showModal();
   // Reset the hero scroll position after the dialog is actually visible —
   // setting it while the <dialog> is still closed/hidden gets discarded by
@@ -569,6 +578,7 @@ function openScPortfolioDetail(id){
   document.getElementById("scPortfolioDetailBudget").textContent=item.budget||"-";
   document.getElementById("scPortfolioDetailDuration").textContent=item.duration||"-";
   document.getElementById("scPortfolioDetailDescription").textContent=item.description||"";
+  document.getElementById("scPortfolioDetailLineBtn").href=portfolioLineUrl(item);
   document.getElementById("scPortfolioDetailDialog").showModal();
   requestAnimationFrame(()=>{ document.getElementById("scPortfolioDetailHero").scrollLeft=0; });
 }
