@@ -865,21 +865,38 @@ async function initFromFirestore(){
       // plantShowcaseIndex is a denormalized copy of customPlants written as
       // a separate operation (see saveCustomPlant/syncPlantShowcaseIndexes
       // in app.js) — it can lag behind if that second write hasn't landed
-      // yet. Availability and price decisions must never trust a stale
-      // copy, so this reads stockStatus/salePrice straight from
-      // customPlants itself, using a field mask to keep it cheap (no
-      // photos/etc. come along for the ride). One request, not two.
-      fbList("customPlants",["stockStatus","salePrice"])
+      // yet. Availability, price, and grid-photo decisions must never trust
+      // a stale copy, so this reads stockStatus/salePrice/thumbs/images
+      // straight from customPlants itself, using a field mask so nothing
+      // else (name, category, etc.) comes along for the ride. `thumbs` is
+      // what the grid actually renders (see plantCoverThumb); `images` is
+      // included too only so plantCoverThumb's legacy fallback (used when a
+      // plant has no thumbnail at all) can't fall through to a stale,
+      // possibly-deleted photo — for an already-migrated (R2-hosted) plant
+      // both are just short URLs, but a not-yet-migrated plant's `images`
+      // can still be base64 and non-trivial in size; see report.
+      fbList("customPlants",["stockStatus","salePrice","thumbs","images"])
     ]);
     // Compatibility during rollout: before an admin has opened the back office
     // once to create the lightweight index, fall back to the old full collection.
     const authoritativeById=new Map(remoteAuthoritativeFields.map(p=>[p.id,p]));
+    // An authoritative empty array must win over a stale non-empty one (the
+    // admin may have deleted every photo) — only a field that's genuinely
+    // absent (very old, pre-thumbnail-era docs) falls back to the index's copy.
+    const overlayField=(authoritative,fallback,key)=>authoritative[key]!==undefined?authoritative[key]:fallback[key];
     const remoteCustomPlants=(remotePlantShowcaseIndex.length
       ? remotePlantShowcaseIndex
       : await fbList("customPlants")
     ).map(p=>{
       const authoritative=authoritativeById.get(p.id);
-      return authoritative?{...p,stockStatus:authoritative.stockStatus,salePrice:authoritative.salePrice}:p;
+      if(!authoritative) return p;
+      return {
+        ...p,
+        stockStatus:authoritative.stockStatus,
+        salePrice:authoritative.salePrice,
+        thumbs:overlayField(authoritative,p,"thumbs"),
+        images:overlayField(authoritative,p,"images")
+      };
     });
     // Poll only lightweight metadata and thumbnails. Full galleries are
     // fetched one physical tree at a time when a customer opens its detail.
