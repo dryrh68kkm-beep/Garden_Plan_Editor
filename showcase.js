@@ -263,6 +263,13 @@ function showPage(name){
   next.scrollTop=0;
   current.scrollTop=scrollY;
   document.body.classList.add("sc-page-transitioning");
+  // Force the browser to commit the layout/style changes above (both pages
+  // going position:fixed, scroll offsets applied) in one clean paint before
+  // the transform animation starts below. Without this, the class change and
+  // the animation's very first frame can get bundled unpredictably across
+  // the two elements, which is what showed up as a visible flicker when
+  // switching tabs.
+  void next.offsetHeight;
 
   const options={
     duration:SC_PAGE_TRANSITION_MS,
