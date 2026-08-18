@@ -5,9 +5,10 @@ const STORAGE = {
   plantShowcaseIndex: "garden_plant_showcase_index_v1",
   gardenPortfolio: "garden_portfolio_v1",
   gardenSupplies: "garden_supplies_v1",
-  // Cache-commit completeness marker (STEP 9C2A) — records which revision
-  // the three IndexedDB dataset writes below were LAST fully, successfully
-  // committed for. Deliberately separate from CATALOG_REVISION_KEY: that
+  // Cache-commit completeness marker (STEP 9C2A/9C2B) — records which
+  // revision all 5 IndexedDB dataset keys above were LAST fully,
+  // successfully committed for. Deliberately separate from
+  // CATALOG_REVISION_KEY: that
   // localStorage value is the one authoritative "what revision have we
   // seen" pointer read by checkForCatalogUpdates()/the Detail reopen check
   // and must not change meaning; this marker only vouches for the IndexedDB
@@ -1089,20 +1090,24 @@ async function initFromFirestore(){
     renderScSupplies();
     hideStaleDataNotice();
     // Commit the IndexedDB cache, then only advance the locally-remembered
-    // revision once every required write has actually succeeded (STEP
-    // 9C2A). Ordering matters: the completeness marker is set to
-    // NOT-complete first, so a crash mid-write leaves it invalid rather
-    // than stale-but-trusted; it's only (re)written to complete, with the
-    // matching revision, after all three dataset writes are confirmed —
-    // and rememberCatalogRevision() (the localStorage revision pointer
-    // read by checkForCatalogUpdates()/the Detail reopen check) only runs
-    // after that, as the very last step.
+    // revision once every dataset hydrateFromLocalCache() depends on has
+    // actually been (re)written from this Firestore sync (STEP 9C2B — all
+    // 5 keys, not just the 3 originally covered in 9C2A). Ordering
+    // matters: the completeness marker is set to NOT-complete first, so a
+    // crash mid-write leaves it invalid rather than stale-but-trusted;
+    // it's only (re)written to complete, with the matching revision, after
+    // every required dataset write is confirmed — and
+    // rememberCatalogRevision() (the localStorage revision pointer read by
+    // checkForCatalogUpdates()/the Detail reopen check) only runs after
+    // that, as the very last step.
     const remoteRevision=remoteCatalogMeta && remoteCatalogMeta.revision!=null ? String(remoteCatalogMeta.revision) : null;
     await LS.set(STORAGE.catalogCacheSync,{revision:null,complete:false});
+    const styleOverridesSaved=await LS.set(STORAGE.styleOverrides,styleOverrides);
+    const plantOverridesSaved=await LS.set(STORAGE.plantOverrides,plantOverrides);
     const portfolioSaved=await LS.set(STORAGE.gardenPortfolio,portfolioItems);
     const showcaseIndexSaved=await LS.set(STORAGE.plantShowcaseIndex,customPlants);
     const suppliesSaved=await LS.set(STORAGE.gardenSupplies,supplyItems);
-    if(portfolioSaved && showcaseIndexSaved && suppliesSaved && remoteRevision!==null){
+    if(styleOverridesSaved && plantOverridesSaved && portfolioSaved && showcaseIndexSaved && suppliesSaved && remoteRevision!==null){
       await LS.set(STORAGE.catalogCacheSync,{revision:remoteRevision,complete:true});
       rememberCatalogRevision(remoteCatalogMeta);
     }else{
