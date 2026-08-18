@@ -1,4 +1,4 @@
-# Garden Plan Editor — DATA
+# Rinlada Web Editor — DATA
 
 ไฟล์พร้อมอัปโหลดเข้าโฟลเดอร์ `data/` ของ Repository
 

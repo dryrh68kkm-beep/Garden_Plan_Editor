@@ -1,7 +1,7 @@
 {
-  "name": "Garden Plan Editor — รินลดา",
-  "short_name": "Garden Admin",
-  "description": "ระบบหลังบ้านจัดการแบบสวนและฐานข้อมูลต้นไม้ — รินลดา พันธุ์ไม้",
+  "name": "Rinlada Web Editor — รินลดา",
+  "short_name": "Rinlada Editor",
+  "description": "ระบบหลังบ้านจัดการต้นไม้ สินค้า และผลงานสำหรับหน้า Showcase — รินลดา พันธุ์ไม้",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

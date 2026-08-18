@@ -63,7 +63,6 @@ input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none;appea
 .care-list{margin:0;padding:0;list-style:none;display:grid;gap:8px;color:var(--muted)}
 .care-list li{line-height:1.6}
 .care-list b{color:var(--text)}
-.prompt-box{background:#10291d;color:#e6f2e9;border-radius:14px;padding:15px;line-height:1.65;white-space:pre-wrap;font-size:14px}
 @media(max-width:560px){.detail-grid{grid-template-columns:1fr}.style-detail-hero{min-height:130px;font-size:58px}}
 
 .plant-filters{display:grid;grid-template-columns:2fr 1fr 1fr auto;align-items:center;gap:10px}
