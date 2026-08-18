@@ -209,10 +209,18 @@ function fbDocToObj(doc){
   return o;
 }
 
-async function fbList(col){
+// `fields`, when given, applies a Firestore field mask (mask.fieldPaths) so
+// the response only carries those fields — e.g. reading just `stockStatus`
+// across a whole collection instead of every document's full payload
+// (photos included). The document's own id is always present regardless
+// (it comes from the resource path, not the field mask).
+async function fbList(col,fields){
   let out=[], pageToken="";
+  const maskQuery=Array.isArray(fields)&&fields.length
+    ? fields.map(f=>`mask.fieldPaths=${encodeURIComponent(f)}`).join("&")+"&"
+    : "";
   do{
-    const url=`${FB_BASE}/${col}?pageSize=300`+(pageToken?`&pageToken=${pageToken}`:"");
+    const url=`${FB_BASE}/${col}?${maskQuery}pageSize=300`+(pageToken?`&pageToken=${pageToken}`:"");
     const res=await fbFetch(url,{headers:await fbHeaders()});
     const data=await res.json();
     if(data.error) throw new Error(data.error.message);
