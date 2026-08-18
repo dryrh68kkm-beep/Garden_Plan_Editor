@@ -940,8 +940,6 @@ function openPlantDetail(id){
   document.getElementById("plantDetailLight").textContent=p.light||"-";
   document.getElementById("plantDetailWater").textContent=p.water||"-";
   document.getElementById("plantDetailMaintenance").textContent=maintenanceLabel(p.maintenance);
-  document.getElementById("plantDetailHeight").textContent=(p.heightCm||0)+" ซม.";
-  document.getElementById("plantDetailSpacing").textContent=(p.spacingCm||0)+" ซม.";
   document.getElementById("plantDetailCost").textContent=money(p.costPrice)+" / "+p.unit;
   document.getElementById("plantDetailPrice").textContent=money(p.salePrice)+" / "+p.unit;
   document.getElementById("plantDetailStyles").innerHTML=(p.styles||[]).map(id=>`<span class="chip">${esc(styleName(id))}</span>`).join("");
