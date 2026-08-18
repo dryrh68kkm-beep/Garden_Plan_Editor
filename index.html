@@ -381,11 +381,10 @@
       <input type="hidden" id="plantAddId" />
       <input type="hidden" id="plantAddSpeciesId" />
       <div class="form-section">
-        <p class="form-section-title">สินค้าจริงแต่ละต้น</p>
-        <div class="two-col">
-          <label>รหัสประจำต้น<input id="plantAddInventoryCode" class="input" placeholder="เว้นว่างเพื่อสร้างจากชื่อ เช่น ล่ำซำ-AB12" /></label>
-          <label>วันที่สินค้าเข้า<input id="plantAddArrivalDate" class="input" type="date" /></label>
-        </div>
+        <p class="form-section-title">ข้อมูลพื้นฐาน</p>
+        <label>ชื่อไทย<input id="plantAddThaiName" class="input" required /></label>
+        <label>หมวดหมู่<input id="plantAddCategory" class="input" list="plantAddCategoryOptions" placeholder="เช่น ไม้ยืนต้น, ไม้พุ่ม" /></label>
+        <datalist id="plantAddCategoryOptions"></datalist>
         <label>สถานะสินค้า<select id="plantAddStockStatus" class="input">
           <option value="available">พร้อมขาย</option>
           <option value="reserved">จองแล้ว</option>
@@ -394,17 +393,34 @@
         <p class="meta">เพิ่มได้ไม่จำกัดจำนวน ระบบจะรวมต้นไม้ชื่อเดียวกันเป็นหมวดเดียวบนหน้า Showcase</p>
       </div>
       <div class="form-section">
-        <p class="form-section-title">ข้อมูลพื้นฐาน</p>
-        <label>ชื่อไทย<input id="plantAddThaiName" class="input" required /></label>
+        <p class="form-section-title">ขนาด</p>
+        <div class="two-col">
+          <label>ขนาด (ตัวเลข)<input id="plantAddSizeValue" class="input" type="number" min="0" step="0.1" /></label>
+          <label>หน่วย<select id="plantAddSizeUnit" class="input">
+            <option value="cm">ซม. (cm)</option>
+            <option value="m">ม. (m)</option>
+          </select></label>
+        </div>
+      </div>
+      <div class="form-section">
+        <p class="form-section-title">ราคาขาย</p>
+        <label>ราคาขาย/หน่วย<input id="plantAddPrice" class="input" type="number" min="0" step="0.01" /></label>
+      </div>
+      <div class="form-section">
+        <p class="form-section-title">รูปภาพ</p>
+        <label>รูปภาพต้นไม้ (เพิ่มได้หลายรูป)<input id="plantAddImage" class="input" type="file" accept="image/*" multiple /></label>
+        <div id="plantAddGallery" class="style-edit-gallery"></div>
+      </div>
+      <details class="form-section plant-add-more">
+        <summary class="form-section-title">ข้อมูลเพิ่มเติม (ไม่บังคับ)</summary>
+        <div class="two-col">
+          <label>รหัสประจำต้น<input id="plantAddInventoryCode" class="input" placeholder="เว้นว่างเพื่อสร้างจากชื่อ เช่น ล่ำซำ-AB12" /></label>
+          <label>วันที่สินค้าเข้า<input id="plantAddArrivalDate" class="input" type="date" /></label>
+        </div>
         <div class="two-col">
           <label>ชื่ออังกฤษ<input id="plantAddEnglishName" class="input" /></label>
           <label>ชื่อวิทยาศาสตร์<input id="plantAddScientificName" class="input" /></label>
         </div>
-        <label>หมวดหมู่<input id="plantAddCategory" class="input" list="plantAddCategoryOptions" placeholder="เช่น ไม้ยืนต้น, ไม้พุ่ม" /></label>
-        <datalist id="plantAddCategoryOptions"></datalist>
-      </div>
-      <div class="form-section">
-        <p class="form-section-title">การดูแล</p>
         <div class="two-col">
           <label>สภาพแสง<select id="plantAddLight" class="input">
             <option value="">ไม่ระบุ</option>
@@ -428,38 +444,14 @@
           <option value="ปานกลาง">🟡 ปานกลาง</option>
           <option value="ยาก">🔴 ยาก</option>
         </select></label>
-      </div>
-      <div class="form-section">
-        <p class="form-section-title">ขนาด</p>
-        <div class="two-col">
-          <label>ขนาด (ตัวเลข)<input id="plantAddSizeValue" class="input" type="number" min="0" step="0.1" /></label>
-          <label>หน่วย<select id="plantAddSizeUnit" class="input">
-            <option value="cm">ซม. (cm)</option>
-            <option value="m">ม. (m)</option>
-          </select></label>
-        </div>
-      </div>
-      <div class="form-section">
-        <p class="form-section-title">ราคาและหน่วย</p>
         <div class="two-col">
           <label>หน่วย<input id="plantAddUnit" class="input" placeholder="ต้น" /></label>
-          <label class="checkbox-label" style="align-self:flex-end"><input id="plantAddBestSeller" type="checkbox" /> 🔥 สินค้าขายดี</label>
-        </div>
-        <div class="two-col">
           <label>ต้นทุน/หน่วย<input id="plantAddCost" class="input" type="number" min="0" step="0.01" /></label>
-          <label>ราคาขาย/หน่วย<input id="plantAddPrice" class="input" type="number" min="0" step="0.01" /></label>
         </div>
+        <label class="checkbox-label"><input id="plantAddBestSeller" type="checkbox" /> 🔥 สินค้าขายดี</label>
         <label class="checkbox-label"><input id="plantAddFocal" type="checkbox" /> 🌳 ใช้เป็นไม้ประธานได้</label>
-      </div>
-      <div class="form-section">
-        <p class="form-section-title">รูปภาพ</p>
-        <label>รูปภาพต้นไม้ (เพิ่มได้หลายรูป)<input id="plantAddImage" class="input" type="file" accept="image/*" multiple /></label>
-        <div id="plantAddGallery" class="style-edit-gallery"></div>
-      </div>
-      <div class="form-section">
-        <p class="form-section-title">ความเชื่อและความมงคล</p>
         <label>ความเชื่อ / ความมงคล<textarea id="plantAddAuspicious" class="input" rows="2" placeholder="เช่น เป็นไม้มงคล เสริมความก้าวหน้าและเงินทอง"></textarea></label>
-      </div>
+      </details>
       <div class="modal-actions">
         <button type="button" id="plantAddDeleteBtn" class="small-btn danger" style="display:none;margin-right:auto">ลบต้นไม้นี้</button>
         <button type="button" class="btn btn-ghost close-dialog">ยกเลิก</button>
