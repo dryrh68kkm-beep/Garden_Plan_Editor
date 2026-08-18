@@ -21,7 +21,7 @@
     <form id="loginForm" class="login-card">
       <p class="eyebrow">CATALOG MANAGEMENT</p>
       <h1>เข้าสู่ระบบแอดมิน</h1>
-      <p class="login-sub">ต้องมีบัญชีแอดมินจริงใน Firebase Authentication — ดู <code>docs/firestore-ops.md</code> สำหรับขั้นตอนสร้างบัญชี</p>
+      <p class="login-sub">ลงชื่อเข้าใช้ด้วยบัญชีผู้ดูแลร้าน</p>
       <label>อีเมล<input id="loginEmail" class="input" type="email" autocomplete="username" required /></label>
       <label>รหัสผ่าน<input id="loginPassword" class="input" type="password" autocomplete="current-password" required /></label>
       <p id="loginError" class="login-error" style="display:none"></p>
@@ -42,7 +42,7 @@
       </div>
       <div class="admin-actions">
         <button id="logoutBtn" class="btn btn-ghost" title="ออกจากระบบ">ออกจากระบบ</button>
-        <button id="resetAllBtn" class="btn btn-ghost btn-danger-ghost">ล้างข้อมูลทั้งหมด</button>
+        <button id="resetAllBtn" class="btn btn-ghost btn-danger-ghost">ล้างข้อมูลชั่วคราวในเครื่อง</button>
       </div>
     </div>
   </header>
@@ -331,7 +331,7 @@
         <p id="plantDetailAuspicious" class="meta"></p>
       </div>
       <div class="modal-actions">
-        <button id="editPlantBtn" type="button" class="btn btn-primary">แก้ไขราคา / รูปภาพ</button>
+        <button id="editPlantBtn" type="button" class="btn btn-primary">แก้ไขข้อมูลต้นไม้</button>
       </div>
     </div>
   </dialog>

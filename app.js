@@ -387,7 +387,7 @@ function showPage(name){
 document.querySelectorAll(".close-dialog").forEach(b=>b.addEventListener("click",()=>b.closest("dialog").close()));
 
 document.getElementById("resetAllBtn").onclick=()=>{
-  if(confirm("ต้องการล้างข้อมูลแบบสวน ต้นไม้ที่เพิ่มเอง และรูปภาพที่แนบทั้งหมดหรือไม่?")){
+  if(confirm("ต้องการล้างข้อมูลชั่วคราวที่เก็บในเครื่องนี้หรือไม่?\n\nข้อมูลบนระบบออนไลน์จะไม่ถูกลบ และอาจกลับมาอีกครั้งหลังโหลดหรือซิงก์ข้อมูลใหม่")){
     plantOverrides={};styleOverrides={};customPlants=[];portfolioItems=[];supplyItems=[];failedSaves=new Map();
     [STORAGE.plantOverrides,STORAGE.styleOverrides,STORAGE.customPlants,STORAGE.plantShowcaseIndex,STORAGE.gardenPortfolio,STORAGE.gardenSupplies,FAILED_SAVES_KEY].forEach(k=>LS.remove(k));
     rebuildPlantsList();
