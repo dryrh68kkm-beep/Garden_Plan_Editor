@@ -984,9 +984,21 @@ async function openSharedPlantFromHash(){
       return;
     }
   }
-  if(!plantById.has(id)) return;
+  const p=plantById.get(id);
+  if(!p) return;
   showPage("showcasePlants");
-  openScPlantLightbox(id);
+  // Same routing a customer browsing the gallery gets: a real-inventory
+  // plant with stock opens the "สินค้าจริงในร้าน" group dialog (its tile
+  // card's own onclick uses this, not the single-plant lightbox); anything
+  // else opens the lightbox directly. renderScPlantGallery() rebuilds
+  // scPlantGroupsByKey first in case this plant was only just fetched above
+  // and never made it into the gallery's own render pass.
+  if(p.custom&&isAvailablePlant(p)){
+    renderScPlantGallery();
+    openScPlantGroup(plantGroupKey(p));
+  }else{
+    openScPlantLightbox(id);
+  }
 }
 ensureSupplyCatalog()
   .catch(error=>console.error(error))
