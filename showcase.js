@@ -839,7 +839,11 @@ renderScStyles();
 renderScPortfolio();
 fillScSupplyCategories();
 renderScSupplies();
-loadAllPlants();
+// Kept so a cold-start shared link (see openSharedPlantFromHash below) can
+// await the same in-flight fetch instead of calling loadAllPlants() again —
+// it never rejects (errors are caught inside), so awaiting it always just
+// means "the base catalog attempt has finished, one way or another."
+const basePlantsReady=loadAllPlants();
 loadCareBeliefs();
 
 // Pull the latest overrides from Firestore so this page reflects the back
@@ -1010,6 +1014,17 @@ async function openSharedPlantFromHash(){
   const match=/^#plant=(.+)$/.exec(location.hash);
   if(!match) return;
   const id=decodeURIComponent(match[1]);
+  if(!plantById.has(id)){
+    // Base plants come from data/plants.json via loadAllPlants(), which
+    // runs independently of the hydrateFromLocalCache→initFromFirestore
+    // chain this function is already the tail of — so a base-plant link can
+    // land here before that fetch has finished. Wait for the same in-flight
+    // attempt (never re-triggering it) and recheck before assuming the
+    // plant doesn't exist; rebuildAllPlants() (called inside loadAllPlants)
+    // always merges in whatever plantOverrides currently holds, so this
+    // still opens the overridden object, never a raw adaptPlant() one.
+    await basePlantsReady;
+  }
   if(!plantById.has(id)){
     // Cold-start edge case: a brand-new browser (e.g. LINE's in-app
     // browser, no local cache yet) may reach this before the full catalog
