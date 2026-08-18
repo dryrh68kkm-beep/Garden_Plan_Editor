@@ -1015,9 +1015,16 @@ async function openSharedPlantFromHash(){
     // browser, no local cache yet) may reach this before the full catalog
     // has loaded, or the initial Firestore sync above may have failed
     // outright — either way, fetch this one specimen directly rather than
-    // silently stranding the visitor on the home page.
+    // silently stranding the visitor on the home page. customPlants is the
+    // authoritative document (see initFromFirestore's overlay) — try it
+    // first, since plantShowcaseIndex is a denormalized copy that can lag
+    // behind a recent admin save (its write isn't awaited by the caller;
+    // see saveCustomPlant in app.js) and would otherwise serve a stale
+    // stock/price/name/size/category/light/thumbnail on a plant whose
+    // index entry just hasn't caught up yet. plantShowcaseIndex is only a
+    // fallback for the rare case the full document is genuinely gone.
     try{
-      const doc=await fbGet("plantShowcaseIndex",id) || await fbGet("customPlants",id);
+      const doc=await fbGet("customPlants",id) || await fbGet("plantShowcaseIndex",id);
       if(!doc) return;
       customPlants=[...customPlants,doc];
       rebuildAllPlants();
