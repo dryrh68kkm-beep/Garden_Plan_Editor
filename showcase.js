@@ -38,8 +38,7 @@ function sharePlantText(p){
 function sharePlantUrl(p){
   return SHOWCASE_WORKER_URL?`${SHOWCASE_WORKER_URL}/plant/${encodeURIComponent(p.id)}`:SHOWCASE_SHARE_URL;
 }
-async function scSharePlant(){
-  const p=scLightboxPlant;
+async function scSharePlant(p=scLightboxPlant){
   if(!p) return;
   const shareData={title:p.thaiName,text:sharePlantText(p),url:sharePlantUrl(p)};
   if(navigator.share){
@@ -673,10 +672,15 @@ function renderScSpecimenHtml(p,index){
     </div>
   </article>`;
 }
+// Shares the group's first specimen — same one the tile card itself
+// represents (name/price shown on the grid) — since the group as a whole
+// doesn't have its own id, only its individual specimens do.
+let scGroupSharePlant=null;
 function openScPlantGroup(key){
   const items=(scPlantGroupsByKey.get(key)||[]).filter(p=>p.custom&&isAvailablePlant(p));
   if(!items.length) return;
   scPublicInventoryCodes=new Map(items.map((p,index)=>[p.id,displayInventoryCode(p,index)]));
+  scGroupSharePlant=items[0];
   document.getElementById("scPlantGroupName").textContent=items[0].thaiName;
   document.getElementById("scPlantGroupCount").textContent=`มีต้น${items[0].thaiName}จริงพร้อมขาย ${items.length} ต้น · แต่ละการ์ดคือสินค้าจริงคนละต้น`;
   document.getElementById("scPlantGroupList").innerHTML=items.map(renderScSpecimenHtml).join("");
@@ -831,7 +835,8 @@ document.getElementById("scLoadMorePlantsBtn").addEventListener("click",()=>{
 });
 document.getElementById("scSupplySearch").addEventListener("input",renderScSupplies);
 document.getElementById("scSupplyCategoryFilter").addEventListener("change",renderScSupplies);
-document.getElementById("scPlantLightboxShareBtn").addEventListener("click",scSharePlant);
+document.getElementById("scPlantLightboxShareBtn").addEventListener("click",()=>scSharePlant());
+document.getElementById("scPlantGroupShareBtn").addEventListener("click",()=>scSharePlant(scGroupSharePlant));
 
 renderScStyles();
 renderScPortfolio();

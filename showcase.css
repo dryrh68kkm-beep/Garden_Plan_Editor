@@ -555,6 +555,7 @@ body::-webkit-scrollbar,
 .sc-new-stock-badge{position:absolute;top:12px;right:12px;padding:7px 11px;border-radius:999px;background:#fff7df;color:#684710;font-size:.78rem;font-weight:800;box-shadow:0 6px 18px rgba(0,0,0,.2)}
 .sc-view-stock-btn{border:0;cursor:pointer;width:calc(100% - 32px)}
 .sc-plant-group-dialog{width:min(980px,calc(100% - 24px))}
+.sc-group-share-btn{margin-top:10px}
 .sc-specimen-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:18px}
 .sc-specimen-card{overflow:hidden;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 10px 26px rgba(16,45,35,.09);cursor:pointer;transition:.2s}
 .sc-specimen-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
