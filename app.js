@@ -924,8 +924,16 @@ function renderPlants(){
     const hay=[p.id,p.thaiName,p.englishName,p.scientificName,p.category,p.light].join(" ").toLowerCase();
     return hay.includes(q)&&(!category||p.category===category)&&(!light||p.light===light)&&(!focalOnly||p.isFocalPlant);
   });
+  // Recently-edited plants surface first so the admin can quickly spot and
+  // double-check what they just changed, without hunting through the whole
+  // 300+ item catalog. plantOverrides carries the edit timestamp for base
+  // catalog plants; custom (real-inventory) plants carry it directly.
+  const groupLastEditedAt=group=>Math.max(0,...group.map(p=>{
+    const t=plantOverrides[p.id]?.updatedAt||p.updatedAt;
+    return t?Date.parse(t):0;
+  }));
   const groups=groupPlantsBySpecies(rows)
-    .sort((a,b)=>(b.some(p=>p.bestSeller)?1:0)-(a.some(p=>p.bestSeller)?1:0));
+    .sort((a,b)=>groupLastEditedAt(b)-groupLastEditedAt(a)||(b.some(p=>p.bestSeller)?1:0)-(a.some(p=>p.bestSeller)?1:0));
   plantGroupsByKey=new Map(groups.map(g=>[plantGroupKey(g[0]),g]));
   const visibleGroups=groups.slice(0,plantVisibleCount);
   document.getElementById("plantCount").textContent=`แสดง ${visibleGroups.length} จาก ${groups.length} ชนิด (${rows.length} รายการ จากทั้งหมด ${plants.length})`;
@@ -1152,7 +1160,8 @@ document.getElementById("plantEditForm").addEventListener("submit",async e=>{
     isFocalPlant:document.getElementById("plantEditFocal").checked,
     auspicious:document.getElementById("plantEditAuspicious").value.trim(),
     images:plantEditImages.slice(),
-    thumbs:plantEditThumbs.slice()
+    thumbs:plantEditThumbs.slice(),
+    updatedAt:new Date().toISOString()
   };
   if(!checkDocSizeOrWarn(override,"ต้นไม้นี้")) return;
   plantOverrides[id]=override;
@@ -1321,7 +1330,8 @@ document.getElementById("plantAddForm").addEventListener("submit",async e=>{
     isFocalPlant:document.getElementById("plantAddFocal").checked,
     auspicious:document.getElementById("plantAddAuspicious").value.trim(),
     images:plantAddImages.slice(),
-    thumbs:plantAddThumbs.slice()
+    thumbs:plantAddThumbs.slice(),
+    updatedAt:new Date().toISOString()
   };
   if(!checkDocSizeOrWarn(plant,"ต้นไม้นี้")) return;
   customPlants=existingId
