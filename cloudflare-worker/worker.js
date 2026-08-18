@@ -11,13 +11,17 @@
 //   2. GET /photo/<key>  — serves a photo previously stored by /upload.
 //      The showcase/admin never talk to R2 directly; this Worker is the
 //      only thing with R2 access, via its bucket binding.
-//   3. GET /plant/<id>   — public. Reads that plant's Firestore doc
+//   3. GET /thumb/<id>   — serves a plant's photo even if it's still base64
+//      in Firestore (not yet re-uploaded through the admin), by decoding it
+//      on the fly. Only used as a fallback when no real R2 URL exists yet.
+//   4. GET /plant/<id>   — public. Reads that plant's Firestore doc
 //      (already publicly readable — see firestore.rules) and returns a
 //      tiny HTML page whose Open Graph tags carry THAT plant's own
-//      name/price/photo, then redirects real visitors on to the actual
-//      showcase. Facebook/LINE/etc. link-preview crawlers only read a
-//      page's <head> and never run JS, so they see the per-plant preview;
-//      a real person following the link gets bounced through instantly.
+//      name/price/photo (real URL if migrated, /thumb/<id> otherwise), then
+//      redirects real visitors on to the actual showcase. Facebook/LINE/
+//      etc. link-preview crawlers only read a page's <head> and never run
+//      JS, so they see the per-plant preview; a real person following the
+//      link gets bounced through instantly.
 //
 // Bindings this Worker needs, set in the Cloudflare dashboard — nothing
 // secret is hardcoded in this file:
@@ -80,15 +84,52 @@ async function fetchPlantDoc(env,id){
   return null;
 }
 const FALLBACK_IMAGE="https://dryrh68kkm-beep.github.io/Garden_Plan_Editor/assets/garden-card.webp";
-async function handlePlantPreview(env,id){
+// Splits a "data:<mime>;base64,<data>" string into its parts, or null if it
+// isn't one — used to serve an old, not-yet-migrated base64 photo as a real
+// fetchable image (see handleThumb below), since og:image requires a real
+// URL and can't point at a data: URI directly.
+function parseDataUri(dataUri){
+  const match=/^data:([^;]+);base64,(.+)$/.exec(dataUri||"");
+  if(!match) return null;
+  const binary=atob(match[2]);
+  const bytes=new Uint8Array(binary.length);
+  for(let i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i);
+  return {mime:match[1],bytes};
+}
+// GET /thumb/<id> — serves a plant's photo as a real image even when it's
+// still stored as base64 in Firestore (pre-R2-migration), by decoding it on
+// the fly. Once a plant's photo is re-uploaded through the admin (see
+// hostPlantPhotoPair in app.js) it gets a real R2 URL and this route is no
+// longer needed for that plant — handlePlantPreview below prefers the real
+// URL whenever one exists.
+async function handleThumb(env,id){
+  const doc=await fetchPlantDoc(env,id);
+  const thumbs=doc?fsField(doc,"thumbs"):null;
+  const images=doc?fsField(doc,"images"):null;
+  const source=(thumbs&&thumbs[0])||(images&&images[0]);
+  const decoded=parseDataUri(source);
+  if(!decoded) return new Response("Not found",{status:404});
+  // Short cache — unlike /photo/<key> (content-addressed, immutable), this
+  // URL stays the same even after the admin changes the photo, so a long
+  // cache would keep serving a stale image.
+  return new Response(decoded.bytes,{headers:{"Content-Type":decoded.mime,"Cache-Control":"public, max-age=3600"}});
+}
+async function handlePlantPreview(request,env,id){
   const doc=await fetchPlantDoc(env,id);
   const name=doc?(fsField(doc,"thaiName")||"ต้นไม้"):"รินลดา พันธุ์ไม้";
   const price=doc?fsField(doc,"salePrice"):null;
   const thumbs=doc?fsField(doc,"thumbs"):null;
-  // Only ever use a real hosted photo (uploaded via /upload) as the preview
-  // image — a base64 data: URI (older photos, pre-migration) can't be used
-  // as og:image, so those plants just get the shop's generic card instead.
-  const photoUrl=thumbs&&thumbs[0]&&/^https?:\/\//.test(thumbs[0])?thumbs[0]:FALLBACK_IMAGE;
+  const images=doc?fsField(doc,"images"):null;
+  const rawPhoto=(thumbs&&thumbs[0])||(images&&images[0]);
+  // Prefer a real hosted URL (already migrated via /upload) — fastest and
+  // cacheable forever. Otherwise, if there's still a base64 photo, serve it
+  // through /thumb/<id> so even un-migrated plants get a real preview image
+  // instead of the generic shop logo.
+  const photoUrl=rawPhoto&&/^https?:\/\//.test(rawPhoto)
+    ? rawPhoto
+    : rawPhoto
+      ? `${new URL(request.url).origin}/thumb/${encodeURIComponent(id)}`
+      : FALLBACK_IMAGE;
   const title=price?`${name} ราคา ${Number(price).toLocaleString("th-TH")} บาท`:name;
   const description="ดูรูปเพิ่มเติมและสั่งซื้อได้ที่ร้านรินลดา พันธุ์ไม้";
   const target=`${env.SHOWCASE_URL}#plant=${encodeURIComponent(id)}`;
@@ -144,7 +185,8 @@ export default{
     if(request.method==="OPTIONS") return withCors(new Response(null,{status:204}));
     if(request.method==="POST"&&url.pathname==="/upload") return handleUpload(request,env);
     if(request.method==="GET"&&url.pathname.startsWith("/photo/")) return handlePhoto(env,url.pathname.slice("/photo/".length));
-    if(request.method==="GET"&&url.pathname.startsWith("/plant/")) return handlePlantPreview(env,url.pathname.slice("/plant/".length));
+    if(request.method==="GET"&&url.pathname.startsWith("/thumb/")) return handleThumb(env,url.pathname.slice("/thumb/".length));
+    if(request.method==="GET"&&url.pathname.startsWith("/plant/")) return handlePlantPreview(request,env,url.pathname.slice("/plant/".length));
     return new Response("Not found",{status:404});
   }
 };
