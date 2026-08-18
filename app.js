@@ -20,15 +20,6 @@ const CARE_LEVEL_TO_MAINTENANCE={low:"ต่ำ",medium:"กลาง",high:"ส
 const LIGHT_CODE_TO_TH={fullSun:"แดดจัด",partialSun:"รำไรถึงแดด",brightShade:"แดดรำไร",shade:"ร่ม"};
 const WATER_CODE_TO_TH={low:"น้อย",medium:"ปานกลาง",high:"มาก",aquatic:"มาก"};
 const MAINTENANCE_TO_DIFFICULTY={"ต่ำ":"ง่าย","กลาง":"ปานกลาง","สูง":"ยาก"};
-function buildStyleAiPrompt(s){
-  return [
-    `ออกแบบภาพสวนสไตล์ "${s.nameTh||s.nameEn||""}" หมวด ${s.category||""}`,
-    s.description||"",
-    Array.isArray(s.recommendedPlants)&&s.recommendedPlants.length?`ใช้พรรณไม้: ${s.recommendedPlants.join(", ")}`:"",
-    Array.isArray(s.materials)&&s.materials.length?`วัสดุ: ${s.materials.join(", ")}`:"",
-    Array.isArray(s.palette)&&s.palette.length?`โทนสี: ${s.palette.join(", ")}`:""
-  ].filter(Boolean).join(" ");
-}
 function adaptStyle(s){
   return {
     id:s.id,
@@ -45,7 +36,6 @@ function adaptStyle(s){
     plants:Array.isArray(s.recommendedPlants)?s.recommendedPlants:[],
     materials:Array.isArray(s.materials)?s.materials:[],
     mood:Array.isArray(s.palette)?s.palette.join(", "):(s.palette||""),
-    aiPrompt:s.aiPrompt||buildStyleAiPrompt(s),
     icon:"🌿",
     plantPlan:Array.isArray(s.plantPalette)?s.plantPalette:[],
     plantIds:Array.isArray(s.plantPalette)?s.plantPalette.map(p=>p.plantId).filter(Boolean):[],
@@ -648,19 +638,8 @@ function openStyleDetail(id){
   document.getElementById("styleDetailPlants").innerHTML=s.plants.map(x=>`<span class="chip">${esc(x)}</span>`).join("");
   document.getElementById("styleDetailMaterials").innerHTML=s.materials.map(x=>`<span class="chip">${esc(x)}</span>`).join("");
   document.getElementById("styleDetailMood").textContent=s.mood;
-  document.getElementById("styleDetailPrompt").textContent=s.aiPrompt;
   document.getElementById("styleDetailDialog").showModal();
 }
-document.getElementById("copyStylePromptBtn").addEventListener("click",async()=>{
-  const s=gardenStyles.find(x=>x.id===selectedStyleId);
-  if(!s) return;
-  try{
-    await navigator.clipboard.writeText(s.aiPrompt);
-    alert("คัดลอก Prompt แล้ว");
-  }catch{
-    prompt("คัดลอกข้อความนี้",s.aiPrompt);
-  }
-});
 
 let styleEditImages=[];
 let styleEditPlantIds=[];

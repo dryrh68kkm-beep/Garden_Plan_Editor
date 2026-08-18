@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#163a2a" />
-  <title>Garden Plan Editor</title>
+  <title>Rinlada Web Editor</title>
   <link rel="icon" type="image/png" sizes="16x16" href="assets/brand/rinlada-home-16.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/rinlada-home-32.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="assets/brand/rinlada-home-192.png" />
@@ -13,13 +13,13 @@
   <link rel="manifest" href="admin-manifest.webmanifest" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Garden Admin" />
+  <meta name="apple-mobile-web-app-title" content="Rinlada Editor" />
   <link rel="stylesheet" href="style.css?v=202608180600" />
 </head>
 <body>
   <div id="loginScreen" class="login-screen">
     <form id="loginForm" class="login-card">
-      <p class="eyebrow">LANDSCAPE MANAGEMENT</p>
+      <p class="eyebrow">CATALOG MANAGEMENT</p>
       <h1>เข้าสู่ระบบแอดมิน</h1>
       <p class="login-sub">ต้องมีบัญชีแอดมินจริงใน Firebase Authentication — ดู <code>docs/firestore-ops.md</code> สำหรับขั้นตอนสร้างบัญชี</p>
       <label>อีเมล<input id="loginEmail" class="input" type="email" autocomplete="username" required /></label>
@@ -32,8 +32,8 @@
   <div id="adminApp" style="display:none">
   <header class="topbar">
     <div>
-      <p class="eyebrow">LANDSCAPE MANAGEMENT</p>
-      <h1>Garden Plan Editor</h1>
+      <p class="eyebrow">CATALOG MANAGEMENT</p>
+      <h1>Rinlada Web Editor</h1>
     </div>
     <div class="topbar-actions">
       <div class="sync-group">
@@ -197,14 +197,8 @@
         <h4>แนวทางสีและบรรยากาศ</h4>
         <p id="styleDetailMood" class="meta"></p>
       </div>
-      <div class="detail-section">
-        <h4>Prompt สำหรับสร้างภาพ AI</h4>
-        <div id="styleDetailPrompt" class="prompt-box"></div>
-      </div>
-
       <div class="modal-actions">
         <button id="editStyleBtn" type="button" class="btn btn-secondary">แก้ไขรูป / ข้อมูล</button>
-        <button id="copyStylePromptBtn" type="button" class="btn btn-primary">คัดลอก Prompt</button>
       </div>
     </div>
   </dialog>
