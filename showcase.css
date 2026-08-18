@@ -34,8 +34,8 @@
 .showcase-order-btn--lightbox{margin:0;padding:14px 16px;font-size:1rem;flex:1}
 .showcase-lightbox-actions{display:flex;gap:8px;margin:18px 0 0}
 .showcase-share-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:14px 16px;border-radius:12px;border:1.5px solid #0d2e23;background:#fff;color:#0d2e23;font-weight:700;font-size:1rem;cursor:pointer;flex:0 0 auto;box-shadow:0 2px 8px rgba(13,46,35,.08);transition:background .15s ease,color .15s ease,box-shadow .15s ease,transform .1s ease}
-.showcase-share-btn:hover{background:#0d2e23;color:#fff;box-shadow:0 6px 16px rgba(13,46,35,.22)}
-.showcase-share-btn:active{transform:scale(.96)}
+@media(hover:hover){.showcase-share-btn:hover{background:#0d2e23;color:#fff;box-shadow:0 6px 16px rgba(13,46,35,.22)}}
+.showcase-share-btn:active{transform:scale(.96);background:#0d2e23;color:#fff}
 .showcase-plant-caption{font-weight:800;font-size:1.05rem;color:var(--ink)}
 .showcase-plant-price-tag{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;border-radius:999px;font-weight:800;font-size:.85rem;padding:6px 12px;background:linear-gradient(135deg,var(--green-2),var(--green));color:#fff}
 .showcase-lightbox-img-wrap{position:relative}
