@@ -865,19 +865,22 @@ async function initFromFirestore(){
       // plantShowcaseIndex is a denormalized copy of customPlants written as
       // a separate operation (see saveCustomPlant/syncPlantShowcaseIndexes
       // in app.js) — it can lag behind if that second write hasn't landed
-      // yet. Availability, price, grid-thumbnail, size, and name decisions
-      // must never trust a stale copy, so this reads stockStatus/salePrice/
-      // thumbs/customSizeValue/customSizeUnit/thaiName/englishName/
-      // scientificName straight from customPlants itself, using a field
-      // mask so nothing else comes along for the ride. `images` (the full
-      // gallery) is deliberately NOT masked in here — some older,
-      // not-yet-migrated plants still carry base64 in `images`, and pulling
-      // that for every plant on every catalog load would bloat this request
-      // for the whole grid. The grid only ever needs `thumbs`; the full
-      // gallery is fetched lazily, one plant at a time, when a customer
-      // opens its Detail view (see openScPlantLightbox's detailLoaded fetch
-      // below).
-      fbList("customPlants",["stockStatus","salePrice","thumbs","customSizeValue","customSizeUnit","thaiName","englishName","scientificName"])
+      // yet. Availability, price, grid-thumbnail, size, name, and category
+      // decisions must never trust a stale copy, so this reads
+      // stockStatus/salePrice/thumbs/customSizeValue/customSizeUnit/
+      // thaiName/englishName/scientificName/category straight from
+      // customPlants itself, using a field mask so nothing else comes along
+      // for the ride. `category` is needed here (not just lazily in
+      // Detail) because the category filter dropdown and its filtering are
+      // built from the whole catalog on load, not per-plant on open.
+      // `images` (the full gallery) is deliberately NOT masked in here —
+      // some older, not-yet-migrated plants still carry base64 in `images`,
+      // and pulling that for every plant on every catalog load would bloat
+      // this request for the whole grid. The grid only ever needs `thumbs`;
+      // the full gallery is fetched lazily, one plant at a time, when a
+      // customer opens its Detail view (see openScPlantLightbox's
+      // detailLoaded fetch below).
+      fbList("customPlants",["stockStatus","salePrice","thumbs","customSizeValue","customSizeUnit","thaiName","englishName","scientificName","category"])
     ]);
     // Compatibility during rollout: before an admin has opened the back office
     // once to create the lightweight index, fall back to the old full collection.
@@ -901,7 +904,8 @@ async function initFromFirestore(){
         customSizeUnit:overlayField(authoritative,p,"customSizeUnit"),
         thaiName:overlayField(authoritative,p,"thaiName"),
         englishName:overlayField(authoritative,p,"englishName"),
-        scientificName:overlayField(authoritative,p,"scientificName")
+        scientificName:overlayField(authoritative,p,"scientificName"),
+        category:overlayField(authoritative,p,"category")
       };
     });
     // Poll only lightweight metadata and thumbnails. Full galleries are
