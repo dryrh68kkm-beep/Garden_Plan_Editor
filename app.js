@@ -342,7 +342,7 @@ function plantImages(p){
   return [];
 }
 // Card-grid cover: prefer the small companion thumbnail (see
-// resizeImageWithThumb) so the list view doesn't have to download/decode
+// resizePlantPhoto) so the list view doesn't have to download/decode
 // the full-size photo for every card; falls back to the full image for
 // plants saved before thumbnails existed.
 function plantCoverThumb(p){
@@ -1048,13 +1048,88 @@ function resizeImageVariants(file,variants){
 function resizeImageToDataURL(file,targetDim=800,maxBytes=250*1024){
   return resizeImageVariants(file,[{targetDim,maxBytes}]).then(r=>r[0]);
 }
-// Plant photos are shown at gallery-tile size almost everywhere (admin card
-// grid, showcase plant grid, linked-plant chips) and only need full
-// resolution in the one-at-a-time lightbox/detail view. Producing a small
-// companion thumbnail at upload time means those list views can skip
-// downloading/decoding the full ~250KB photo for every tile.
-function resizeImageWithThumb(file){
-  return resizeImageVariants(file,[{targetDim:800,maxBytes:250*1024},{targetDim:280,maxBytes:45*1024}]);
+// Decodes a photo file respecting its EXIF orientation, without rotating it
+// a second time. createImageBitmap's imageOrientation option performs a
+// single, explicit EXIF-aware decode; falling back to the classic
+// <img>+FileReader path (which most browsers already auto-rotate on decode)
+// only when that API/option isn't available, so we never stack two rotations.
+async function decodeImageOriented(file){
+  if(typeof createImageBitmap==="function"){
+    try{
+      return await createImageBitmap(file,{imageOrientation:"from-image"});
+    }catch{
+      // fall through to the <img> path below
+    }
+  }
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onerror=()=>reject(reader.error);
+    reader.onload=()=>{
+      const img=new Image();
+      img.onerror=()=>reject(new Error("โหลดรูปภาพไม่สำเร็จ"));
+      img.onload=()=>resolve(img);
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+// Encodes a canvas to the smallest quality step (down to a visible-quality
+// floor) that fits under maxBytes, preferring WebP and falling back to JPEG
+// on browsers (Safari) whose canvas export silently ignores WebP.
+function encodeWithSizeBudget(canvas,maxBytes,startQuality,minQuality){
+  const mime=canvas.toDataURL("image/webp",startQuality).startsWith("data:image/webp") ? "image/webp" : "image/jpeg";
+  let quality=startQuality;
+  let dataUrl=canvas.toDataURL(mime,quality);
+  while(dataUrl.length*0.75>maxBytes && quality>minQuality){
+    quality-=0.05;
+    dataUrl=canvas.toDataURL(mime,quality);
+  }
+  return {dataUrl,mime,quality};
+}
+// Full Detail photo: scaled down to fit within a max width/height, never
+// upscaled, original aspect ratio preserved (unlike the square-cropped
+// thumbnail below).
+function renderPlantFullVariant(source,maxDim,maxBytes){
+  const srcW=source.width||source.naturalWidth, srcH=source.height||source.naturalHeight;
+  const scale=Math.min(1,maxDim/Math.max(srcW,srcH));
+  const width=Math.round(srcW*scale), height=Math.round(srcH*scale);
+  const canvas=document.createElement("canvas");
+  canvas.width=width;
+  canvas.height=height;
+  const ctx=canvas.getContext("2d");
+  ctx.imageSmoothingEnabled=true;
+  ctx.imageSmoothingQuality="high";
+  ctx.drawImage(source,0,0,width,height);
+  return encodeWithSizeBudget(canvas,maxBytes,0.85,0.65).dataUrl;
+}
+// Grid thumbnail: kept as a centered square crop (grid tiles are square),
+// just retargeted to the new smaller size/byte budget.
+function renderPlantThumbVariant(source,targetDim,maxBytes){
+  const srcW=source.width||source.naturalWidth, srcH=source.height||source.naturalHeight;
+  const side=Math.min(srcW,srcH);
+  const sx=(srcW-side)/2, sy=(srcH-side)/2;
+  const canvas=document.createElement("canvas");
+  canvas.width=targetDim;
+  canvas.height=targetDim;
+  const ctx=canvas.getContext("2d");
+  ctx.imageSmoothingEnabled=true;
+  ctx.imageSmoothingQuality="high";
+  ctx.drawImage(source,sx,sy,side,side,0,0,targetDim,targetDim);
+  return encodeWithSizeBudget(canvas,maxBytes,0.85,0.65).dataUrl;
+}
+// Replaces resizeImageWithThumb for plant photos specifically: preserves
+// aspect ratio for the full/detail image (max width ~1600px, ~300-500KB)
+// instead of square-cropping it, keeps the thumbnail square for the grid
+// (~320-480px, ~30-80KB), and decodes with EXIF orientation handled once.
+async function resizePlantPhoto(file){
+  const source=await decodeImageOriented(file);
+  try{
+    const full=renderPlantFullVariant(source,1600,480*1024);
+    const thumb=renderPlantThumbVariant(source,400,70*1024);
+    return [full,thumb];
+  }finally{
+    if(typeof ImageBitmap!=="undefined" && source instanceof ImageBitmap) source.close();
+  }
 }
 // Uploads one already-resized photo to R2 via the Cloudflare Worker
 // (verifies the same Firebase admin session already used for Firestore
@@ -1116,7 +1191,7 @@ document.getElementById("plantEditImage").addEventListener("change",async e=>{
   if(!files.length) return;
   try{
     for(const file of files){
-      const [full,thumb]=await resizeImageWithThumb(file);
+      const [full,thumb]=await resizePlantPhoto(file);
       const [hostedFull,hostedThumb]=await hostPlantPhotoPair(full,thumb,file.name||"photo");
       plantEditImages.push(hostedFull);
       plantEditThumbs.push(hostedThumb);
@@ -1265,7 +1340,7 @@ document.getElementById("plantAddImage").addEventListener("change",async e=>{
   if(!files.length) return;
   try{
     for(const file of files){
-      const [full,thumb]=await resizeImageWithThumb(file);
+      const [full,thumb]=await resizePlantPhoto(file);
       const [hostedFull,hostedThumb]=await hostPlantPhotoPair(full,thumb,file.name||"photo");
       plantAddImages.push(hostedFull);
       plantAddThumbs.push(hostedThumb);
