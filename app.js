@@ -942,7 +942,6 @@ function openPlantDetail(id){
   document.getElementById("plantDetailMaintenance").textContent=maintenanceLabel(p.maintenance);
   document.getElementById("plantDetailCost").textContent=money(p.costPrice)+" / "+p.unit;
   document.getElementById("plantDetailPrice").textContent=money(p.salePrice)+" / "+p.unit;
-  document.getElementById("plantDetailStyles").innerHTML=(p.styles||[]).map(id=>`<span class="chip">${esc(styleName(id))}</span>`).join("");
   renderStyleDetailGallery(plantImages(p),"🌱","plantDetailIcon","plantDetailThumbs");
   const info=plantCareInfo(p);
   const careItems=[
