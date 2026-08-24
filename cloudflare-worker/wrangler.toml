@@ -14,7 +14,7 @@ bucket_name = "rinlada-plant-photos"
 
 [vars]
 FIREBASE_PROJECT_ID = "rinlada-plant-stock"
-SHOWCASE_URL = "https://dryrh68kkm-beep.github.io/Garden_Plan_Editor/showcase.html"
+SHOWCASE_URL = "https://dryrh68kkm-beep.github.io/Garden_Plan_Editor/showcase/"
 # FIREBASE_API_KEY is also a plain var (not a Secret) — it's the same public
 # value as FB_CONFIG.apiKey in firebase-client.js, not a credential. Set it
 # in the dashboard alongside the others.

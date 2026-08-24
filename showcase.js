@@ -33,12 +33,12 @@ function lineOrderUrl(p){
 }
 // Without SHOWCASE_WORKER_URL (see firebase-client.js) configured, the site
 // is a single-page app with no per-plant URL — a shared link always opens
-// the same generic showcase.html, so the plant's name/price ride along as
+// the same generic showcase page, so the plant's name/price ride along as
 // the share *text* instead. Once the Worker is deployed, shares use its
 // /plant/<id> link instead, which gives Facebook/LINE a real per-plant
 // preview (photo + price) and still lands the customer on this exact plant
 // (see openSharedPlantFromHash below).
-const SHOWCASE_SHARE_URL="https://dryrh68kkm-beep.github.io/Garden_Plan_Editor/showcase.html";
+const SHOWCASE_SHARE_URL="https://dryrh68kkm-beep.github.io/Garden_Plan_Editor/showcase/";
 let scLightboxPlant=null;
 // Bumped on every openScPlantLightbox() call; a pending fetch checks it
 // still matches after awaiting before applying its result, so opening
@@ -113,7 +113,7 @@ function adaptStyle(s){
 }
 // Garden Style static data (garden-styles-data.js, ~163KB) and its 10 photo
 // files (garden-style-images/GS*.js, ~1.2MB combined) are no longer loaded
-// eagerly in showcase.html -- see ensureGardenStyleAssetsLoaded() below,
+// eagerly on the showcase page -- see ensureGardenStyleAssetsLoaded() below,
 // which fetches them only once a customer actually opens the Styles page.
 // gardenStyles therefore starts empty and is rebuilt once those scripts have
 // run; every render path that reads it (mergedStyles(), renderScStyles())
@@ -140,17 +140,17 @@ function loadScriptOnce(src){
 // them (only adaptStyle()/rebuildGardenStyles() above needs both finished).
 // Safe, and faster, to fetch all 11 in parallel.
 const GARDEN_STYLE_ASSET_URLS=[
-  "data/garden-style-images/GS001.js?v=20260811",
-  "data/garden-style-images/GS006.js?v=20260811",
-  "data/garden-style-images/GS011.js?v=20260811",
-  "data/garden-style-images/GS016.js?v=20260811",
-  "data/garden-style-images/GS021.js?v=20260811",
-  "data/garden-style-images/GS026.js?v=20260811",
-  "data/garden-style-images/GS031.js?v=20260811",
-  "data/garden-style-images/GS036.js?v=20260811",
-  "data/garden-style-images/GS041.js?v=20260811",
-  "data/garden-style-images/GS046.js?v=20260811",
-  "data/garden-styles-data.js?v=20260811"
+  "../data/garden-style-images/GS001.js?v=20260811",
+  "../data/garden-style-images/GS006.js?v=20260811",
+  "../data/garden-style-images/GS011.js?v=20260811",
+  "../data/garden-style-images/GS016.js?v=20260811",
+  "../data/garden-style-images/GS021.js?v=20260811",
+  "../data/garden-style-images/GS026.js?v=20260811",
+  "../data/garden-style-images/GS031.js?v=20260811",
+  "../data/garden-style-images/GS036.js?v=20260811",
+  "../data/garden-style-images/GS041.js?v=20260811",
+  "../data/garden-style-images/GS046.js?v=20260811",
+  "../data/garden-styles-data.js?v=20260811"
 ];
 let gardenStyleAssetsLoaded=false;
 let gardenStyleAssetsPromise=null;
@@ -189,7 +189,7 @@ function loadGardenStylesPageAssets(){
 let categoriesById = new Map();
 async function loadCategories(){
   try{
-    const response=await fetch("./data/categories.json",{cache:"no-store"});
+    const response=await fetch("../data/categories.json",{cache:"no-store"});
     if(!response.ok) throw new Error(`HTTP ${response.status}`);
     const data=await response.json();
     if(Array.isArray(data)) categoriesById=new Map(data.map(c=>[c.id,c.nameTh]));
@@ -232,7 +232,7 @@ async function ensureSupplyCatalog(){
   if(DEFAULT_SUPPLIES.length) return;
   await new Promise((resolve,reject)=>{
     const script=document.createElement("script");
-    script.src=`data/garden-supplies-data.js?v=202608130020-${Date.now()}`;
+    script.src=`../data/garden-supplies-data.js?v=202608130020-${Date.now()}`;
     script.onload=resolve;
     script.onerror=()=>reject(new Error("โหลดข้อมูลอุปกรณ์และปุ๋ยไม่สำเร็จ"));
     document.head.appendChild(script);
@@ -480,7 +480,7 @@ function fillScPlantLightFilter(){
 let careBeliefsById=new Map();
 async function loadCareBeliefs(){
   try{
-    const response=await fetch("./data/plant-care-beliefs.json",{cache:"no-store"});
+    const response=await fetch("../data/plant-care-beliefs.json",{cache:"no-store"});
     if(!response.ok) throw new Error(`HTTP ${response.status}`);
     const data=await response.json();
     if(!Array.isArray(data)) throw new Error("รูปแบบฐานข้อมูลไม่ถูกต้อง");
@@ -505,7 +505,7 @@ function plantCareInfo(p){
 async function loadAllPlants(){
   try{
     await loadCategories();
-    const response=await fetch("./data/plants.json",{cache:"no-store"});
+    const response=await fetch("../data/plants.json",{cache:"no-store"});
     if(!response.ok) throw new Error(`HTTP ${response.status}`);
     const data=await response.json();
     if(!Array.isArray(data)) throw new Error("รูปแบบฐานข้อมูลไม่ถูกต้อง");

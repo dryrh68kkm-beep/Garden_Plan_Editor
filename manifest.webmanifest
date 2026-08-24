@@ -2,7 +2,7 @@
   "name": "รินลดา พันธุ์ไม้",
   "short_name": "รินลดา",
   "description": "งานจัดสวนและไม้ประดับคุณภาพ — รินลดา พันธุ์ไม้",
-  "start_url": "./showcase.html",
+  "start_url": "./showcase/",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f7f4ec",

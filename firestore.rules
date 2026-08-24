@@ -3,7 +3,7 @@ rules_version = '2';
 // Security rules for the rinlada-plant-stock Firestore database.
 //
 // Model:
-// - The public showcase (showcase.html/showcase.js) never authenticates —
+// - The public showcase (showcase/index.html/showcase.js) never authenticates —
 //   it only needs READ access to the collections that back the public
 //   catalog. Those reads are allowed for anyone, with no login required.
 // - The admin app (index.html/app.js) requires a real Firebase Auth sign-in

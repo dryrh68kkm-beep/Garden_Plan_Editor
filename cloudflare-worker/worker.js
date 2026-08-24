@@ -31,7 +31,7 @@
 //     firebase-client.js (not a secret; see that file's comment on why).
 //   - Variable FIREBASE_PROJECT_ID — "rinlada-plant-stock".
 //   - Variable SHOWCASE_URL —
-//     "https://dryrh68kkm-beep.github.io/Garden_Plan_Editor/showcase.html"
+//     "https://dryrh68kkm-beep.github.io/Garden_Plan_Editor/showcase/"
 //
 // Deploy steps: see docs/cloudflare-worker-ops.md.
 
