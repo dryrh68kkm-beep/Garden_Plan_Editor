@@ -37,7 +37,7 @@ Same **Settings → Variables** page, add these as plain (non-secret) variables 
 |---|---|
 | `FIREBASE_API_KEY` | the same value as `apiKey` in `firebase-client.js`'s `FB_CONFIG` — not a secret, see that file's comment |
 | `FIREBASE_PROJECT_ID` | `rinlada-plant-stock` |
-| `SHOWCASE_URL` | `https://dryrh68kkm-beep.github.io/Garden_Plan_Editor/showcase.html` |
+| `SHOWCASE_URL` | `https://dryrh68kkm-beep.github.io/Garden_Plan_Editor/showcase/` |
 
 Save, which redeploys the Worker with the new bindings/variables active.
 
