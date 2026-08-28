@@ -14,19 +14,28 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Rinlada Editor" />
-  <link rel="stylesheet" href="style.css?v=202608180600" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=2026082801" />
 </head>
 <body>
   <div id="loginScreen" class="login-screen">
-    <form id="loginForm" class="login-card">
-      <p class="eyebrow">CATALOG MANAGEMENT</p>
-      <h1>เข้าสู่ระบบแอดมิน</h1>
-      <p class="login-sub">ลงชื่อเข้าใช้ด้วยบัญชีผู้ดูแลร้าน</p>
-      <label>อีเมล<input id="loginEmail" class="input" type="email" autocomplete="username" required /></label>
-      <label>รหัสผ่าน<input id="loginPassword" class="input" type="password" autocomplete="current-password" required /></label>
-      <p id="loginError" class="login-error" style="display:none"></p>
-      <button type="submit" id="loginSubmitBtn" class="btn btn-primary">เข้าสู่ระบบ</button>
-    </form>
+    <section class="login-visual" aria-label="บรรยากาศเรือนเพาะชำรินลดา">
+      <img class="login-visual-logo" src="assets/brand/logo-secondary.png" alt="รินลดา พันธุ์ไม้" />
+    </section>
+    <section class="login-form-panel">
+      <form id="loginForm" class="login-card">
+        <p class="eyebrow">CATALOG MANAGEMENT</p>
+        <h1>เข้าสู่ระบบแอดมิน</h1>
+        <p class="login-sub">ลงชื่อเข้าใช้ด้วยบัญชีผู้ดูแลร้าน</p>
+        <label>อีเมล<input id="loginEmail" class="input" type="email" autocomplete="username" required /></label>
+        <label>รหัสผ่าน<input id="loginPassword" class="input" type="password" autocomplete="current-password" required /></label>
+        <p id="loginError" class="login-error" style="display:none"></p>
+        <button type="submit" id="loginSubmitBtn" class="btn btn-primary">เข้าสู่ระบบ</button>
+      </form>
+      <img class="login-botanical-mark" src="assets/brand/logo-icon.svg" alt="" aria-hidden="true" />
+    </section>
   </div>
 
   <div id="adminApp" style="display:none">
