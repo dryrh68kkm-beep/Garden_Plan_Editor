@@ -134,3 +134,148 @@ input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none;appea
 .login-card label .input,.login-card label input{margin-top:6px}
 .login-error{color:var(--danger);font-size:13px;margin:6px 0 0;display:none}
 .login-card button[type="submit"]{margin-top:16px;width:100%}
+
+/* Selected 2026 Rinlada split-screen direction. The auth flow and field IDs
+   stay unchanged; this layer only changes the presentation. */
+.login-screen{
+  display:grid;
+  grid-template-columns:minmax(360px,44%) minmax(0,1fr);
+  align-items:stretch;
+  justify-content:stretch;
+  padding:0;
+  overflow:auto;
+  background:#f7f4ed;
+  font-family:"IBM Plex Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai",sans-serif;
+}
+.login-visual{
+  position:relative;
+  min-height:100svh;
+  overflow:hidden;
+  background:#163a2a url("assets/rinlada-nursery-hero.webp?v=2026082801") center/cover no-repeat;
+}
+.login-visual::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(8,35,25,.2);
+  pointer-events:none;
+}
+.login-visual-logo{
+  position:absolute;
+  z-index:1;
+  top:48%;
+  left:50%;
+  width:min(62%,420px);
+  height:auto;
+  transform:translate(-50%,-50%);
+  filter:brightness(0) invert(1) drop-shadow(0 4px 18px rgba(0,0,0,.34));
+}
+.login-form-panel{
+  position:relative;
+  display:grid;
+  place-items:center;
+  min-width:0;
+  min-height:100svh;
+  overflow:hidden;
+  padding:clamp(42px,7vw,96px);
+  background:#f7f4ed;
+}
+.login-card{
+  position:relative;
+  z-index:1;
+  width:min(530px,100%);
+  padding:0;
+  gap:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+.login-card .eyebrow{
+  margin-bottom:17px;
+  color:#729383;
+  font-size:13px;
+  letter-spacing:.16em;
+}
+.login-card h1{
+  margin:0 0 12px;
+  color:#103426;
+  font-size:clamp(34px,4vw,52px);
+  line-height:1.15;
+  letter-spacing:-.035em;
+}
+.login-sub{
+  margin:0 0 34px;
+  color:#78827c;
+  font-size:16px;
+  line-height:1.7;
+}
+.login-card label{
+  margin:0 0 22px;
+  color:#183c2d;
+  font-size:15px;
+  font-weight:700;
+}
+.login-card label .input,
+.login-card label input{
+  min-height:64px;
+  margin-top:9px;
+  padding:14px 17px;
+  border:1.5px solid #d9d8cf;
+  border-radius:10px;
+  background:rgba(255,255,255,.54);
+  color:#102f24;
+  box-shadow:none;
+  transition:border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.login-card label .input:focus,
+.login-card label input:focus{
+  outline:0;
+  border-color:#1f5e3c;
+  background:#fff;
+  box-shadow:0 0 0 4px rgba(31,94,60,.12);
+}
+.login-card button[type="submit"]{
+  min-height:62px;
+  margin-top:8px;
+  border-radius:10px;
+  background:#1d5b37;
+  font-size:17px;
+  transition:background .18s ease,transform .18s ease;
+}
+.login-card button[type="submit"]:hover{background:#15472d}
+.login-card button[type="submit"]:active{transform:translateY(1px)}
+.login-card button[type="submit"]:focus-visible{outline:3px solid rgba(31,94,60,.28);outline-offset:3px}
+.login-error{margin:-5px 0 16px;font-size:14px}
+.login-botanical-mark{
+  position:absolute;
+  right:-42px;
+  bottom:-54px;
+  width:270px;
+  height:270px;
+  object-fit:contain;
+  opacity:.06;
+  pointer-events:none;
+}
+@media(max-width:760px){
+  .login-screen{grid-template-columns:1fr;grid-template-rows:minmax(220px,34svh) auto}
+  .login-visual{min-height:0;background-position:center 45%}
+  .login-visual-logo{width:min(58%,300px)}
+  .login-form-panel{min-height:66svh;padding:38px 22px 58px;place-items:start center}
+  .login-card{width:min(480px,100%)}
+  .login-card h1{font-size:34px}
+  .login-sub{margin-bottom:28px;font-size:15px}
+  .login-card label .input,.login-card label input{min-height:56px}
+  .login-card button[type="submit"]{min-height:56px}
+  .login-botanical-mark{right:-64px;bottom:-70px;width:220px;height:220px}
+}
+@media(max-width:420px){
+  .login-screen{grid-template-rows:29svh auto}
+  .login-form-panel{min-height:71svh;padding:30px 18px 48px}
+  .login-card .eyebrow{margin-bottom:12px;font-size:11px}
+  .login-card h1{font-size:30px}
+  .login-sub{margin-bottom:22px}
+  .login-card label{margin-bottom:17px}
+}
+@media(prefers-reduced-motion:reduce){
+  .login-card label .input,.login-card label input,.login-card button[type="submit"]{transition:none}
+}
