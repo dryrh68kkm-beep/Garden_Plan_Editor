@@ -18,7 +18,7 @@
 ## Focused region comparison evidence
 
 - The logo region was inspected at full browser scale. The tree, illustrated person, shop name, telephone number, and tagline remain intact.
-- The new 682 × 510 transparent PNG uses the exact supplied brand artwork. No logo details were rebuilt with CSS, SVG, or text.
+- The new 682 × 510 transparent lossless WebP uses the exact supplied brand artwork. No logo details were rebuilt with CSS, SVG, or text.
 
 ## Required fidelity surfaces
 
@@ -33,11 +33,12 @@
 1. P1 source issue: the cream rounded rectangle read as a pasted card on both the mobile screenshot and previous production capture.
 2. The logo background was converted to transparency, and the card border, radius, background, and box shadow were removed.
 3. P2 first preview: dark logo details lost contrast against foliage. A warm 4 px outline plus a restrained natural shadow was added.
-4. Final browser capture shows the logo integrated into the garden image with the brand name and illustration still visible.
+4. The first production upload truncated the larger PNG asset, so the logo did not render on GitHub Pages. The incomplete PNG was removed and replaced by a smaller lossless WebP with the same alpha channel.
+5. The final local browser capture shows the WebP logo integrated into the garden image with the brand name and illustration still visible.
 
 ## Browser verification
 
-- Transparent asset loaded from `../assets/brand/rinlada-showcase-logo-transparent.png?v=2026082902`.
+- Transparent asset loaded from `../assets/brand/rinlada-showcase-logo-transparent.webp?v=2026082903`.
 - Primary “ชมแบบสวน” CTA opened the Garden Styles view.
 - “กลับหน้าแรก” returned to the Showcase home route.
 - No target-page console warnings or errors were present.
