@@ -829,14 +829,18 @@ body{background:var(--cream)}
   z-index:2;
   top:48%;
   left:22%;
-  width:min(28vw,420px);
+  width:min(30vw,410px);
   transform:translate(-50%,-50%);
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.46);
+  border-radius:22px;
+  background:#f7eee5;
+  box-shadow:0 18px 42px rgba(4,27,19,.3);
 }
-.sc-hero-brand img{
+.sc-hero-brand-image{
   display:block;
   width:100%;
   height:auto;
-  filter:brightness(0) invert(1) drop-shadow(0 5px 20px rgba(0,0,0,.36));
 }
 .sc-home-nav{
   left:0;
@@ -969,7 +973,8 @@ body{background:var(--cream)}
   .sc-hero-brand{
     top:26svh;
     left:50%;
-    width:min(68vw,340px);
+    width:min(70vw,340px);
+    border-radius:18px;
   }
   .sc-hero-copy{
     position:relative;
