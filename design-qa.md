@@ -1,62 +1,65 @@
-# Design QA — Blended Showcase logo
+# Design QA — Showcase circular logo badge
 
 ## Evidence
 
-- Source visual truth: `/workspace/scratch/6053a9d72cb2/upload/IMG_9434.jpeg`
-- Source pixels: 707 × 1536 px, iPhone browser screenshot supplied by the user
-- Implementation: `http://terminal.local:4173/showcase/?qa=2026082902`
+- Source visual truth: `/workspace/scratch/6053a9d72cb2/upload/IMG_9467.jpeg`
+- Source pixels: 708 × 1536 px, iPhone browser screenshot supplied by the user
+- Implementation: `http://terminal.local:4173/showcase/`
 - Implementation screenshot: Cloud Browser capture emitted inline during this QA run; the browser surface did not expose a filesystem export path
-- Browser viewport: 1363 × 936 CSS px at 1× density
-- State: Showcase home route, initial desktop state; responsive rules reviewed against the supplied mobile screenshot
+- Comparison surface: one 786 × 852 px browser capture containing the supplied before image and a live 393 × 852 CSS-pixel implementation side by side
+- Density normalization: the supplied screenshot was scaled to 393 × 852 for the focused visual comparison; the live implementation rendered at 393 × 852 and 1× density
+- State: Showcase home route, initial mobile state
 
 ## Full-view comparison evidence
 
-- The source screenshot shows a cream rounded rectangle and card shadow that make the logo look pasted over the nursery photo.
-- The implementation removes the rectangle, border, radius, and card shadow. The logo artwork now sits directly on the nursery image with transparent negative space.
-- A soft outline and natural drop shadow preserve legibility without recreating a background card.
+- Before: the incorrectly masked transparent asset shows cyan/grey edge artifacts, a muddy glow, and weak contrast against the detailed nursery photo.
+- After: the untouched supplied logo artwork is placed inside an intentional circular ivory badge. The clean edge, restrained border, and natural shadow separate the brand from the photo without looking like a rectangular pasted card.
+- The mobile hero, headline, CTAs, and the amount of above-the-fold content remain balanced.
 
 ## Focused region comparison evidence
 
-- The logo region was inspected at full browser scale. The tree, illustrated person, shop name, telephone number, and tagline remain intact.
-- The new 682 × 510 transparent lossless WebP uses the exact supplied brand artwork. No logo details were rebuilt with CSS, SVG, or text.
+- The tree, illustrated person, Thai shop name, telephone number, and tagline remain part of the real supplied raster logo; no logo details were rebuilt in CSS or SVG.
+- The circular crop removes the corrupt transparent pixels and keeps the important center artwork fully visible.
+- The earlier oval preview was changed to a true 1:1 circle, and `object-fit: cover` removed visible horizontal color bands.
 
 ## Required fidelity surfaces
 
-- Fonts and typography: Page typography is unchanged. Type inside the logo remains part of the supplied artwork.
-- Spacing and layout rhythm: Desktop placement remains centered in the image panel. Mobile width increases from 70–72vw to 78–82vw because removal of the card allows more natural scale without heavy visual mass.
-- Colors and visual tokens: The original green, brown, and sage palette is preserved and now shares the nursery background instead of sitting on a separate cream surface.
-- Image quality and asset fidelity: The cream background was removed by alpha masking while the original 682 × 510 logo details were retained. A 4 px warm outline and restrained dark shadow improve contrast.
+- Fonts and typography: Showcase typography is unchanged. Type inside the logo remains part of the original artwork and is visibly sharper than the corrupted transparent version.
+- Spacing and layout rhythm: The mobile badge is 68vw with a 290 px cap and remains centered in the hero. Desktop uses a quieter 24vw/330 px cap.
+- Colors and visual tokens: The badge uses the artwork's sampled warm ivory (`#f6eae0`), a low-contrast warm border, and the existing forest-green brand palette.
+- Image quality and asset fidelity: The valid 682 × 510 poster WebP replaces the damaged alpha-masked asset. The browser reports the image complete at its full natural dimensions, with no transparency halo or compression corruption.
 - Copy and content: No Showcase copy, CTA, route, telephone number, or tagline was changed.
 
 ## Comparison history
 
-1. P1 source issue: the cream rounded rectangle read as a pasted card on both the mobile screenshot and previous production capture.
-2. The logo background was converted to transparency, and the card border, radius, background, and box shadow were removed.
-3. P2 first preview: dark logo details lost contrast against foliage. A warm 4 px outline plus a restrained natural shadow was added.
-4. The first production upload truncated the larger PNG asset, so the logo did not render on GitHub Pages. The incomplete PNG was removed and replaced by a smaller lossless WebP with the same alpha channel.
-5. The final local browser capture shows the WebP logo integrated into the garden image with the brand name and illustration still visible.
+1. P1: the transparent logo file contained cyan/grey masking artifacts that were visible over the garden image.
+2. Fix: replaced the damaged transparent file reference with the clean poster WebP and introduced an intentional badge container.
+3. P2: the first badge preview used the artwork's 4:3 ratio and read as a wide oval.
+4. Fix: changed the badge to a 1:1 circle and reduced its mobile width.
+5. P2: `object-fit: contain` exposed horizontal background-color bands inside the circle.
+6. Fix: changed to `object-fit: cover`, preserving the central mark while removing the bands.
+7. Post-fix evidence: the final side-by-side mobile capture shows a clean circular badge with no colored halo, no rectangle, and no visible banding.
 
 ## Browser verification
 
-- Transparent asset loaded from `../assets/brand/rinlada-showcase-logo-transparent.webp?v=2026082903`.
-- Primary “ชมแบบสวน” CTA opened the Garden Styles view.
-- “กลับหน้าแรก” returned to the Showcase home route.
+- Logo loaded from `../assets/brand/rinlada-showcase-logo-poster.webp?v=2026082908` at 682 × 510 px.
+- The “ชมแบบสวน” CTA opened `showcaseStylesPage`.
+- “กลับหน้าแรก” returned to `showcaseHomePage`.
 - No target-page console warnings or errors were present.
 - `npm run build` completed successfully.
 
 ## Findings
 
 - No actionable P0, P1, or P2 findings remain.
-- P3 follow-up: verify exact iPhone safe-area framing on the production URL after GitHub Pages deployment.
+- P3 follow-up: verify the production iPhone browser crop after GitHub Pages cache propagation.
 
 ## Implementation checklist
 
-- [x] Remove cream rectangle
-- [x] Remove card border, radius, and heavy shadow
-- [x] Preserve exact logo artwork
-- [x] Add transparent background
-- [x] Improve contrast without adding a card
-- [x] Increase responsive mobile scale
+- [x] Remove damaged transparent asset from the Showcase
+- [x] Preserve the exact supplied logo artwork
+- [x] Use an intentional circular badge instead of a rectangular card
+- [x] Remove transparency halo and internal color bands
+- [x] Balance mobile and desktop scale
 - [x] Test primary navigation
 - [x] Check console
 - [x] Complete production build
